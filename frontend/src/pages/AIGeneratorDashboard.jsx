@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import VocabInputStep from "../components/ai-generator/VocabInputStep";
 import LoadingStep from "../components/ai-generator/LoadingStep";
 import PreviewEditStep from "../components/ai-generator/PreviewEditStep";
-import { fetchClasses } from "../lib/sessionsApi";
+import AddClassModal from "../components/students/AddClassModal";
+import { fetchClasses, createClass } from "../lib/sessionsApi";
 import { generateLessonFromVocab, saveLesson } from "../lib/aiGeneratorApi";
 
 /**
@@ -19,6 +20,7 @@ export default function AIGeneratorDashboard() {
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(null); // null | "DRAFT" | "PUBLISHED"
   const [savedStatus, setSavedStatus] = useState(null);
+  const [isAddClassOpen, setIsAddClassOpen] = useState(false);
 
   useEffect(() => {
     fetchClasses()
@@ -42,6 +44,12 @@ export default function AIGeneratorDashboard() {
       setError(err.message || "Có lỗi khi tạo bài học.");
       setStep("input");
     }
+  };
+
+  const handleAddClass = async (payload) => {
+    const newClass = await createClass(payload);
+    setClasses((current) => [...current, newClass].sort((a, b) => a.name.localeCompare(b.name)));
+    setClassId(newClass.id);
   };
 
   const handleChangeSection = (section, items) => {
@@ -74,6 +82,7 @@ export default function AIGeneratorDashboard() {
             classes={classes}
             classId={classId}
             onClassChange={setClassId}
+            onAddClass={() => setIsAddClassOpen(true)}
             vocabText={vocabText}
             onVocabTextChange={setVocabText}
             onGenerate={handleGenerate}
@@ -93,6 +102,12 @@ export default function AIGeneratorDashboard() {
           savedStatus={savedStatus}
         />
       )}
+
+      <AddClassModal
+        isOpen={isAddClassOpen}
+        onClose={() => setIsAddClassOpen(false)}
+        onSubmit={handleAddClass}
+      />
     </div>
   );
 }

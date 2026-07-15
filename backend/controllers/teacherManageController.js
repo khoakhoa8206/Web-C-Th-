@@ -19,6 +19,31 @@ const getClasses = asyncHandler(async (req, res) => {
 });
 
 /**
+ * POST /api/teacher/classes
+ * Body: { name, teacher_name? }
+ * Tạo mới một khối/lớp học.
+ */
+const createClass = asyncHandler(async (req, res) => {
+  const { name, teacher_name } = req.body;
+
+  if (!name || typeof name !== 'string' || !name.trim()) {
+    throw new ApiError(400, 'Vui lòng cung cấp tên khối lớp.');
+  }
+
+  const { data, error } = await supabase
+    .from('classes')
+    .insert({ name: name.trim(), teacher_name: teacher_name?.trim() || null })
+    .select()
+    .single();
+
+  if (error) {
+    throw new ApiError(500, `Lỗi khi tạo khối lớp: ${error.message}`);
+  }
+
+  return res.status(201).json({ success: true, data });
+});
+
+/**
  * GET /api/teacher/students?class_id=...
  * Lấy danh sách học sinh, tuỳ chọn lọc theo class_id.
  */
@@ -166,6 +191,7 @@ const getAttempts = asyncHandler(async (req, res) => {
 
 module.exports = {
   getClasses,
+  createClass,
   getStudents,
   createStudent,
   updateStudentRecord,

@@ -9,6 +9,7 @@ const {
 const { getClassDashboard } = require('../controllers/dashboardController');
 const {
   getClasses,
+  createClass,
   getStudents,
   createStudent,
   updateStudentRecord,
@@ -39,6 +40,9 @@ router.get('/dashboard/:class_id', getClassDashboard);
 // --- Classes ---
 // GET /api/teacher/classes
 router.get('/classes', getClasses);
+
+// POST /api/teacher/classes
+router.post('/classes', createClass);
 
 // --- Sessions ---
 // GET /api/teacher/sessions?class_id=...

@@ -3,8 +3,9 @@ import { Button } from "../components/ui";
 import StudentsTable from "../components/students/StudentsTable";
 import StudentFormModal from "../components/students/StudentFormModal";
 import ConfirmDeleteModal from "../components/students/ConfirmDeleteModal";
+import AddClassModal from "../components/students/AddClassModal";
 import { useStudents } from "../hooks/useStudents";
-import { fetchClasses, fetchSessionsForClass } from "../lib/sessionsApi";
+import { fetchClasses, createClass, fetchSessionsForClass } from "../lib/sessionsApi";
 import { fetchAttemptsForSession } from "../lib/attemptsApi";
 import { exportRowsToCsv } from "../lib/csvExport";
 
@@ -20,6 +21,7 @@ export default function ManageStudentsPage() {
   const [formState, setFormState] = useState({ isOpen: false, student: null });
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
+  const [isAddClassOpen, setIsAddClassOpen] = useState(false);
 
   useEffect(() => {
     fetchClasses().then((data) => {
@@ -27,6 +29,12 @@ export default function ManageStudentsPage() {
       setGradeId((current) => current || data[0]?.id || "");
     });
   }, []);
+
+  const handleAddClass = async (payload) => {
+    const newClass = await createClass(payload);
+    setClasses((current) => [...current, newClass].sort((a, b) => a.name.localeCompare(b.name)));
+    setGradeId(newClass.id);
+  };
 
   const handleSave = async (payload) => {
     if (formState.student) {
@@ -82,17 +90,29 @@ export default function ManageStudentsPage() {
 
       <div className="mb-4 max-w-xs">
         <label className="block text-xs font-semibold text-slate/50 mb-1">Khối lớp</label>
-        <select
-          value={gradeId}
-          onChange={(e) => setGradeId(e.target.value)}
-          className="w-full h-11 rounded-2xl border border-surface-border bg-white px-4 text-sm font-semibold text-slate outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-200"
-        >
-          {classes.map((klass) => (
-            <option key={klass.id} value={klass.id}>
-              {klass.name}
-            </option>
-          ))}
-        </select>
+        <div className="flex gap-2">
+          <select
+            value={gradeId}
+            onChange={(e) => setGradeId(e.target.value)}
+            className="w-full h-11 rounded-2xl border border-surface-border bg-white px-4 text-sm font-semibold text-slate outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-200"
+          >
+            {classes.length === 0 && <option value="">Chưa có khối lớp</option>}
+            {classes.map((klass) => (
+              <option key={klass.id} value={klass.id}>
+                {klass.name}
+              </option>
+            ))}
+          </select>
+          <Button
+            type="button"
+            variant="secondary"
+            className="!h-11 !w-11 shrink-0 !px-0"
+            onClick={() => setIsAddClassOpen(true)}
+            title="Thêm khối lớp"
+          >
+            +
+          </Button>
+        </div>
       </div>
 
       <StudentsTable
@@ -115,6 +135,12 @@ export default function ManageStudentsPage() {
         student={studentToDelete}
         onClose={() => setStudentToDelete(null)}
         onConfirm={removeStudent}
+      />
+
+      <AddClassModal
+        isOpen={isAddClassOpen}
+        onClose={() => setIsAddClassOpen(false)}
+        onSubmit={handleAddClass}
       />
     </div>
   );

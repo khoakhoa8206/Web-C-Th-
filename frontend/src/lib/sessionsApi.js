@@ -10,6 +10,15 @@ export async function fetchClasses() {
   return json.data || [];
 }
 
+/** Tạo mới một khối lớp. */
+export async function createClass({ name, teacher_name }) {
+  const json = await teacherFetch('/api/teacher/classes', {
+    method: 'POST',
+    body: JSON.stringify({ name, teacher_name }),
+  });
+  return json.data;
+}
+
 /** Lấy danh sách session theo lớp. */
 export async function fetchSessionsForClass(classId) {
   if (!classId) return [];
