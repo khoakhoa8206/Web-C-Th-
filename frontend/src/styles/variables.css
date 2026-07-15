@@ -1,0 +1,98 @@
+/* ==========================================================================
+   DESIGN SYSTEM — PASTEL PINK
+   Ứng dụng học từ vựng Tiếng Anh
+   File CSS Variables dùng chung, đồng bộ với tailwind.config.js
+   ========================================================================== */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* ---- Primary Pink ---- */
+  --color-pink-light: #FFF0F2;   /* Nền trang, nền card nhẹ */
+  --color-pink-soft: #FFD3DA;    /* Nền nút hover, border, highlight */
+  --color-pink-medium: #FF8597;  /* Nút chính, trạng thái active */
+  --color-pink-dark: #D9465D;    /* Text tiêu đề, icon quan trọng */
+
+  /* ---- States ---- */
+  --color-success-bg: #E8F5E9;
+  --color-success: #4CAF50;
+  --color-success-text: #2E7D32;
+
+  --color-danger-bg: #FFEBEE;
+  --color-danger: #F44336;
+  --color-danger-text: #C62828;
+
+  --color-warning-bg: #FFFDE7;
+  --color-warning: #FBC02D;
+  --color-warning-text: #8A6D00;
+
+  /* ---- Neutral ---- */
+  --color-text-primary: #2C3E50;
+  --color-surface: #FFFFFF;
+  --color-surface-soft: #F8F9FA;
+  --color-border-soft: #E9ECEF;
+
+  /* ---- Elevation ---- */
+  --shadow-card: 0 4px 16px 0 rgba(217, 70, 93, 0.08);
+  --shadow-card-hover: 0 8px 24px 0 rgba(217, 70, 93, 0.14);
+  --shadow-button: 0 2px 6px 0 rgba(255, 133, 151, 0.35);
+
+  /* ---- Radius ---- */
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+
+  /* ---- Motion ---- */
+  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-base: 300ms;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    background-color: var(--color-pink-light);
+    color: var(--color-text-primary);
+    font-family: 'Nunito', 'Quicksand', ui-sans-serif, system-ui, sans-serif;
+  }
+
+  /* Trạng thái focus rõ ràng cho bàn phím — a11y */
+  :focus-visible {
+    outline: 2px solid var(--color-pink-dark);
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  /* Tôn trọng người dùng giảm hiệu ứng chuyển động */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer utilities {
+  .flip-card-scene {
+    perspective: 1200px;
+  }
+  .flip-card-inner {
+    transform-style: preserve-3d;
+    transition: transform 0.6s var(--ease-bounce);
+  }
+  .flip-card-inner.is-flipped {
+    transform: rotateY(180deg);
+  }
+  .flip-card-face {
+    backface-visibility: hidden;
+  }
+  .flip-card-face-back {
+    transform: rotateY(180deg);
+  }
+}
