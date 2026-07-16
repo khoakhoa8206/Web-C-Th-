@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../components/ui";
+import Modal from "../components/ui/Modal";
 import StudentsTable from "../components/students/StudentsTable";
 import StudentFormModal from "../components/students/StudentFormModal";
 import ConfirmDeleteModal from "../components/students/ConfirmDeleteModal";
 import AddClassModal from "../components/students/AddClassModal";
 import { useStudents } from "../hooks/useStudents";
-import { fetchClasses, createClass, fetchSessionsForClass } from "../lib/sessionsApi";
+import { fetchClasses, createClass, fetchSessionsForClass, deleteClass } from "../lib/sessionsApi";
 import { fetchAttemptsForSession } from "../lib/attemptsApi";
 import { exportRowsToCsv } from "../lib/csvExport";
 
@@ -22,6 +23,9 @@ export default function ManageStudentsPage() {
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
+  const [deleteClassTarget, setDeleteClassTarget] = useState(null); // class object
+  const [deleteClassConfirm, setDeleteClassConfirm] = useState("");
+  const [isDeletingClass, setIsDeletingClass] = useState(false);
 
   useEffect(() => {
     fetchClasses().then((data) => {
@@ -34,6 +38,25 @@ export default function ManageStudentsPage() {
     const newClass = await createClass(payload);
     setClasses((current) => [...current, newClass].sort((a, b) => a.name.localeCompare(b.name)));
     setGradeId(newClass.id);
+  };
+
+  const handleDeleteClass = async () => {
+    if (!deleteClassTarget) return;
+    if (deleteClassConfirm.trim() !== deleteClassTarget.name.trim()) return;
+    setIsDeletingClass(true);
+    try {
+      await deleteClass(deleteClassTarget.id);
+      setClasses((prev) => prev.filter((c) => c.id !== deleteClassTarget.id));
+      // Chuyển sang lớp đầu tiên còn lại
+      const remaining = classes.filter((c) => c.id !== deleteClassTarget.id);
+      setGradeId(remaining[0]?.id || "");
+      setDeleteClassTarget(null);
+      setDeleteClassConfirm("");
+    } catch (err) {
+      alert(err.message || "Xoá thất bại.");
+    } finally {
+      setIsDeletingClass(false);
+    }
   };
 
   const handleSave = async (payload) => {
@@ -113,6 +136,14 @@ export default function ManageStudentsPage() {
             +
           </Button>
         </div>
+        {gradeId && classes.length > 0 && (
+          <button
+            className="text-xs text-danger-text hover:underline mt-1"
+            onClick={() => setDeleteClassTarget(classes.find((c) => c.id === gradeId))}
+          >
+            Xoá khối này
+          </button>
+        )}
       </div>
 
       <StudentsTable
@@ -142,6 +173,46 @@ export default function ManageStudentsPage() {
         onClose={() => setIsAddClassOpen(false)}
         onSubmit={handleAddClass}
       />
+
+      <Modal
+        isOpen={!!deleteClassTarget}
+        onClose={() => {
+          setDeleteClassTarget(null);
+          setDeleteClassConfirm("");
+        }}
+        title="Xoá khối lớp"
+        maxWidth="max-w-sm"
+      >
+        <div className="space-y-4">
+          <div className="bg-danger-bg rounded-xl p-3 text-sm text-danger-text">
+            ⚠️ <strong>Cảnh báo:</strong> Xoá khối lớp sẽ xoá cascade toàn bộ{" "}
+            <strong>học sinh, bài tập và lịch sử làm bài</strong> của lớp này. Không thể hoàn tác.
+          </div>
+          <p className="text-sm text-slate">
+            Gõ <strong>"{deleteClassTarget?.name}"</strong> để xác nhận:
+          </p>
+          <input
+            className="w-full h-11 rounded-2xl border border-surface-border bg-white px-4 text-sm outline-none focus:border-danger"
+            placeholder={deleteClassTarget?.name}
+            value={deleteClassConfirm}
+            onChange={(e) => setDeleteClassConfirm(e.target.value)}
+          />
+          <div className="flex gap-3">
+            <Button variant="ghost" fullWidth onClick={() => setDeleteClassTarget(null)}>
+              Huỷ
+            </Button>
+            <Button
+              variant="danger"
+              fullWidth
+              isLoading={isDeletingClass}
+              disabled={deleteClassConfirm.trim() !== deleteClassTarget?.name?.trim()}
+              onClick={handleDeleteClass}
+            >
+              Xoá khối lớp
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 }

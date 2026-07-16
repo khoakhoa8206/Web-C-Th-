@@ -7,6 +7,7 @@ const authRoutes = require('./routes/authRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
 const attemptRoutes = require('./routes/attemptRoutes');
 const studentRoutes = require('./routes/studentRoutes');
+const leaderboardRoutes = require('./routes/leaderboardRoutes');
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
 
 const app = express();
@@ -47,12 +48,14 @@ app.get('/', (req, res) => {
 app.get('/health', (req, res) => {
   res.status(200).json({ success: true, status: 'ok', timestamp: new Date().toISOString() });
 });
+app.get('/api/health', (req, res) => res.status(200).json({ ok: true }));
 
 // ============ Mount routes ============
 app.use('/api/auth', authRoutes);
 app.use('/api/student', studentRoutes);
 app.use('/api/teacher', teacherRoutes);
 app.use('/api/attempts', attemptRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
 
 // ============ 404 & Error handler (luôn đặt cuối cùng) ============
 app.use(notFoundHandler);

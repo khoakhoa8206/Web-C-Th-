@@ -55,14 +55,13 @@ function DroppableSlot({ id, label, matchedWord }) {
         "px-4 py-3 rounded-2xl border-2 border-dashed text-sm font-semibold min-h-[52px]",
         "flex items-center justify-between gap-2 transition-colors duration-200",
         matchedWord
-          ? "bg-success-bg border-success text-success-text"
+          ? "bg-pink-50 border-pink-300 text-slate"
           : isOver
           ? "bg-pink-100 border-pink-400 text-pink-600"
           : "bg-surface-soft border-surface-border text-slate/50",
       ].join(" ")}
     >
       <span>{label}</span>
-      {matchedWord && <span aria-hidden="true">✓ {matchedWord}</span>}
     </div>
   );
 }

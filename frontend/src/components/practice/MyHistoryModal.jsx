@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Modal, BadgeStatus } from "../ui";
-import { fetchMyAttemptHistory } from "../../lib/studentPracticeApi";
+import { fetchMyAttemptHistory, fetchAttemptDetail } from "../../lib/studentPracticeApi";
 
 function formatDuration(seconds) {
   const m = Math.floor(seconds / 60).toString().padStart(2, "0");
@@ -23,12 +23,35 @@ function formatDateTime(iso) {
  */
 export default function MyHistoryModal({ sessionId, sessionTitle, isOpen, onClose }) {
   const [history, setHistory] = useState(null);
+  const [expandedId, setExpandedId] = useState(null);
+  const [detailCache, setDetailCache] = useState({});
+  const [loadingDetailId, setLoadingDetailId] = useState(null);
 
   useEffect(() => {
     if (!isOpen || !sessionId) return;
     setHistory(null);
+    setExpandedId(null);
+    setDetailCache({});
     fetchMyAttemptHistory(sessionId).then(setHistory).catch(() => setHistory([]));
   }, [isOpen, sessionId]);
+
+  const handleToggleDetail = async (attemptId) => {
+    if (expandedId === attemptId) {
+      setExpandedId(null);
+      return;
+    }
+    setExpandedId(attemptId);
+    if (detailCache[attemptId]) return; // đã có cache
+    setLoadingDetailId(attemptId);
+    try {
+      const data = await fetchAttemptDetail(attemptId);
+      setDetailCache((prev) => ({ ...prev, [attemptId]: data }));
+    } catch {
+      /* bỏ qua */
+    } finally {
+      setLoadingDetailId(null);
+    }
+  };
 
   return (
     <Modal
@@ -77,6 +100,56 @@ export default function MyHistoryModal({ sessionId, sessionTitle, isOpen, onClos
                 {" · "}
                 {formatDateTime(attempt.created_at)}
               </p>
+
+              <button
+                className="text-xs text-pink-600 hover:underline mt-1"
+                onClick={() => handleToggleDetail(attempt.id)}
+              >
+                {expandedId === attempt.id ? "Ẩn chi tiết ▴" : "Xem chi tiết ▾"}
+              </button>
+
+              {expandedId === attempt.id && (
+                <div className="mt-3 bg-surface-soft rounded-xl p-3">
+                  {loadingDetailId === attempt.id && (
+                    <p className="text-xs text-slate/40">Đang tải…</p>
+                  )}
+                  {detailCache[attempt.id] && !detailCache[attempt.id].can_view_detail && (
+                    <p className="text-xs text-slate/60">
+                      Hãy làm lại và đạt ≥80% để xem đáp án.
+                    </p>
+                  )}
+                  {detailCache[attempt.id]?.can_view_detail && (
+                    <div className="space-y-2">
+                      {(detailCache[attempt.id].details || []).map((d, i) => (
+                        <div
+                          key={d.id || i}
+                          className={`rounded-lg px-3 py-2 text-xs ${
+                            d.is_correct
+                              ? "bg-success-bg text-success-text"
+                              : "bg-danger-bg text-danger-text"
+                          }`}
+                        >
+                          <p className="font-semibold">
+                            {d.term || d.word || d.question}
+                          </p>
+                          <p>
+                            Bạn trả lời:{" "}
+                            <span className="font-bold">{d.student_answer || "(bỏ trống)"}</span>
+                          </p>
+                          {!d.is_correct && (
+                            <p>
+                              Đáp án đúng:{" "}
+                              <span className="font-bold">
+                                {d.correct_answer || d.correct_answer_id}
+                              </span>
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </li>
           ))}
         </ol>

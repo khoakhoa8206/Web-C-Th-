@@ -1,6 +1,6 @@
 const express = require('express');
 const { authenticate, requireRole } = require('../middlewares/authMiddleware');
-const { getStudentSessions, getSessionExercises, getMyAttempts } = require('../controllers/studentController');
+const { getStudentSessions, getSessionExercises, getMyAttempts, getAttemptDetail } = require('../controllers/studentController');
 
 const router = express.Router();
 
@@ -15,5 +15,8 @@ router.get('/sessions/:session_id/exercises', getSessionExercises);
 
 // GET /api/student/sessions/:session_id/attempts — lịch sử làm bài của học sinh (mục 7)
 router.get('/sessions/:session_id/attempts', getMyAttempts);
+
+// GET /api/student/attempts/:attempt_id — chi tiết từng câu của 1 lần làm bài (mục 5)
+router.get('/attempts/:attempt_id', getAttemptDetail);
 
 module.exports = router;

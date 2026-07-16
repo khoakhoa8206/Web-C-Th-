@@ -18,6 +18,7 @@ const {
   updateSession,
   deleteSession,
   getAttempts,
+  deleteClass,
 } = require('../controllers/teacherManageController');
 
 const router = express.Router();
@@ -45,6 +46,9 @@ router.get('/classes', getClasses);
 
 // POST /api/teacher/classes
 router.post('/classes', createClass);
+
+// DELETE /api/teacher/classes/:id
+router.delete('/classes/:id', deleteClass);
 
 // --- Sessions ---
 // GET /api/teacher/sessions?class_id=...

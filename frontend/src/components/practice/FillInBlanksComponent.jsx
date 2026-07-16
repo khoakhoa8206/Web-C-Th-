@@ -3,10 +3,26 @@ import { Button, InputField } from "../ui";
 
 /**
  * Bài 3 — FillInBlanksComponent
- * Hiển thị câu có chỗ trống (___), học sinh điền đáp án.
- * Dữ liệu từ backend: [{ id, sentence (chứa ___), answer }]
- * Mục 6: Không chấm đúng/sai theo thời gian thực — chỉ theo dõi đã điền hay chưa.
+ * Hỏi trực tiếp về 1 từ vựng lấy ngẫu nhiên từ vocab (cùng nguồn với Bài 2 — Match-up).
+ * Ngẫu nhiên hỏi theo 1 trong 2 chiều Anh→Việt hoặc Việt→Anh.
+ * Dữ liệu từ backend: [{ id, direction: "en_to_vi" | "vi_to_en", word, answer }]
+ * `answer` có thể là nhiều đáp án hợp lệ cách nhau bằng dấu `|`.
+ * Không chấm đúng/sai theo thời gian thực — chỉ theo dõi đã điền hay chưa.
  */
+
+function getPromptText(item) {
+  if (item.direction === "vi_to_en") {
+    return `Từ tiếng Anh nào có nghĩa là "${item.word}"?`;
+  }
+  // mặc định en_to_vi
+  return `"${item.word}" có nghĩa là gì?`;
+}
+
+function getPlaceholder(item) {
+  return item.direction === "vi_to_en"
+    ? "Gõ từ tiếng Anh..."
+    : "Gõ nghĩa tiếng Việt...";
+}
 
 export default function FillInBlanksComponent({ items, values, onChange, onNext, onBack }) {
   const isFilled = (item) => {
@@ -24,7 +40,7 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext,
   return (
     <div className="flex flex-col gap-6">
       <p className="text-sm text-slate/50 text-center">
-        Điền {items.length} từ còn thiếu · Đã điền {filledCount}/{items.length}
+        Điền {items.length} từ vựng · Đã điền {filledCount}/{items.length}
       </p>
 
       <div className="space-y-4">
@@ -32,10 +48,10 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext,
           return (
             <div key={item.id} className="bg-white rounded-2xl border border-surface-border p-4">
               <p className="text-xs text-slate/40 mb-1">Câu {idx + 1}</p>
-              <p className="font-bold text-slate mb-3">{item.sentence}</p>
+              <p className="font-semibold text-slate mb-2">{getPromptText(item)}</p>
               <InputField
-                label="Điền từ vào chỗ trống"
-                placeholder="Nhập câu trả lời..."
+                label="Đáp án của bạn"
+                placeholder={getPlaceholder(item)}
                 value={values[item.id] ?? ""}
                 onChange={(e) => handleChange(item.id, e.target.value)}
               />

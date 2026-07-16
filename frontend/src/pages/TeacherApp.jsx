@@ -6,11 +6,13 @@ import DashboardPage from "./DashboardPage";
 import ManageStudentsPage from "./ManageStudentsPage";
 import AIGeneratorDashboard from "./AIGeneratorDashboard";
 import ManageSessionsPage from "./ManageSessionsPage";
+import LeaderboardPage from "./LeaderboardPage";
 
 const TABS = [
   { id: "dashboard", label: "Dashboard", icon: "📊" },
   { id: "students", label: "Quản lý học sinh", icon: "🧑‍🎓" },
   { id: "sessions", label: "Quản lý bài tập", icon: "📝" },
+  { id: "leaderboard", label: "Xếp hạng", icon: "🏆" },
   { id: "ai-generator", label: "Soạn bài bằng AI", icon: "✨" },
 ];
 
@@ -75,6 +77,7 @@ export default function TeacherApp() {
         {activeTab === "dashboard" && <DashboardPage />}
         {activeTab === "students" && <ManageStudentsPage />}
         {activeTab === "sessions" && <ManageSessionsPage />}
+        {activeTab === "leaderboard" && <LeaderboardPage />}
         {activeTab === "ai-generator" && <AIGeneratorDashboard />}
       </main>
     </div>

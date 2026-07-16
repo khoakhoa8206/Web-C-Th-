@@ -43,12 +43,15 @@ function gradeAttempt(exerciseContent, studentAnswers) {
   fillBank.forEach((item) => {
     const studentAns = ansFill.find((a) => a.id === item.id);
     const studentValue = studentAns ? studentAns.student_answer : null;
-    const isCorrect = studentValue !== null && normalize(studentValue) === normalize(item.answer);
+    // Hỗ trợ nhiều đáp án đúng cách nhau bằng |
+    const acceptedAnswers = (item.answer || '').split('|').map(normalize).filter(Boolean);
+    const isCorrect = studentValue !== null && acceptedAnswers.includes(normalize(studentValue));
 
     details.push({
       type: 'fill_in_blanks',
       id: item.id,
-      sentence: item.sentence,
+      word: item.word,
+      direction: item.direction,
       student_answer: studentValue,
       correct_answer: item.answer,
       is_correct: isCorrect,

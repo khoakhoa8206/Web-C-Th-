@@ -77,3 +77,17 @@ export async function teacherFetch(path, options = {}) {
     },
   });
 }
+
+/**
+ * Kiểm tra server đã sẵn sàng chưa (dùng cho SplashScreen khi cold-start).
+ */
+export async function checkServerHealth() {
+  try {
+    const res = await fetch(`${BASE_URL}/api/health`, {
+      signal: AbortSignal.timeout(5000),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}

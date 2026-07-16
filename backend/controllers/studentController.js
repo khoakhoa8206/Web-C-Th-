@@ -1,5 +1,6 @@
 const supabase = require('../config/supabaseClient');
 const { asyncHandler, ApiError } = require('../middlewares/errorHandler');
+const { gradeAttempt } = require('../utils/scoring');
 
 /**
  * GET /api/student/sessions
@@ -117,4 +118,87 @@ const getSessionExercises = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getStudentSessions, getSessionExercises, getMyAttempts };
+/**
+ * GET /api/student/attempts/:attempt_id
+ *
+ * Học sinh xem chi tiết từng câu của 1 lần làm bài cụ thể.
+ * Điều kiện lộ đáp án đúng:
+ * - Lần đó PASSED → luôn hiện đầy đủ.
+ * - Lần đó FAILED nhưng học sinh đã từng PASSED session này (ở lần khác) → hiện đầy đủ.
+ * - Lần đó FAILED và chưa từng PASSED → chỉ báo cần đạt ≥ ngưỡng để xem đáp án.
+ */
+const getAttemptDetail = asyncHandler(async (req, res) => {
+  const { attempt_id } = req.params;
+  const student_id = req.user.student_id;
+
+  const { data: attempt, error: attemptError } = await supabase
+    .from('attempts')
+    .select('id, student_id, session_id, status, score, submitted_answers, correct_count, total_questions')
+    .eq('id', attempt_id)
+    .maybeSingle();
+
+  if (attemptError) {
+    throw new ApiError(500, `Lỗi truy vấn lượt làm bài: ${attemptError.message}`);
+  }
+  if (!attempt) {
+    throw new ApiError(404, 'Không tìm thấy lần làm bài.');
+  }
+  if (attempt.student_id !== student_id) {
+    throw new ApiError(403, 'Không có quyền xem lần làm bài này.');
+  }
+
+  // Kiểm tra học sinh đã từng PASSED session này chưa (ở bất kỳ lần nào)
+  const { count: passedCount, error: passedError } = await supabase
+    .from('attempts')
+    .select('id', { count: 'exact', head: true })
+    .eq('session_id', attempt.session_id)
+    .eq('student_id', student_id)
+    .eq('status', 'PASSED');
+
+  if (passedError) {
+    throw new ApiError(500, `Lỗi truy vấn lịch sử làm bài: ${passedError.message}`);
+  }
+
+  const everPassed = (passedCount || 0) > 0;
+  const canViewDetail = everPassed || attempt.status === 'PASSED';
+
+  if (!canViewDetail) {
+    return res.status(200).json({
+      success: true,
+      data: {
+        attempt_id: attempt.id,
+        status: attempt.status,
+        score: attempt.score,
+        can_view_detail: false,
+      },
+    });
+  }
+
+  const { data: exercise, error: exerciseError } = await supabase
+    .from('exercises')
+    .select('content')
+    .eq('session_id', attempt.session_id)
+    .maybeSingle();
+
+  if (exerciseError) {
+    throw new ApiError(500, `Lỗi truy vấn bài tập: ${exerciseError.message}`);
+  }
+  if (!exercise) {
+    throw new ApiError(404, 'Không tìm thấy dữ liệu bài tập tương ứng.');
+  }
+
+  const { details } = gradeAttempt(exercise.content, attempt.submitted_answers || {});
+
+  return res.status(200).json({
+    success: true,
+    data: {
+      attempt_id: attempt.id,
+      status: attempt.status,
+      score: attempt.score,
+      can_view_detail: true,
+      details,
+    },
+  });
+});
+
+module.exports = { getStudentSessions, getSessionExercises, getMyAttempts, getAttemptDetail };

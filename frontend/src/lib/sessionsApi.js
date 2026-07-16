@@ -19,6 +19,12 @@ export async function createClass({ name }) {
   return json.data;
 }
 
+/** Xoá khối lớp (cascade xoá học sinh, bài tập, lịch sử làm bài). */
+export async function deleteClass(id) {
+  const json = await teacherFetch(`/api/teacher/classes/${id}`, { method: 'DELETE' });
+  return json;
+}
+
 /** Lấy danh sách session theo lớp. */
 export async function fetchSessionsForClass(classId) {
   if (!classId) return [];
@@ -38,6 +44,15 @@ export async function updateSession(id, patch) {
   const json = await teacherFetch(`/api/teacher/sessions/${id}`, {
     method: 'PUT',
     body: JSON.stringify(patch),
+  });
+  return json.data;
+}
+
+/** Giao bài (publish) một session đang DRAFT, có thể kèm deadline tuỳ chọn. */
+export async function publishExistingSession(id, deadline) {
+  const json = await teacherFetch(`/api/teacher/publish-session/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(deadline ? { deadline } : {}),
   });
   return json.data;
 }

@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { CardContainer, Button, InputField } from "../components/ui";
-import { fetchClasses, fetchSessionsForClass, updateSession, deleteSession } from "../lib/sessionsApi";
+import {
+  fetchClasses,
+  fetchSessionsForClass,
+  updateSession,
+  deleteSession,
+  publishExistingSession,
+} from "../lib/sessionsApi";
 import Modal from "../components/ui/Modal";
 
 function formatDeadline(iso) {
@@ -40,6 +46,11 @@ export default function ManageSessionsPage() {
   // Delete modal
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // Publish modal
+  const [publishTarget, setPublishTarget] = useState(null);
+  const [publishDeadline, setPublishDeadline] = useState("");
+  const [isPublishing, setIsPublishing] = useState(false);
 
   useEffect(() => {
     fetchClasses().then(setClasses);
@@ -85,6 +96,28 @@ export default function ManageSessionsPage() {
       setEditError(err.message || "Có lỗi xảy ra.");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handlePublish = async () => {
+    if (!publishTarget) return;
+    setIsPublishing(true);
+    try {
+      const deadlineISO = publishDeadline ? new Date(publishDeadline).toISOString() : null;
+      await publishExistingSession(publishTarget.id, deadlineISO);
+      setSessions((prev) =>
+        prev.map((s) =>
+          s.id === publishTarget.id
+            ? { ...s, status: "PUBLISHED", published_at: new Date().toISOString(), deadline: deadlineISO }
+            : s
+        )
+      );
+      setPublishTarget(null);
+      setPublishDeadline("");
+    } catch (err) {
+      alert(err.message || "Giao bài thất bại.");
+    } finally {
+      setIsPublishing(false);
     }
   };
 
@@ -161,6 +194,11 @@ export default function ManageSessionsPage() {
               </div>
 
               <div className="flex gap-2 shrink-0">
+                {s.status === "DRAFT" && (
+                  <Button variant="primary" size="sm" onClick={() => setPublishTarget(s)}>
+                    Giao bài ▶
+                  </Button>
+                )}
                 <Button variant="secondary" size="sm" onClick={() => openEdit(s)}>
                   Sửa
                 </Button>
@@ -217,6 +255,46 @@ export default function ManageSessionsPage() {
               Lưu thay đổi
             </Button>
           </div>
+        </div>
+      </Modal>
+
+      {/* Modal xác nhận giao bài */}
+      <Modal
+        isOpen={!!publishTarget}
+        onClose={() => {
+          setPublishTarget(null);
+          setPublishDeadline("");
+        }}
+        title="Giao bài tập"
+      >
+        <p className="text-sm text-slate/70 mb-4">
+          Giao bài <strong>"{publishTarget?.title}"</strong> cho học sinh?
+        </p>
+        <div className="flex flex-col gap-1.5 mb-6">
+          <label className="text-sm font-semibold text-slate">Hạn nộp (tuỳ chọn)</label>
+          <input
+            type="datetime-local"
+            className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-slate text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none"
+            value={publishDeadline}
+            onChange={(e) => setPublishDeadline(e.target.value)}
+          />
+          {publishDeadline && (
+            <button
+              type="button"
+              className="text-xs text-slate/40 text-left hover:text-danger-text"
+              onClick={() => setPublishDeadline("")}
+            >
+              ✕ Xoá deadline
+            </button>
+          )}
+        </div>
+        <div className="flex gap-3">
+          <Button variant="ghost" fullWidth onClick={() => setPublishTarget(null)}>
+            Huỷ
+          </Button>
+          <Button variant="primary" fullWidth isLoading={isPublishing} onClick={handlePublish}>
+            Xác nhận giao bài
+          </Button>
         </div>
       </Modal>
 

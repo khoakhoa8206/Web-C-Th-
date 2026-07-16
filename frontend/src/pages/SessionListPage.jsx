@@ -36,14 +36,15 @@ export default function SessionListPage() {
     return (
       <CardContainer
         key={s.sessionId}
-        hoverable={!locked}
-        className={`flex items-center justify-between gap-3 ${locked ? "opacity-60" : ""}`}
+        className="flex items-center justify-between gap-3"
       >
         <div className="flex-1 min-w-0">
           <p className="font-bold text-slate truncate">{s.title}</p>
           <div className="flex items-center gap-2 flex-wrap mt-0.5">
             {s.className && (
-              <span className="text-xs text-slate/40">{s.className}</span>
+              <span className="text-xs bg-surface-soft text-slate/50 px-2 py-0.5 rounded-full">
+                {s.className}
+              </span>
             )}
             {s.publishedAt && (
               <span className="text-xs text-slate/40">
@@ -59,38 +60,44 @@ export default function SessionListPage() {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          {/* Nút lịch sử (chỉ lớp mình) */}
-          {!locked && (
-            <button
-              className="text-slate/40 hover:text-pink-600 text-lg"
-              title="Lịch sử làm bài"
-              onClick={() => setHistoryModal({ sessionId: s.sessionId, sessionTitle: s.title })}
-            >
-              🕘
-            </button>
-          )}
+          {/* Link xếp hạng — hiện cho tất cả (lớp mình lẫn lớp khác) */}
+          <Link
+            to={`/leaderboard?class_id=${s.classId}&session_id=${s.sessionId}`}
+            className="text-xs text-slate/40 hover:text-pink-600"
+          >
+            🏆 Xếp hạng
+          </Link>
 
-          {locked ? (
-            <Button variant="ghost" size="sm" disabled>
-              🔒 Không phải lớp của bạn
-            </Button>
-          ) : past ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setHistoryModal({ sessionId: s.sessionId, sessionTitle: s.title })}
-            >
-              Xem lại
-            </Button>
-          ) : (
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => navigate(`/student/practice/${s.sessionId}`)}
-            >
-              Vào làm
-            </Button>
+          {/* Nút lịch sử và làm bài — CHỈ lớp mình */}
+          {!locked && (
+            <>
+              <button
+                className="text-slate/40 hover:text-pink-600 text-lg"
+                title="Lịch sử làm bài"
+                onClick={() => setHistoryModal({ sessionId: s.sessionId, sessionTitle: s.title })}
+              >
+                🕘
+              </button>
+              {past ? (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setHistoryModal({ sessionId: s.sessionId, sessionTitle: s.title })}
+                >
+                  Xem lại
+                </Button>
+              ) : (
+                <Button
+                  variant="primary"
+                  size="sm"
+                  onClick={() => navigate(`/student/practice/${s.sessionId}`)}
+                >
+                  Vào làm
+                </Button>
+              )}
+            </>
           )}
+          {/* Lớp khác: không có nút làm bài, chỉ có link xếp hạng ở trên */}
         </div>
       </CardContainer>
     );
@@ -125,7 +132,10 @@ export default function SessionListPage() {
         {/* Bài tập của lớp khác */}
         {otherSessions.length > 0 && (
           <div className="space-y-3">
-            <p className="text-xs font-bold text-slate/50 uppercase tracking-wide">Các lớp khác</p>
+            <div>
+              <p className="text-xs font-bold text-slate/50 uppercase tracking-wide">Các lớp khác</p>
+              <p className="text-xs text-slate/40">Chỉ xem, không thể làm bài</p>
+            </div>
             {otherSessions.map(renderCard)}
           </div>
         )}

@@ -55,6 +55,15 @@ export async function fetchMyAttemptHistory(sessionId) {
 }
 
 /**
+ * Chi tiết từng câu của 1 lần làm bài cụ thể (dùng cho accordion "Xem chi tiết").
+ * GET /api/student/attempts/:attempt_id
+ */
+export async function fetchAttemptDetail(attemptId) {
+  const json = await apiFetch(`/api/student/attempts/${attemptId}`);
+  return json.data;
+}
+
+/**
  * Backward compat — SessionListPage gọi fetchGradeSessions(gradeId).
  * gradeId không còn cần thiết vì server tự lọc theo class_id trong JWT.
  */

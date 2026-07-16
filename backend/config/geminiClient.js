@@ -32,7 +32,12 @@ QUY TẮC BẮT BUỘC:
     { "id": "string duy nhất, vd m1", "term": "từ vựng tiếng Anh", "definition": "định nghĩa/nghĩa tương ứng" }
   ],
   "fill_in_blanks": [
-    { "id": "string duy nhất, vd b1", "sentence": "câu có chỗ trống dùng ký hiệu ___", "answer": "đáp án đúng (1 từ/cụm từ)" }
+    {
+      "id": "string duy nhất, vd b1",
+      "direction": "en_to_vi hoặc vi_to_en — chọn ngẫu nhiên, không cố định theo thứ tự",
+      "word": "từ được hỏi — nếu direction=en_to_vi thì đây là từ tiếng Anh (lấy từ vocab), nếu direction=vi_to_en thì đây là nghĩa tiếng Việt (lấy từ vocab)",
+      "answer": "đáp án đúng — nếu có nhiều đáp án chấp nhận được, cách nhau bằng | (ví dụ: táo|quả táo)"
+    }
   ],
   "mcqs": [
     { "id": "string duy nhất, vd q1", "question": "câu hỏi trắc nghiệm", "options": ["A", "B", "C", "D"], "correct_answer": "giá trị trùng khớp một trong các options" }
@@ -43,6 +48,13 @@ QUY TẮC BẮT BUỘC:
 5. Với "match_up", trường "id" của cặp term/definition tương ứng PHẢI GIỐNG NHAU giữa object term và ý nghĩa của nó (dùng để chấm điểm ghép cặp).
 6. Ngôn ngữ nghĩa/định nghĩa dùng tiếng Việt, câu ví dụ/câu hỏi dùng tiếng Anh trừ khi được yêu cầu khác.
 7. Không thêm trường nào ngoài cấu trúc đã mô tả.
+8. Với "fill_in_blanks": mỗi câu hỏi phải tương ứng với 1 từ LẤY TRỰC TIẾP từ danh sách vocab của buổi học
+   (dùng chung nguồn từ vựng với Bài 2 - Match-up), KHÔNG được tự sáng tác câu mới hoặc từ mới.
+   - Ngẫu nhiên chọn "direction" cho mỗi câu: "en_to_vi" (cho từ tiếng Anh, hỏi nghĩa tiếng Việt)
+     hoặc "vi_to_en" (cho nghĩa tiếng Việt, hỏi từ tiếng Anh).
+   - Nếu 1 từ có nhiều nghĩa/cách viết tiếng Việt được chấp nhận, liệt kê TẤT CẢ trong "answer",
+     cách nhau bằng dấu | (ví dụ: "book" → "sách|quyển sách|đặt trước|đặt chỗ").
+   - Không lặp lại cùng 1 từ vựng quá 1 lần trong cùng bài 3 của 1 buổi học.
 `.trim();
 
 /**

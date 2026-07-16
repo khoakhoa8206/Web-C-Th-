@@ -196,14 +196,10 @@ const publishSession = asyncHandler(async (req, res) => {
   }
 
   const { deadline } = req.body || {};
-<<<<<<< HEAD
 
   // Bước 1: publish (chỉ status + published_at, không kèm deadline tránh lỗi cột chưa migrate)
-=======
   const updatePayload = { status: 'PUBLISHED', published_at: new Date().toISOString() };
-  if (deadline) updatePayload.deadline = deadline;
 
->>>>>>> ba91b85d19556c31910e5e5e97a98784da2536c9
   const { data: updated, error: updateError } = await supabase
     .from('sessions')
     .update(updatePayload)

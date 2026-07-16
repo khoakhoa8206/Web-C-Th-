@@ -1,7 +1,9 @@
-import React, { Suspense, lazy } from "react";
+import React, { Suspense, lazy, useCallback, useEffect, useRef, useState } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleSelectPage from "./pages/RoleSelectPage";
+import SplashScreen from "./pages/SplashScreen";
+import { checkServerHealth } from "./lib/apiClient";
 
 // Tải theo route (code-splitting) — Student View và Teacher View không cần
 // tải chung 1 bundle, giúp trang chọn vai trò ban đầu load nhanh hơn.
@@ -10,6 +12,7 @@ const GradeSelectPage = lazy(() => import("./pages/GradeSelectPage"));
 const SessionListPage = lazy(() => import("./pages/SessionListPage"));
 const PracticeSessionPage = lazy(() => import("./pages/PracticeSessionPage"));
 const TeacherApp = lazy(() => import("./pages/TeacherApp"));
+const LeaderboardPage = lazy(() => import("./pages/LeaderboardPage"));
 
 function RouteFallback() {
   return (
@@ -30,6 +33,39 @@ function RouteFallback() {
  *   /teacher/*                              → Master Dashboard giáo viên
  */
 export default function App() {
+  const [serverReady, setServerReady] = useState(false);
+  const [serverError, setServerError] = useState(false);
+  const pollRef = useRef(null);
+
+  const startPolling = useCallback(() => {
+    setServerError(false);
+    let attempts = 0;
+    const MAX = 20;
+    const poll = async () => {
+      const ok = await checkServerHealth();
+      if (ok) {
+        setServerReady(true);
+        return;
+      }
+      attempts++;
+      if (attempts >= MAX) {
+        setServerError(true);
+        return;
+      }
+      pollRef.current = setTimeout(poll, 3000);
+    };
+    poll();
+  }, []);
+
+  useEffect(() => {
+    startPolling();
+    return () => clearTimeout(pollRef.current);
+  }, [startPolling]);
+
+  if (!serverReady) {
+    return <SplashScreen hasError={serverError} onRetry={startPolling} />;
+  }
+
   return (
     <BrowserRouter>
       <Suspense fallback={<RouteFallback />}>
@@ -70,6 +106,9 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+
+          {/* ---------------- Bảng xếp hạng (public, không cần đăng nhập) ---------------- */}
+          <Route path="/leaderboard" element={<LeaderboardPage />} />
 
           {/* ---------------- Teacher View ---------------- */}
           <Route path="/teacher/*" element={<TeacherApp />} />
