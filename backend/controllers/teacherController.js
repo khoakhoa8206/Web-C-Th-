@@ -195,6 +195,9 @@ const publishSession = asyncHandler(async (req, res) => {
     });
   }
 
+  const { deadline } = req.body || {};
+
+  // Bước 1: publish (chỉ status + published_at, không kèm deadline tránh lỗi cột chưa migrate)
   const { data: updated, error: updateError } = await supabase
     .from('sessions')
     .update({ status: 'PUBLISHED', published_at: new Date().toISOString() })
@@ -206,10 +209,30 @@ const publishSession = asyncHandler(async (req, res) => {
     throw new ApiError(500, `Lỗi khi giao bài (publish session): ${updateError.message}`);
   }
 
+  // Bước 2: nếu có deadline, thử set riêng — nếu cột chưa migrate thì bỏ qua, không fail toàn request
+  let deadlineSet = null;
+  if (deadline) {
+    const { error: deadlineError } = await supabase
+      .from('sessions')
+      .update({ deadline })
+      .eq('id', session_id);
+
+    if (!deadlineError) {
+      deadlineSet = deadline;
+    } else {
+      console.warn('[publishSession] Không thể set deadline (cột chưa tồn tại?):', deadlineError.message);
+    }
+  }
+
   return res.status(200).json({
     success: true,
     message: 'Đã giao bài tập cho học sinh thành công.',
-    data: { session_id: updated.id, status: updated.status, published_at: updated.published_at },
+    data: {
+      session_id: updated.id,
+      status: updated.status,
+      published_at: updated.published_at,
+      deadline: deadlineSet,
+    },
   });
 });
 

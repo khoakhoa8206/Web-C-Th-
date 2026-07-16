@@ -15,10 +15,10 @@ function formatTime(totalSeconds) {
 /**
  * ResultScreen — hiển thị sau khi nộp Bài 4.
  *
- * ĐẠT (>=80%): ăn mừng "HOÀN THÀNH", câu đúng tô xanh, câu sai tô đỏ
- *              KÈM đáp án đúng để học sinh đối chiếu.
- * CHƯA ĐẠT (<80%): nút "LÀM LẠI", CHỈ đánh dấu đỏ ở câu sai — KHÔNG lộ
- *                   đáp án đúng, buộc học sinh tự tìm lại kiến thức.
+ * ĐẠT (>=80%): ăn mừng "HOÀN THÀNH", hiển thị chi tiết từng câu đúng/sai
+ *              kèm đáp án đúng để học sinh đối chiếu.
+ * CHƯA ĐẠT (<80%): chỉ hiển thị điểm tổng + nút "LÀM LẠI".
+ *                   KHÔNG lộ bất kỳ chi tiết câu nào (đồng bộ backend trả mảng rỗng).
  */
 export default function ResultScreen({ result, pendingSyncNotice, timerSeconds, onRetry, onExit }) {
   const { score, passed, correctCount, total, gradedAnswers, questionsRef } = result;
@@ -34,7 +34,7 @@ export default function ResultScreen({ result, pendingSyncNotice, timerSeconds, 
           <p className="text-slate/60 text-sm mb-4">
             {passed
               ? "Tuyệt vời! Bạn đã nắm vững từ vựng buổi học này."
-              : "Cố lên! Xem lại các câu sai và thử làm lại nhé."}
+              : "Cố lên! Ôn lại từ vựng và thử làm lại để đạt từ 80% trở lên."}
           </p>
 
           <div className="flex items-center justify-center gap-6 mb-4">
@@ -63,41 +63,48 @@ export default function ResultScreen({ result, pendingSyncNotice, timerSeconds, 
           )}
         </CardContainer>
 
-        {/* Chi tiết bài làm */}
-        <CardContainer>
-          <h2 className="font-bold text-slate mb-4">Chi tiết bài làm</h2>
-          <div className="space-y-3">
-            {gradedAnswers.map((a, idx) => (
-              <div
-                key={a.questionId}
-                className={[
-                  "rounded-xl p-3 border",
-                  a.isCorrect
-                    ? "bg-success-bg border-success/30"
-                    : "bg-danger-bg border-danger/30",
-                ].join(" ")}
-              >
-                <p className="text-sm font-semibold text-slate mb-1">Câu {idx + 1}</p>
-                <p
-                  className={`text-sm ${
-                    a.isCorrect ? "text-success-text" : "text-danger-text"
-                  }`}
+        {/* Chi tiết bài làm — chỉ hiện khi đạt */}
+        {passed && gradedAnswers && gradedAnswers.length > 0 && (
+          <CardContainer>
+            <h2 className="font-bold text-slate mb-4">Chi tiết bài làm</h2>
+            <div className="space-y-3">
+              {gradedAnswers.map((a, idx) => (
+                <div
+                  key={a.questionId}
+                  className={[
+                    "rounded-xl p-3 border",
+                    a.isCorrect
+                      ? "bg-success-bg border-success/30"
+                      : "bg-danger-bg border-danger/30",
+                  ].join(" ")}
                 >
-                  {a.isCorrect ? "✓ Chính xác" : "✗ Chưa đúng"}
-                  {a.selectedIndex >= 0 &&
-                    ` — Bạn chọn: ${OPTION_LABELS[a.selectedIndex]}`}
-                </p>
-
-                {/* Chỉ lộ đáp án đúng khi học sinh ĐÃ ĐẠT bài này */}
-                {passed && !a.isCorrect && (
-                  <p className="text-sm text-success-text mt-1">
-                    Đáp án đúng: {OPTION_LABELS[a.correctIndex]}
+                  <p className="text-sm font-semibold text-slate mb-1">Câu {idx + 1}</p>
+                  <p
+                    className={`text-sm ${
+                      a.isCorrect ? "text-success-text" : "text-danger-text"
+                    }`}
+                  >
+                    {a.isCorrect ? "✓ Chính xác" : "✗ Chưa đúng"}
+                    {a.selectedIndex >= 0 &&
+                      ` — Bạn chọn: ${OPTION_LABELS[a.selectedIndex]}`}
                   </p>
-                )}
-              </div>
-            ))}
-          </div>
-        </CardContainer>
+
+                  {!a.isCorrect && (
+                    <p className="text-sm text-success-text mt-1">
+                      Đáp án đúng: {a.correctAnswer || (a.correctIndex >= 0 ? OPTION_LABELS[a.correctIndex] : "")}
+                    </p>
+                  )}
+                </div>
+              ))}
+            </div>
+          </CardContainer>
+        )}
+
+        {!passed && (
+          <p className="text-sm text-slate/60 text-center">
+            Bạn cần đạt từ 80% trở lên để xem chi tiết đáp án. Hãy làm lại nhé!
+          </p>
+        )}
 
         <div className="flex gap-3">
           <Link to="/student" onClick={onExit} className="flex-1">

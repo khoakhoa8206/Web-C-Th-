@@ -11,10 +11,10 @@ export async function fetchClasses() {
 }
 
 /** Tạo mới một khối lớp. */
-export async function createClass({ name, teacher_name }) {
+export async function createClass({ name }) {
   const json = await teacherFetch('/api/teacher/classes', {
     method: 'POST',
-    body: JSON.stringify({ name, teacher_name }),
+    body: JSON.stringify({ name }),
   });
   return json.data;
 }
@@ -29,5 +29,23 @@ export async function fetchSessionsForClass(classId) {
     title: s.title,
     status: s.status,
     published_at: s.published_at,
+    deadline: s.deadline || null,
   }));
+}
+
+/** Sửa tên / deadline của session. */
+export async function updateSession(id, patch) {
+  const json = await teacherFetch(`/api/teacher/sessions/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify(patch),
+  });
+  return json.data;
+}
+
+/** Xoá session (cascade xoá exercises + attempts). */
+export async function deleteSession(id) {
+  const json = await teacherFetch(`/api/teacher/sessions/${id}`, {
+    method: 'DELETE',
+  });
+  return json;
 }

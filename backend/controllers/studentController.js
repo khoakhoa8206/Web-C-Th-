@@ -14,10 +14,10 @@ const getStudentSessions = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Token không chứa class_id hợp lệ.');
   }
 
+  // Mục 9: Lấy toàn bộ session PUBLISHED của mọi lớp, join tên lớp
   const { data: sessions, error } = await supabase
     .from('sessions')
-    .select('id, title, status, published_at, created_at, vocabulary_source')
-    .eq('class_id', class_id)
+    .select('id, title, status, published_at, created_at, class_id, deadline, classes(name)')
     .eq('status', 'PUBLISHED')
     .order('published_at', { ascending: false });
 
@@ -25,9 +25,42 @@ const getStudentSessions = asyncHandler(async (req, res) => {
     throw new ApiError(500, `Lỗi truy vấn danh sách session: ${error.message}`);
   }
 
+  // Đánh dấu session nào thuộc lớp học sinh
+  const withOwnership = (sessions || []).map((s) => ({
+    ...s,
+    class_name: s.classes?.name,
+    is_own_class: s.class_id === class_id,
+  }));
+
   return res.status(200).json({
     success: true,
-    data: { class_id, sessions: sessions || [] },
+    data: { class_id, sessions: withOwnership },
+  });
+});
+
+/**
+ * GET /api/student/sessions/:session_id/attempts
+ * Học sinh tự xem lịch sử làm bài của chính mình.
+ * Mục 7: Không trả submitted_answers nếu chưa PASSED.
+ */
+const getMyAttempts = asyncHandler(async (req, res) => {
+  const { session_id } = req.params;
+  const student_id = req.user.student_id;
+
+  const { data: attempts, error } = await supabase
+    .from('attempts')
+    .select('id, attempt_number, status, score, correct_count, total_questions, duration_seconds, created_at, submitted_at')
+    .eq('session_id', session_id)
+    .eq('student_id', student_id)
+    .order('created_at', { ascending: true });
+
+  if (error) {
+    throw new ApiError(500, `Lỗi truy vấn lịch sử làm bài: ${error.message}`);
+  }
+
+  return res.status(200).json({
+    success: true,
+    data: attempts || [],
   });
 });
 
@@ -84,4 +117,4 @@ const getSessionExercises = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { getStudentSessions, getSessionExercises };
+module.exports = { getStudentSessions, getSessionExercises, getMyAttempts };

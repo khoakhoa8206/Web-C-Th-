@@ -21,6 +21,7 @@ export default function AIGeneratorDashboard() {
   const [isSaving, setIsSaving] = useState(null); // null | "DRAFT" | "PUBLISHED"
   const [savedStatus, setSavedStatus] = useState(null);
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
+  const [publishDeadline, setPublishDeadline] = useState("");
 
   useEffect(() => {
     fetchClasses()
@@ -60,7 +61,8 @@ export default function AIGeneratorDashboard() {
     setIsSaving(status);
     setSavedStatus(null);
     try {
-      await saveLesson(sessionId, lessonData, status);
+      const deadlineISO = publishDeadline ? new Date(publishDeadline).toISOString() : null;
+      await saveLesson(sessionId, lessonData, status, deadlineISO);
       setSavedStatus(status);
     } catch (err) {
       setError(err.message || "Không thể lưu bài học.");
@@ -100,6 +102,8 @@ export default function AIGeneratorDashboard() {
           onPublish={() => handleSave("PUBLISHED")}
           isSaving={isSaving}
           savedStatus={savedStatus}
+          publishDeadline={publishDeadline}
+          onDeadlineChange={setPublishDeadline}
         />
       )}
 

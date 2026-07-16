@@ -15,6 +15,8 @@ const {
   updateStudentRecord,
   deleteStudentRecord,
   getSessions,
+  updateSession,
+  deleteSession,
   getAttempts,
 } = require('../controllers/teacherManageController');
 
@@ -47,6 +49,12 @@ router.post('/classes', createClass);
 // --- Sessions ---
 // GET /api/teacher/sessions?class_id=...
 router.get('/sessions', getSessions);
+
+// PUT /api/teacher/sessions/:id
+router.put('/sessions/:id', updateSession);
+
+// DELETE /api/teacher/sessions/:id
+router.delete('/sessions/:id', deleteSession);
 
 // --- Student CRUD ---
 // GET /api/teacher/students?class_id=...

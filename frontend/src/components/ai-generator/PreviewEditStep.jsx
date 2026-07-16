@@ -24,6 +24,8 @@ export default function PreviewEditStep({
   onPublish,
   isSaving,
   savedStatus,
+  publishDeadline = "",
+  onDeadlineChange,
 }) {
   const [activeTab, setActiveTab] = useState("flashcards");
 
@@ -71,6 +73,26 @@ export default function PreviewEditStep({
             ? "✓ Đã giao bài tập cho học sinh!"
             : "✓ Đã lưu bản nháp."}
         </p>
+      )}
+
+      {/* Input deadline tuỳ chọn */}
+      {onDeadlineChange && (
+        <CardContainer className="mb-4">
+          <div className="flex flex-col gap-1.5">
+            <label className="text-sm font-semibold text-slate">
+              🗓 Hạn nộp bài (tuỳ chọn)
+            </label>
+            <input
+              type="datetime-local"
+              className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-slate text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none"
+              value={publishDeadline}
+              onChange={(e) => onDeadlineChange(e.target.value)}
+            />
+            <p className="text-xs text-slate/40">
+              Nếu để trống, học sinh có thể làm bài không giới hạn thời gian. Có thể đặt deadline sau ở tab "Quản lý bài tập".
+            </p>
+          </div>
+        </CardContainer>
       )}
 
       <div className="flex gap-3">

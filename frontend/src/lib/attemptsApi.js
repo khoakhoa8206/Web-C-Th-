@@ -15,8 +15,9 @@ export async function fetchAttemptsForSession(sessionId) {
     attempt_number: a.attempt_number,
     score: a.score,
     passed: a.status === 'PASSED',
+    correct_count: a.correct_count,
+    total_questions: a.total_questions,
     duration_seconds: a.duration_seconds,
-    wrong_answers: null,
     created_at: a.created_at || a.submitted_at,
   }));
 }

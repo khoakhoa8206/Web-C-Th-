@@ -27,6 +27,30 @@ export async function fetchStudentSessions() {
     sessionId: s.id,
     title: s.title,
     publishedAt: s.published_at,
+    deadline: s.deadline || null,
+    classId: s.class_id,
+    className: s.class_name || null,
+    isOwnClass: s.is_own_class ?? true,
+  }));
+}
+
+/**
+ * Lịch sử làm bài của học sinh cho 1 session.
+ * GET /api/student/sessions/:session_id/attempts
+ */
+export async function fetchMyAttemptHistory(sessionId) {
+  const json = await apiFetch(`/api/student/sessions/${sessionId}/attempts`);
+  return (json.data || []).map((a) => ({
+    id: a.id,
+    attempt_number: a.attempt_number,
+    status: a.status,
+    score: a.score,
+    correct_count: a.correct_count,
+    total_questions: a.total_questions,
+    duration_seconds: a.duration_seconds,
+    passed: a.status === 'PASSED',
+    created_at: a.created_at,
+    submitted_at: a.submitted_at,
   }));
 }
 

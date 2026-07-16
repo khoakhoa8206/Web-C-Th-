@@ -50,9 +50,10 @@ export async function updateExercises(sessionId, exercisesData, sessionTitle) {
  * Giao bài cho học sinh (chuyển session sang PUBLISHED).
  * PUT /api/teacher/publish-session/:session_id
  */
-export async function publishSession(sessionId) {
+export async function publishSession(sessionId, deadline) {
   const json = await teacherFetch(`/api/teacher/publish-session/${sessionId}`, {
     method: 'PUT',
+    body: JSON.stringify(deadline ? { deadline } : {}),
   });
   return json.data;
 }
@@ -61,10 +62,10 @@ export async function publishSession(sessionId) {
  * Backward compat — saveLesson dùng trong AIGeneratorDashboard.
  * Map sang update + optional publish.
  */
-export async function saveLesson(sessionId, lessonData, status) {
+export async function saveLesson(sessionId, lessonData, status, deadline) {
   await updateExercises(sessionId, lessonData);
   if (status === 'PUBLISHED') {
-    await publishSession(sessionId);
+    await publishSession(sessionId, deadline || null);
   }
   return { session_id: sessionId, status };
 }

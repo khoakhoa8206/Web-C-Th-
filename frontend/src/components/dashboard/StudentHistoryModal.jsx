@@ -74,22 +74,9 @@ export default function StudentHistoryModal({ student, sessionId, onClose }) {
                 {formatDateTime(attempt.created_at)}
               </p>
 
-              {attempt.wrong_answers?.length > 0 ? (
-                <div className="bg-danger-bg rounded-xl p-3">
-                  <p className="text-xs font-bold text-danger-text mb-1.5">
-                    Từ vựng trả lời sai ({attempt.wrong_answers.length}):
-                  </p>
-                  <ul className="space-y-1">
-                    {attempt.wrong_answers.map((w, i) => (
-                      <li key={i} className="text-xs text-danger-text">
-                        <span className="font-semibold">{w.word}</span> — đáp án đúng: {w.correctAnswer}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <p className="text-xs text-success-text bg-success-bg rounded-xl px-3 py-2 inline-block">
-                  Không có câu sai 🎉
+              {attempt.correct_count != null && attempt.total_questions != null && (
+                <p className={`text-sm font-bold ${attempt.passed ? "text-success-text" : "text-danger-text"}`}>
+                  {attempt.correct_count}/{attempt.total_questions} câu đúng
                 </p>
               )}
             </li>
