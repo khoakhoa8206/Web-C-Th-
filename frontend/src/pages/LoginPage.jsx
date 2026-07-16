@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { Button, InputField, CardContainer } from "../components/ui";
 import { getCurrentUser } from "../lib/auth";
@@ -26,7 +26,8 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-pink-50 flex items-center justify-center p-6">
       <CardContainer className="w-full max-w-sm" tone="white">
-        <div className="text-center mb-6">
+        <Link to="/" className="text-xs text-slate/40 hover:text-pink-600">← Trang chủ</Link>
+        <div className="text-center mb-6 mt-2">
           <div className="mx-auto h-14 w-14 rounded-2xl bg-pink-100 flex items-center justify-center text-2xl mb-3">
             📖
           </div>
@@ -42,6 +43,8 @@ export default function LoginPage() {
             onChange={(e) => setFullName(e.target.value)}
             error={touched && !fullName.trim() ? "Vui lòng nhập họ và tên." : error}
             autoFocus
+            autoComplete="off"
+            name="student-fullname-no-autofill"
           />
           <Button type="submit" variant="primary" fullWidth isLoading={isLoggingIn}>
             Đăng nhập

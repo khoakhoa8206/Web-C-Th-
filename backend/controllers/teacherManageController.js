@@ -24,7 +24,7 @@ const getClasses = asyncHandler(async (req, res) => {
  * Tạo mới một khối/lớp học.
  */
 const createClass = asyncHandler(async (req, res) => {
-  const { name, teacher_name } = req.body;
+  const { name } = req.body;
 
   if (!name || typeof name !== 'string' || !name.trim()) {
     throw new ApiError(400, 'Vui lòng cung cấp tên khối lớp.');
@@ -32,7 +32,7 @@ const createClass = asyncHandler(async (req, res) => {
 
   const { data, error } = await supabase
     .from('classes')
-    .insert({ name: name.trim(), teacher_name: teacher_name?.trim() || null })
+    .insert({ name: name.trim() })
     .select()
     .single();
 
@@ -154,7 +154,7 @@ const getSessions = asyncHandler(async (req, res) => {
 
   const { data, error } = await supabase
     .from('sessions')
-    .select('id, class_id, title, status, published_at, created_at')
+    .select('id, class_id, title, status, published_at, created_at, deadline')
     .eq('class_id', class_id)
     .order('created_at', { ascending: false });
 
@@ -163,6 +163,65 @@ const getSessions = asyncHandler(async (req, res) => {
   }
 
   return res.status(200).json({ success: true, data: data || [] });
+});
+
+/**
+ * PUT /api/teacher/sessions/:id
+ * Body: { title?, deadline? }
+ */
+const updateSession = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const patch = {};
+
+  if (req.body.title !== undefined) patch.title = req.body.title.trim();
+  if (req.body.deadline !== undefined) patch.deadline = req.body.deadline || null;
+
+  if (Object.keys(patch).length === 0) {
+    throw new ApiError(400, 'Vui lòng cung cấp ít nhất một trường để cập nhật (title hoặc deadline).');
+  }
+
+  patch.updated_at = new Date().toISOString();
+
+  const { data: existing } = await supabase
+    .from('sessions')
+    .select('id')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (!existing) {
+    throw new ApiError(404, 'Không tìm thấy session.');
+  }
+
+  const { data, error } = await supabase
+    .from('sessions')
+    .update(patch)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new ApiError(500, `Lỗi khi cập nhật session: ${error.message}`);
+  }
+
+  return res.status(200).json({ success: true, data });
+});
+
+/**
+ * DELETE /api/teacher/sessions/:id
+ */
+const deleteSession = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const { error } = await supabase
+    .from('sessions')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    throw new ApiError(500, `Lỗi khi xoá session: ${error.message}`);
+  }
+
+  return res.status(200).json({ success: true, message: 'Đã xoá session.' });
 });
 
 /**
@@ -197,5 +256,7 @@ module.exports = {
   updateStudentRecord,
   deleteStudentRecord,
   getSessions,
+  updateSession,
+  deleteSession,
   getAttempts,
 };

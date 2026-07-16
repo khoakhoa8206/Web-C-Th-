@@ -2,24 +2,99 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { fetchGradeSessions } from "../lib/studentPracticeApi";
 import { CardContainer, Button } from "../components/ui";
+import MyHistoryModal from "../components/practice/MyHistoryModal";
 
 /**
- * SessionListPage — danh sách buổi học PUBLISHED của lớp học sinh.
- * Không cần gradeId từ URL nữa vì server tự lọc theo class_id trong JWT.
+ * SessionListPage — danh sách buổi học PUBLISHED của mọi lớp.
+ * Mục 9: Học sinh thấy bài tập của lớp khác nhưng không mở được.
+ * Mục 7: Nút Vào làm / Xem lại theo deadline. Nút 🕘 xem lịch sử.
+ * Mục 4: Badge đỏ nếu quá hạn + chưa đạt (chưa có thông tin attempt ở đây — để giai đoạn sau).
  */
 export default function SessionListPage() {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState(null);
+  const [historyModal, setHistoryModal] = useState(null); // { sessionId, sessionTitle }
 
   useEffect(() => {
     let cancelled = false;
     fetchGradeSessions().then((data) => {
       if (!cancelled) setSessions(data);
     });
-    return () => {
-      cancelled = true;
-    };
+    return () => { cancelled = true; };
   }, []);
+
+  // Nhóm sessions: lớp mình trước, lớp khác sau
+  const ownSessions = sessions?.filter((s) => s.isOwnClass) ?? [];
+  const otherSessions = sessions?.filter((s) => !s.isOwnClass) ?? [];
+
+  const isPastDeadline = (s) => s.deadline && new Date(s.deadline) < new Date();
+
+  const renderCard = (s) => {
+    const locked = !s.isOwnClass;
+    const past = isPastDeadline(s);
+
+    return (
+      <CardContainer
+        key={s.sessionId}
+        hoverable={!locked}
+        className={`flex items-center justify-between gap-3 ${locked ? "opacity-60" : ""}`}
+      >
+        <div className="flex-1 min-w-0">
+          <p className="font-bold text-slate truncate">{s.title}</p>
+          <div className="flex items-center gap-2 flex-wrap mt-0.5">
+            {s.className && (
+              <span className="text-xs text-slate/40">{s.className}</span>
+            )}
+            {s.publishedAt && (
+              <span className="text-xs text-slate/40">
+                · Giao {new Date(s.publishedAt).toLocaleDateString("vi-VN")}
+              </span>
+            )}
+            {s.deadline && (
+              <span className={`text-xs font-semibold ${past ? "text-danger-text" : "text-warning-text"}`}>
+                · Hạn: {new Date(s.deadline).toLocaleString("vi-VN", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" })}
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Nút lịch sử (chỉ lớp mình) */}
+          {!locked && (
+            <button
+              className="text-slate/40 hover:text-pink-600 text-lg"
+              title="Lịch sử làm bài"
+              onClick={() => setHistoryModal({ sessionId: s.sessionId, sessionTitle: s.title })}
+            >
+              🕘
+            </button>
+          )}
+
+          {locked ? (
+            <Button variant="ghost" size="sm" disabled>
+              🔒 Không phải lớp của bạn
+            </Button>
+          ) : past ? (
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setHistoryModal({ sessionId: s.sessionId, sessionTitle: s.title })}
+            >
+              Xem lại
+            </Button>
+          ) : (
+            <Button
+              variant="primary"
+              size="sm"
+              onClick={() => navigate(`/student/practice/${s.sessionId}`)}
+            >
+              Vào làm
+            </Button>
+          )}
+        </div>
+      </CardContainer>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-pink-50 p-6">
@@ -28,39 +103,41 @@ export default function SessionListPage() {
           <Link to="/student" className="text-pink-600 font-semibold text-sm">
             ← Quay lại
           </Link>
-          <h1 className="text-xl font-bold text-slate">
-            Danh sách buổi học
-          </h1>
+          <h1 className="text-xl font-bold text-slate">Danh sách buổi học</h1>
         </div>
 
-        <div className="space-y-3">
-          {sessions === null && (
-            <p className="text-sm text-slate/50">Đang tải danh sách buổi học...</p>
-          )}
-          {sessions?.length === 0 && (
-            <p className="text-sm text-slate/50">Chưa có buổi học nào được giao.</p>
-          )}
-          {sessions?.map((s) => (
-            <CardContainer key={s.sessionId} hoverable className="flex items-center justify-between">
-              <div>
-                <p className="font-bold text-slate">{s.title}</p>
-                {s.publishedAt && (
-                  <p className="text-xs text-slate/50">
-                    Giao ngày {new Date(s.publishedAt).toLocaleDateString("vi-VN")}
-                  </p>
-                )}
-              </div>
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => navigate(`/student/practice/${s.sessionId}`)}
-              >
-                Vào học
-              </Button>
-            </CardContainer>
-          ))}
-        </div>
+        {sessions === null && (
+          <p className="text-sm text-slate/50">Đang tải danh sách buổi học...</p>
+        )}
+
+        {sessions?.length === 0 && (
+          <p className="text-sm text-slate/50">Chưa có buổi học nào được giao.</p>
+        )}
+
+        {/* Bài tập của lớp mình */}
+        {ownSessions.length > 0 && (
+          <div className="space-y-3 mb-6">
+            <p className="text-xs font-bold text-slate/50 uppercase tracking-wide">Lớp của bạn</p>
+            {ownSessions.map(renderCard)}
+          </div>
+        )}
+
+        {/* Bài tập của lớp khác */}
+        {otherSessions.length > 0 && (
+          <div className="space-y-3">
+            <p className="text-xs font-bold text-slate/50 uppercase tracking-wide">Các lớp khác</p>
+            {otherSessions.map(renderCard)}
+          </div>
+        )}
       </div>
+
+      {/* Modal lịch sử */}
+      <MyHistoryModal
+        isOpen={!!historyModal}
+        sessionId={historyModal?.sessionId}
+        sessionTitle={historyModal?.sessionTitle}
+        onClose={() => setHistoryModal(null)}
+      />
     </div>
   );
 }

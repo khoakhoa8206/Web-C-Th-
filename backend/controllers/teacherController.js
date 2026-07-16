@@ -195,9 +195,13 @@ const publishSession = asyncHandler(async (req, res) => {
     });
   }
 
+  const { deadline } = req.body || {};
+  const updatePayload = { status: 'PUBLISHED', published_at: new Date().toISOString() };
+  if (deadline) updatePayload.deadline = deadline;
+
   const { data: updated, error: updateError } = await supabase
     .from('sessions')
-    .update({ status: 'PUBLISHED', published_at: new Date().toISOString() })
+    .update(updatePayload)
     .eq('id', session_id)
     .select()
     .single();

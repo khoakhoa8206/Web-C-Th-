@@ -6,6 +6,7 @@ import MatchUpComponent from "./MatchUpComponent";
 import FillInBlanksComponent from "./FillInBlanksComponent";
 import MCQComponent from "./MCQComponent";
 import ResultScreen from "./ResultScreen";
+import VocabReviewStep from "./VocabReviewStep";
 import { startAttempt, updateAttemptStep, submitAttempt } from "../../lib/studentPracticeApi";
 import { shuffleMcqQuestions } from "../../utils/shuffle";
 
@@ -261,30 +262,14 @@ export default function PracticeFlow({ sessionId, exercises }) {
     localStorage.removeItem(draftKey(sessionId));
   }, [sessionId]);
 
-  // ================== MÀN HÌNH: CHƯA BẮT ĐẦU ==================
+  // ================== MÀN HÌNH: CHƯA BẮT ĐẦU (Ôn từ vựng) ==================
   if (phase === "ready") {
-    const totalWords = flashcardVocab.length;
     return (
-      <div className="min-h-screen bg-pink-50 flex items-center justify-center p-6">
-        <CardContainer className="max-w-sm w-full text-center">
-          <p className="text-4xl mb-3">🌸</p>
-          <h1 className="text-lg font-bold text-slate mb-1">Sẵn sàng cho buổi học?</h1>
-          <p className="text-sm text-slate/60 mb-6">
-            {totalWords} từ vựng · 4 bài tập · không giới hạn thời gian
-          </p>
-          {stepError && (
-            <p className="text-sm text-danger-text bg-danger-bg rounded-xl px-4 py-2 mb-4">
-              {stepError}
-            </p>
-          )}
-          <Button variant="primary" fullWidth onClick={handleReady}>
-            SẴN SÀNG LÀM BÀI
-          </Button>
-          <Link to="/student" className="block text-xs text-slate/40 mt-4">
-            ← Quay về trang chủ
-          </Link>
-        </CardContainer>
-      </div>
+      <VocabReviewStep
+        vocabList={flashcardVocab}
+        onReady={handleReady}
+        stepError={stepError}
+      />
     );
   }
 

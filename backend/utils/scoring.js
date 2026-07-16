@@ -88,9 +88,9 @@ function formatResultForClient(details, passed) {
     return details; // đã có đủ student_answer + correct_answer + is_correct
   }
 
-  return details
-    .filter((d) => !d.is_correct)
-    .map(({ correct_answer, correct_answer_id, ...rest }) => rest); // ẩn đáp án đúng
+  // Chưa đạt: trả mảng rỗng — không lộ câu nào đúng/sai, không lộ đáp án đúng.
+  // Frontend chỉ hiển thị tổng điểm + nút LÀM LẠI.
+  return [];
 }
 
 module.exports = { gradeAttempt, formatResultForClient, normalize };

@@ -45,7 +45,7 @@ function DraggableWord({ id, label }) {
   );
 }
 
-function DroppableSlot({ id, label, matchedWord, isWrongFlash }) {
+function DroppableSlot({ id, label, matchedWord }) {
   const { setNodeRef, isOver } = useDroppable({ id });
 
   return (
@@ -59,7 +59,6 @@ function DroppableSlot({ id, label, matchedWord, isWrongFlash }) {
           : isOver
           ? "bg-pink-100 border-pink-400 text-pink-600"
           : "bg-surface-soft border-surface-border text-slate/50",
-        isWrongFlash ? "animate-shake-error border-danger bg-danger-bg" : "",
       ].join(" ")}
     >
       <span>{label}</span>
@@ -77,7 +76,7 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
   // Trộn thứ tự cột trái/phải một lần khi vào bài, giữ nguyên trong suốt bài này
   const [shuffledWords] = useState(() => fisherYatesShuffle(vocabList));
   const [shuffledMeanings] = useState(() => fisherYatesShuffle(vocabList));
-  const [wrongFlashId, setWrongFlashId] = useState(null);
+
 
   const matchedIds = Object.keys(matchedPairs);
   const remainingWords = shuffledWords.filter((w) => !matchedIds.includes(w.id));
@@ -101,10 +100,8 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
     if (wordId === meaningId) {
       // Đúng cặp — vocab id trùng nhau vì nghĩa thuộc về đúng từ đó
       onMatchChange({ ...matchedPairs, [wordId]: meaningId });
-    } else {
-      setWrongFlashId(meaningId);
-      setTimeout(() => setWrongFlashId(null), 400);
     }
+    // Ghép sai: không hiện phản hồi, học sinh thử lại
   };
 
   return (
@@ -130,7 +127,6 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
                 id={m.id}
                 label={m.meaning}
                 matchedWord={meaningToWordLabel[m.id]}
-                isWrongFlash={wrongFlashId === m.id}
               />
             ))}
           </div>

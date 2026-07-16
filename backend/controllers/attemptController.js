@@ -21,7 +21,7 @@ const startAttempt = asyncHandler(async (req, res) => {
 
   const { data: session, error: sessionError } = await supabase
     .from('sessions')
-    .select('id, status, class_id')
+    .select('id, status, class_id, deadline')
     .eq('id', session_id)
     .maybeSingle();
 
@@ -36,6 +36,9 @@ const startAttempt = asyncHandler(async (req, res) => {
   }
   if (session.class_id !== req.user.class_id) {
     throw new ApiError(403, 'Bạn không thuộc lớp học được giao bài tập này.');
+  }
+  if (session.deadline && new Date(session.deadline) < new Date()) {
+    throw new ApiError(403, 'Bài tập đã hết hạn nộp, không thể bắt đầu làm bài.');
   }
 
   // Đếm số lượt đã làm trước đó để xác định attempt_number kế tiếp

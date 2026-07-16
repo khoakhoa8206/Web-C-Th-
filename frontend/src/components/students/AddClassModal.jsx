@@ -6,14 +6,12 @@ import { Modal, Button, InputField } from "../ui";
  */
 export default function AddClassModal({ isOpen, onClose, onSubmit }) {
   const [name, setName] = useState("");
-  const [teacherName, setTeacherName] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (isOpen) {
       setName("");
-      setTeacherName("");
       setError("");
     }
   }, [isOpen]);
@@ -26,7 +24,7 @@ export default function AddClassModal({ isOpen, onClose, onSubmit }) {
     }
     setIsSaving(true);
     try {
-      await onSubmit({ name: name.trim(), teacher_name: teacherName.trim() });
+      await onSubmit({ name: name.trim() });
       onClose();
     } catch (err) {
       setError(err.message || "Có lỗi xảy ra, vui lòng thử lại.");
@@ -46,13 +44,6 @@ export default function AddClassModal({ isOpen, onClose, onSubmit }) {
           error={error}
           autoFocus
         />
-        <InputField
-          label="Giáo viên phụ trách (tuỳ chọn)"
-          placeholder="VD: Cô Lan"
-          value={teacherName}
-          onChange={(e) => setTeacherName(e.target.value)}
-        />
-
         <div className="flex gap-3 pt-2">
           <Button type="button" variant="ghost" fullWidth onClick={onClose}>
             Huỷ

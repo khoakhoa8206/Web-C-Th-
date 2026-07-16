@@ -5,10 +5,12 @@ import { clearTeacherToken, isTeacherAuthenticated, teacherLogin } from "../lib/
 import DashboardPage from "./DashboardPage";
 import ManageStudentsPage from "./ManageStudentsPage";
 import AIGeneratorDashboard from "./AIGeneratorDashboard";
+import ManageSessionsPage from "./ManageSessionsPage";
 
 const TABS = [
   { id: "dashboard", label: "Dashboard", icon: "📊" },
   { id: "students", label: "Quản lý học sinh", icon: "🧑‍🎓" },
+  { id: "sessions", label: "Quản lý bài tập", icon: "📝" },
   { id: "ai-generator", label: "Soạn bài bằng AI", icon: "✨" },
 ];
 
@@ -72,6 +74,7 @@ export default function TeacherApp() {
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-6">
         {activeTab === "dashboard" && <DashboardPage />}
         {activeTab === "students" && <ManageStudentsPage />}
+        {activeTab === "sessions" && <ManageSessionsPage />}
         {activeTab === "ai-generator" && <AIGeneratorDashboard />}
       </main>
     </div>
