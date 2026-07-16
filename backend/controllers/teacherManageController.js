@@ -172,6 +172,7 @@ const getSessions = asyncHandler(async (req, res) => {
 const updateSession = asyncHandler(async (req, res) => {
   const { id } = req.params;
   const patch = {};
+<<<<<<< HEAD
   const deadlineValue = req.body.deadline !== undefined ? (req.body.deadline || null) : undefined;
 
   if (req.body.title !== undefined) patch.title = req.body.title.trim();
@@ -181,6 +182,18 @@ const updateSession = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Vui lòng cung cấp ít nhất một trường để cập nhật (title hoặc deadline).');
   }
 
+=======
+
+  if (req.body.title !== undefined) patch.title = req.body.title.trim();
+  if (req.body.deadline !== undefined) patch.deadline = req.body.deadline || null;
+
+  if (Object.keys(patch).length === 0) {
+    throw new ApiError(400, 'Vui lòng cung cấp ít nhất một trường để cập nhật (title hoặc deadline).');
+  }
+
+  patch.updated_at = new Date().toISOString();
+
+>>>>>>> ba91b85d19556c31910e5e5e97a98784da2536c9
   const { data: existing } = await supabase
     .from('sessions')
     .select('id')
@@ -191,6 +204,7 @@ const updateSession = asyncHandler(async (req, res) => {
     throw new ApiError(404, 'Không tìm thấy session.');
   }
 
+<<<<<<< HEAD
   // Bước 1: update các field an toàn (title, updated_at)
   let data = existing;
   if (Object.keys(patch).length > 0) {
@@ -220,6 +234,17 @@ const updateSession = asyncHandler(async (req, res) => {
     } else {
       console.warn('[updateSession] Không thể set deadline (cột chưa tồn tại?):', deadlineError.message);
     }
+=======
+  const { data, error } = await supabase
+    .from('sessions')
+    .update(patch)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    throw new ApiError(500, `Lỗi khi cập nhật session: ${error.message}`);
+>>>>>>> ba91b85d19556c31910e5e5e97a98784da2536c9
   }
 
   return res.status(200).json({ success: true, data });
