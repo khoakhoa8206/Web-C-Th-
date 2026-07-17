@@ -24,7 +24,7 @@ function getPlaceholder(item) {
     : "Gõ nghĩa tiếng Việt...";
 }
 
-export default function FillInBlanksComponent({ items, values, onChange, onNext, onBack }) {
+export default function FillInBlanksComponent({ items, values, onChange, onNext }) {
   const isFilled = (item) => {
     const typed = values[item.id];
     return typed !== undefined && typed.trim() !== "";
@@ -61,9 +61,6 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext,
       </div>
 
       <div className="flex gap-3">
-        <Button variant="ghost" onClick={onBack}>
-          ← Quay lại
-        </Button>
         <Button variant="primary" fullWidth disabled={!allFilled} onClick={onNext}>
           {allFilled ? "Tiếp theo →" : "Điền hết để tiếp tục"}
         </Button>

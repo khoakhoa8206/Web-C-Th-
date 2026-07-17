@@ -154,7 +154,7 @@ const getSessions = asyncHandler(async (req, res) => {
 
   const { data, error } = await supabase
     .from('sessions')
-    .select('id, class_id, title, status, published_at, created_at, deadline')
+    .select('id, class_id, title, status, published_at, created_at, deadline, scheduled_publish_at')
     .eq('class_id', class_id)
     .order('created_at', { ascending: false });
 
@@ -268,6 +268,49 @@ const getAttempts = asyncHandler(async (req, res) => {
 });
 
 /**
+ * GET /api/teacher/sessions/:id/exercises
+ * Lấy nội dung bài tập (4 loại) + thông tin session của 1 session cụ thể —
+ * dùng cho màn hình "Sửa nội dung bài tập đã giao" (mục 7 trong FIX_REQUESTS).
+ */
+const getSessionExercises = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+
+  const { data: session, error: sessionError } = await supabase
+    .from('sessions')
+    .select('id, title, status, deadline')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (sessionError) {
+    throw new ApiError(500, `Lỗi truy vấn session: ${sessionError.message}`);
+  }
+  if (!session) {
+    throw new ApiError(404, 'Không tìm thấy session.');
+  }
+
+  const { data: exercise, error: exerciseError } = await supabase
+    .from('exercises')
+    .select('content')
+    .eq('session_id', id)
+    .maybeSingle();
+
+  if (exerciseError) {
+    throw new ApiError(500, `Lỗi truy vấn bài tập: ${exerciseError.message}`);
+  }
+
+  return res.status(200).json({
+    success: true,
+    data: {
+      session_id: session.id,
+      session_title: session.title,
+      status: session.status,
+      deadline: session.deadline,
+      exercises: exercise?.content || { flashcards: [], match_up: [], fill_in_blanks: [], mcqs: [] },
+    },
+  });
+});
+
+/**
  * DELETE /api/teacher/classes/:id
  * Xoá khối lớp — cascade xoá học sinh, bài tập và lịch sử làm bài (mục 7).
  */
@@ -305,6 +348,7 @@ module.exports = {
   updateStudentRecord,
   deleteStudentRecord,
   getSessions,
+  getSessionExercises,
   updateSession,
   deleteSession,
   getAttempts,

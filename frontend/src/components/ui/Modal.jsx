@@ -4,11 +4,18 @@ import React, { useEffect } from "react";
  * Modal — hộp thoại nền mờ dùng chung (lịch sử học sinh, form CRUD...).
  * Đóng bằng nút X, click ra ngoài, hoặc phím Esc.
  */
-export default function Modal({ isOpen, onClose, title, children, maxWidth = "max-w-lg" }) {
+export default function Modal({
+  isOpen,
+  onClose,
+  title,
+  children,
+  maxWidth = "max-w-lg",
+  closeOnBackdrop = true,
+}) {
   useEffect(() => {
     if (!isOpen) return undefined;
     const handleKey = (e) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape" && closeOnBackdrop) onClose();
     };
     window.addEventListener("keydown", handleKey);
     document.body.style.overflow = "hidden";
@@ -16,14 +23,14 @@ export default function Modal({ isOpen, onClose, title, children, maxWidth = "ma
       window.removeEventListener("keydown", handleKey);
       document.body.style.overflow = "";
     };
-  }, [isOpen, onClose]);
+  }, [isOpen, onClose, closeOnBackdrop]);
 
   if (!isOpen) return null;
 
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-slate/40 backdrop-blur-sm p-4 animate-fade-in-up"
-      onClick={onClose}
+      onClick={closeOnBackdrop ? onClose : undefined}
     >
       <div
         className={`w-full ${maxWidth} max-h-[85vh] overflow-y-auto rounded-3xl bg-white shadow-card-hover`}

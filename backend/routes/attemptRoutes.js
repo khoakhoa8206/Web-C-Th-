@@ -1,5 +1,6 @@
 const express = require('express');
 const { authenticate, requireRole } = require('../middlewares/authMiddleware');
+const { lazyPublishCheck } = require('../middlewares/lazyPublishCheck');
 const { startAttempt, updateStep, submitAttempt } = require('../controllers/attemptController');
 
 const router = express.Router();
@@ -8,7 +9,7 @@ const router = express.Router();
 router.use(authenticate, requireRole('student'));
 
 // POST /api/attempts/start
-router.post('/start', startAttempt);
+router.post('/start', lazyPublishCheck, startAttempt);
 
 // PUT /api/attempts/update-step
 router.put('/update-step', updateStep);

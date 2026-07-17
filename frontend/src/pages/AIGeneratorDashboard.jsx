@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import VocabInputStep from "../components/ai-generator/VocabInputStep";
 import LoadingStep from "../components/ai-generator/LoadingStep";
 import PreviewEditStep from "../components/ai-generator/PreviewEditStep";
 import AddClassModal from "../components/students/AddClassModal";
 import { fetchClasses, createClass } from "../lib/sessionsApi";
-import { generateLessonFromVocab, saveLesson } from "../lib/aiGeneratorApi";
+import { generateLessonFromVocab, updateExercises, publishSession, scheduleSession } from "../lib/aiGeneratorApi";
 
 /**
  * AIGeneratorDashboard — Tab "Soạn bài bằng AI".
@@ -22,6 +22,12 @@ export default function AIGeneratorDashboard() {
   const [savedStatus, setSavedStatus] = useState(null);
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
   const [publishDeadline, setPublishDeadline] = useState("");
+  // true nếu bước "lưu nội dung bài tập" (updateExercises) đã thành công nhưng
+  // "giao bài" (publishSession) thất bại — cho phép bấm lại chỉ để thử giao bài,
+  // tránh gọi lại updateExercises không cần thiết.
+  const [exercisesSavedPendingPublish, setExercisesSavedPendingPublish] = useState(false);
+  // Khoá đồng bộ (không phụ thuộc re-render) để chặn double-click gọi API trùng lặp.
+  const savingLockRef = useRef(false);
 
   useEffect(() => {
     fetchClasses()
@@ -55,19 +61,71 @@ export default function AIGeneratorDashboard() {
 
   const handleChangeSection = (section, items) => {
     setLessonData((prev) => ({ ...prev, [section]: items }));
+    // Nội dung vừa đổi nên nếu trước đó đang ở trạng thái "chỉ cần giao bài",
+    // phải lưu lại nội dung mới trước khi giao.
+    setExercisesSavedPendingPublish(false);
   };
 
   const handleSave = async (status) => {
+    // Chặn double-click / bấm nhiều lần
+    if (savingLockRef.current) return;
+    savingLockRef.current = true;
+
     setIsSaving(status);
     setSavedStatus(null);
+    setError("");
     try {
       const deadlineISO = publishDeadline ? new Date(publishDeadline).toISOString() : null;
-      await saveLesson(sessionId, lessonData, status, deadlineISO);
+
+      if (!(exercisesSavedPendingPublish && status === "PUBLISHED")) {
+        await updateExercises(sessionId, lessonData);
+        setExercisesSavedPendingPublish(true);
+      }
+
+      if (status === "PUBLISHED") {
+        try {
+          await publishSession(sessionId, deadlineISO);
+        } catch (publishErr) {
+          setError(
+            (publishErr.message ? `Giao bài thất bại: ${publishErr.message}. ` : "Giao bài thất bại. ") +
+              "Nội dung bài tập đã được lưu — bấm \"Giao bài tập ngay\" để thử giao lại mà không cần lưu lại nội dung."
+          );
+          return;
+        }
+      }
+
+      setExercisesSavedPendingPublish(false);
       setSavedStatus(status);
     } catch (err) {
-      setError(err.message || "Không thể lưu bài học.");
+      setError(err.message || "Không thể lưu nội dung bài tập. Vui lòng thử lại.");
     } finally {
       setIsSaving(null);
+      savingLockRef.current = false;
+    }
+  };
+
+  const handleSchedule = async (scheduledAt, deadline) => {
+    if (savingLockRef.current) return;
+    savingLockRef.current = true;
+
+    setIsSaving("SCHEDULED");
+    setSavedStatus(null);
+    setError("");
+    try {
+      // Lưu nội dung trước khi đặt lịch (nếu chưa lưu lần này)
+      if (!exercisesSavedPendingPublish) {
+        await updateExercises(sessionId, lessonData);
+        setExercisesSavedPendingPublish(true);
+      }
+      const deadlineISO = deadline ? new Date(deadline).toISOString() : null;
+      await scheduleSession(sessionId, new Date(scheduledAt).toISOString(), deadlineISO);
+      setExercisesSavedPendingPublish(false);
+      setSavedStatus("SCHEDULED");
+    } catch (err) {
+      setError(err.message || "Không thể đặt lịch hẹn giờ giao bài. Vui lòng thử lại.");
+    } finally {
+      setIsSaving(null);
+      savingLockRef.current = false;
     }
   };
 
@@ -95,16 +153,24 @@ export default function AIGeneratorDashboard() {
       {step === "loading" && <LoadingStep />}
 
       {step === "preview" && lessonData && (
-        <PreviewEditStep
-          lessonData={lessonData}
-          onChangeSection={handleChangeSection}
-          onSaveDraft={() => handleSave("DRAFT")}
-          onPublish={() => handleSave("PUBLISHED")}
-          isSaving={isSaving}
-          savedStatus={savedStatus}
-          publishDeadline={publishDeadline}
-          onDeadlineChange={setPublishDeadline}
-        />
+        <>
+          {error && (
+            <p className="text-sm text-danger-text bg-danger-bg rounded-xl px-4 py-2 mb-4 max-w-3xl mx-auto">
+              {error}
+            </p>
+          )}
+          <PreviewEditStep
+            lessonData={lessonData}
+            onChangeSection={handleChangeSection}
+            onSaveDraft={() => handleSave("DRAFT")}
+            onPublish={() => handleSave("PUBLISHED")}
+            onSchedule={handleSchedule}
+            isSaving={isSaving}
+            savedStatus={savedStatus}
+            publishDeadline={publishDeadline}
+            onDeadlineChange={setPublishDeadline}
+          />
+        </>
       )}
 
       <AddClassModal

@@ -1,5 +1,6 @@
 const express = require('express');
 const { authenticate, requireRole } = require('../middlewares/authMiddleware');
+const { lazyPublishCheck } = require('../middlewares/lazyPublishCheck');
 const { getStudentSessions, getSessionExercises, getMyAttempts, getAttemptDetail } = require('../controllers/studentController');
 
 const router = express.Router();
@@ -8,10 +9,11 @@ const router = express.Router();
 router.use(authenticate, requireRole('student'));
 
 // GET /api/student/sessions — danh sách session PUBLISHED của mọi lớp (mục 9)
-router.get('/sessions', getStudentSessions);
+// lazyPublishCheck: "vá" các session SCHEDULED đã tới giờ nhưng cron lỡ nhịp (mục 5)
+router.get('/sessions', lazyPublishCheck, getStudentSessions);
 
 // GET /api/student/sessions/:session_id/exercises — nội dung bài tập
-router.get('/sessions/:session_id/exercises', getSessionExercises);
+router.get('/sessions/:session_id/exercises', lazyPublishCheck, getSessionExercises);
 
 // GET /api/student/sessions/:session_id/attempts — lịch sử làm bài của học sinh (mục 7)
 router.get('/sessions/:session_id/attempts', getMyAttempts);

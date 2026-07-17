@@ -28,8 +28,9 @@ create table if not exists sessions (
   id uuid primary key default gen_random_uuid(),
   class_id uuid not null references classes(id) on delete cascade,
   title text not null,
-  status text not null default 'DRAFT' check (status in ('DRAFT', 'PUBLISHED')),
+  status text not null default 'DRAFT' check (status in ('DRAFT', 'SCHEDULED', 'PUBLISHED')),
   vocabulary_source text,
+  scheduled_publish_at timestamptz,
   published_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

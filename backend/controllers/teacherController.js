@@ -100,9 +100,18 @@ const generateExercises = asyncHandler(async (req, res) => {
  * PUT /api/teacher/update-exercises/:session_id
  * Body: { session_title, flashcards, match_up, fill_in_blanks, mcqs }
  *
- * Cho phép giáo viên chỉnh sửa trực tiếp nội dung bài tập trước khi giao bài.
- * Yêu cầu: session phải đang ở trạng thái DRAFT (đã publish thì không nên sửa ngầm,
- * tránh học sinh đang làm bài với dữ liệu cũ bị lệch).
+ * Cho phép giáo viên chỉnh sửa trực tiếp nội dung bài tập, kể cả khi session
+ * đã PUBLISHED (đã giao cho học sinh) — ví dụ sửa từ sai, thêm từ mới, sửa câu hỏi...
+ *
+ * Lưu ý an toàn dữ liệu học sinh:
+ * - Học sinh ĐÃ NỘP BÀI (attempt không còn IN_PROGRESS): điểm số được chấm và
+ *   lưu cố định tại thời điểm nộp bài (xem submitAttempt/scoring.js), nên sửa
+ *   exercises sau đó KHÔNG ảnh hưởng ngược tới điểm đã có.
+ * - Học sinh ĐANG LÀM DỞ (attempt IN_PROGRESS): lần nộp bài tiếp theo của họ sẽ
+ *   được chấm theo nội dung MỚI nhất (gradeAttempt duyệt theo exercises.content
+ *   hiện tại, không dùng ID nào không còn tồn tại nên không bị crash — xem
+ *   utils/scoring.js), nhưng có thể lệch với câu họ đã thấy lúc làm bài.
+ *   Giáo viên nên hạn chế sửa bài khi có học sinh đang làm dở.
  */
 const updateExercises = asyncHandler(async (req, res) => {
   const { session_id } = req.params;
@@ -115,16 +124,11 @@ const updateExercises = asyncHandler(async (req, res) => {
     .maybeSingle();
 
   if (sessionFetchError) {
+    console.error('[updateExercises] Lỗi truy vấn session:', session_id, sessionFetchError);
     throw new ApiError(500, `Lỗi truy vấn session: ${sessionFetchError.message}`);
   }
   if (!session) {
     throw new ApiError(404, 'Không tìm thấy session với session_id này.');
-  }
-  if (session.status === 'PUBLISHED') {
-    throw new ApiError(
-      409,
-      'Session đã được giao (PUBLISHED). Không thể chỉnh sửa trực tiếp để tránh sai lệch dữ liệu với học sinh đang làm bài.'
-    );
   }
 
   // Cập nhật tiêu đề session (nếu có gửi lên)
@@ -135,6 +139,7 @@ const updateExercises = asyncHandler(async (req, res) => {
       .eq('id', session_id);
 
     if (titleUpdateError) {
+      console.error('[updateExercises] Lỗi cập nhật tiêu đề session:', session_id, titleUpdateError);
       throw new ApiError(500, `Lỗi khi cập nhật tiêu đề session: ${titleUpdateError.message}`);
     }
   }
@@ -154,15 +159,20 @@ const updateExercises = asyncHandler(async (req, res) => {
     .single();
 
   if (exerciseUpdateError) {
+    console.error('[updateExercises] Lỗi cập nhật exercises:', session_id, exerciseUpdateError);
     throw new ApiError(500, `Lỗi khi cập nhật bài tập: ${exerciseUpdateError.message}`);
   }
 
   return res.status(200).json({
     success: true,
-    message: 'Cập nhật bài tập thành công.',
+    message:
+      session.status === 'PUBLISHED'
+        ? 'Cập nhật bài tập thành công. Bài đã giao cho học sinh — thay đổi sẽ áp dụng cho học sinh chưa nộp bài.'
+        : 'Cập nhật bài tập thành công.',
     data: {
       session_id,
       session_title: session_title || undefined,
+      session_status: session.status,
       exercises: updatedExercise.content,
     },
   });
@@ -182,6 +192,7 @@ const publishSession = asyncHandler(async (req, res) => {
     .maybeSingle();
 
   if (fetchError) {
+    console.error('[publishSession] Lỗi truy vấn session:', session_id, fetchError);
     throw new ApiError(500, `Lỗi truy vấn session: ${fetchError.message}`);
   }
   if (!session) {
@@ -208,6 +219,7 @@ const publishSession = asyncHandler(async (req, res) => {
     .single();
 
   if (updateError) {
+    console.error('[publishSession] Lỗi khi giao bài:', session_id, updateError);
     throw new ApiError(500, `Lỗi khi giao bài (publish session): ${updateError.message}`);
   }
 
@@ -238,4 +250,121 @@ const publishSession = asyncHandler(async (req, res) => {
   });
 });
 
-module.exports = { generateExercises, updateExercises, publishSession };
+/**
+ * PUT /api/teacher/schedule-session/:session_id
+ * Body: { scheduled_publish_at, deadline? }
+ *
+ * Hẹn giờ tự động giao bài (mục 5): chuyển session sang status = 'SCHEDULED',
+ * lưu `scheduled_publish_at`. Cron job + lazy-check (xem utils/scheduledPublish.js)
+ * sẽ tự động chuyển sang PUBLISHED đúng lúc tới giờ.
+ */
+const scheduleSession = asyncHandler(async (req, res) => {
+  const { session_id } = req.params;
+  const { scheduled_publish_at, deadline } = req.body || {};
+
+  if (!scheduled_publish_at) {
+    throw new ApiError(400, 'Vui lòng cung cấp scheduled_publish_at (thời điểm sẽ tự động giao bài).');
+  }
+  const scheduledDate = new Date(scheduled_publish_at);
+  if (Number.isNaN(scheduledDate.getTime())) {
+    throw new ApiError(400, 'scheduled_publish_at không hợp lệ.');
+  }
+  if (scheduledDate.getTime() <= Date.now()) {
+    throw new ApiError(400, 'Thời điểm hẹn giờ phải ở tương lai. Nếu muốn giao ngay, dùng chức năng "Giao ngay".');
+  }
+
+  const { data: session, error: fetchError } = await supabase
+    .from('sessions')
+    .select('id, status')
+    .eq('id', session_id)
+    .maybeSingle();
+
+  if (fetchError) {
+    console.error('[scheduleSession] Lỗi truy vấn session:', session_id, fetchError);
+    throw new ApiError(500, `Lỗi truy vấn session: ${fetchError.message}`);
+  }
+  if (!session) {
+    throw new ApiError(404, 'Không tìm thấy session với session_id này.');
+  }
+  if (session.status === 'PUBLISHED') {
+    throw new ApiError(409, 'Session đã được giao (PUBLISHED) từ trước, không thể hẹn giờ lại.');
+  }
+
+  const updatePayload = {
+    status: 'SCHEDULED',
+    scheduled_publish_at: scheduledDate.toISOString(),
+    updated_at: new Date().toISOString(),
+  };
+
+  const { data: updated, error: updateError } = await supabase
+    .from('sessions')
+    .update(updatePayload)
+    .eq('id', session_id)
+    .select()
+    .single();
+
+  if (updateError) {
+    console.error('[scheduleSession] Lỗi khi hẹn giờ giao bài:', session_id, updateError);
+    throw new ApiError(500, `Lỗi khi hẹn giờ giao bài: ${updateError.message}`);
+  }
+
+  if (deadline) {
+    const { error: deadlineError } = await supabase.from('sessions').update({ deadline }).eq('id', session_id);
+    if (deadlineError) {
+      console.warn('[scheduleSession] Không thể set deadline:', deadlineError.message);
+    }
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: `Đã hẹn giờ giao bài lúc ${scheduledDate.toLocaleString('vi-VN')}.`,
+    data: {
+      session_id: updated.id,
+      status: updated.status,
+      scheduled_publish_at: updated.scheduled_publish_at,
+    },
+  });
+});
+
+/**
+ * PUT /api/teacher/cancel-schedule/:session_id
+ * Huỷ lịch hẹn giờ giao bài, đưa session về lại DRAFT.
+ */
+const cancelSchedule = asyncHandler(async (req, res) => {
+  const { session_id } = req.params;
+
+  const { data: session, error: fetchError } = await supabase
+    .from('sessions')
+    .select('id, status')
+    .eq('id', session_id)
+    .maybeSingle();
+
+  if (fetchError) {
+    throw new ApiError(500, `Lỗi truy vấn session: ${fetchError.message}`);
+  }
+  if (!session) {
+    throw new ApiError(404, 'Không tìm thấy session với session_id này.');
+  }
+  if (session.status !== 'SCHEDULED') {
+    throw new ApiError(409, 'Session này hiện không ở trạng thái hẹn giờ (SCHEDULED).');
+  }
+
+  const { data: updated, error: updateError } = await supabase
+    .from('sessions')
+    .update({ status: 'DRAFT', scheduled_publish_at: null, updated_at: new Date().toISOString() })
+    .eq('id', session_id)
+    .select()
+    .single();
+
+  if (updateError) {
+    throw new ApiError(500, `Lỗi khi huỷ lịch hẹn giờ: ${updateError.message}`);
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: 'Đã huỷ lịch hẹn giờ giao bài, session trở về trạng thái nháp (DRAFT).',
+    data: { session_id: updated.id, status: updated.status },
+  });
+});
+
+module.exports = { generateExercises, updateExercises, publishSession, scheduleSession, cancelSchedule };

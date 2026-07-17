@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
+const cron = require('node-cron');
 
 const authRoutes = require('./routes/authRoutes');
 const teacherRoutes = require('./routes/teacherRoutes');
@@ -9,6 +10,7 @@ const attemptRoutes = require('./routes/attemptRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const leaderboardRoutes = require('./routes/leaderboardRoutes');
 const { errorHandler, notFoundHandler } = require('./middlewares/errorHandler');
+const { publishDueScheduledSessions } = require('./utils/scheduledPublish');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
@@ -64,4 +66,14 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`✅ Server đang chạy tại cổng ${PORT}`);
   console.log(`✅ CORS cho phép các origin: ${allowedOrigins.join(', ') || '(chưa cấu hình)'}`);
+});
+
+// ============ Cron: tự động giao bài đến giờ hẹn (mục 5 — SCHEDULED → PUBLISHED) ============
+// Chạy mỗi phút. Ngoài cron này, lazy-check cũng chạy ở các API học sinh hay gọi
+// (xem middlewares/lazyPublishCheck.js) để "vá" trường hợp Render free tier ngủ
+// khiến cron không kịp chạy đúng phút.
+cron.schedule('* * * * *', () => {
+  publishDueScheduledSessions().catch((err) => {
+    console.error('[cron publishDueScheduledSessions] Lỗi không mong muốn:', err);
+  });
 });

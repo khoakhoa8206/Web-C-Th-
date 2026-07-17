@@ -55,6 +55,41 @@ QUY TẮC BẮT BUỘC:
    - Nếu 1 từ có nhiều nghĩa/cách viết tiếng Việt được chấp nhận, liệt kê TẤT CẢ trong "answer",
      cách nhau bằng dấu | (ví dụ: "book" → "sách|quyển sách|đặt trước|đặt chỗ").
    - Không lặp lại cùng 1 từ vựng quá 1 lần trong cùng bài 3 của 1 buổi học.
+9. Với "mcqs" — ĐÂY LÀ BÀI KIỂM TRA CUỐI CÙNG để xác định học sinh có THỰC SỰ THUỘC từ vựng hay
+   không (không phải bài nhận biết đơn giản như flashcard/nối từ/điền từ), nên PHẢI có độ khó và
+   độ phân hoá CAO HƠN hẳn 3 bài trước:
+   - Ưu tiên câu hỏi dạng ÁP DỤNG TRONG NGỮ CẢNH: đặt từ vựng vào 1 câu tiếng Anh có chỗ trống
+     hoặc 1 tình huống cụ thể, hỏi từ nào điền vào là đúng nhất — thay vì chỉ hỏi thẳng
+     "X nghĩa là gì?".
+   - Xen kẽ NHIỀU DẠNG câu hỏi khác nhau để tránh lặp khuôn mẫu, ví dụ:
+     (a) chọn từ đúng nghĩa/đúng để điền vào chỗ trống theo ngữ cảnh câu,
+     (b) chọn từ đồng nghĩa/gần nghĩa nhất với từ vựng cho trước,
+     (c) chọn cách dùng đúng ngữ pháp/loại từ (danh từ/động từ/tính từ) của từ vựng trong câu,
+     (d) phát hiện lỗi dùng từ sai trong 1 câu cho sẵn (từ vựng bị dùng sai ngữ cảnh/sai loại từ).
+   - ĐÁP ÁN NHIỄU (distractor) — QUAN TRỌNG NHẤT để tăng độ khó:
+     * 3 đáp án sai PHẢI là các từ vựng KHÁC trong CÙNG danh sách vocab của buổi học (cùng chủ đề),
+       có nghĩa hoặc hình thức GẦN GIỐNG, DỄ GÂY NHẦM LẪN với đáp án đúng (gần nghĩa, cùng trường
+       từ vựng, khác nhau chút ít về sắc thái nghĩa, hoặc hình thức viết/phát âm gần giống nhau).
+     * TUYỆT ĐỐI KHÔNG dùng đáp án nhiễu ngẫu nhiên/không liên quan — học sinh không được phép
+       đoán mò bằng cách loại trừ các đáp án "rõ ràng sai".
+     * KHÔNG được tạo distractor bằng từ vựng NGOÀI danh sách vocab của buổi học.
+     * Đáp án đúng và 3 đáp án sai phải có ĐỘ DÀI và CẤU TRÚC CÂU CHỮ tương đương nhau — tránh để
+       đáp án đúng nổi bật hơn hẳn về độ dài, và xáo trộn ngẫu nhiên vị trí đáp án đúng (không luôn
+       để đáp án đúng ở cùng 1 vị trí A/B/C/D).
+   - ĐỘ BAO PHỦ: vẫn giữ tối thiểu số câu bằng số từ vựng (mỗi từ xuất hiện ít nhất 1 lần trong
+     "mcqs"), nhưng mỗi câu phải thực sự kiểm tra được khả năng PHÂN BIỆT từ đó với các từ dễ nhầm
+     khác trong cùng danh sách vocab của buổi học.
+
+VÍ DỤ MẪU (few-shot) cho "mcqs" — với vocab buổi học gồm "reluctant" (miễn cưỡng), "hesitant"
+(do dự), "diligent" (chăm chỉ), "punctual" (đúng giờ):
+{
+  "id": "q1",
+  "question": "She was extremely ___ to admit her mistake in front of the whole class, even though everyone already knew.",
+  "options": ["reluctant", "hesitant", "diligent", "punctual"],
+  "correct_answer": "reluctant"
+}
+(Đáp án đúng và nhiễu đều là các trạng thái/tính cách gần nghĩa dễ nhầm — không phải từ ngẫu nhiên
+không liên quan; độ dài các lựa chọn tương đương nhau.)
 `.trim();
 
 /**

@@ -138,10 +138,12 @@ export default function PracticeFlow({ sessionId, exercises }) {
   }, []);
 
   // ---- Chuyển bước: gọi updateAttemptStep trên server ----
+  // Luồng làm bài chỉ đi tới (forward-only), không cho quay lại bước trước,
+  // nên nextStep luôn > step và luôn cần đồng bộ lên server.
   const goToStep = useCallback(
     async (nextStep) => {
       setStepError(null);
-      if (nextStep > step && attemptId) {
+      if (attemptId) {
         try {
           await updateAttemptStep(attemptId, nextStep);
         } catch (err) {
@@ -151,7 +153,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
       }
       setStep(nextStep);
     },
-    [step, attemptId]
+    [attemptId]
   );
 
   // ---- Chuẩn bị MCQ khi vào bước 4 ----
@@ -337,7 +339,6 @@ export default function PracticeFlow({ sessionId, exercises }) {
             matchedPairs={answers.matchup.matchedPairs}
             onMatchChange={(pairs) => updateAnswers("matchup", { matchedPairs: pairs })}
             onNext={() => goToStep(3)}
-            onBack={() => goToStep(1)}
           />
         )}
 
@@ -347,7 +348,6 @@ export default function PracticeFlow({ sessionId, exercises }) {
             values={answers.fillblanks.values}
             onChange={(values) => updateAnswers("fillblanks", { values })}
             onNext={() => goToStep(4)}
-            onBack={() => goToStep(2)}
           />
         )}
 
@@ -364,7 +364,6 @@ export default function PracticeFlow({ sessionId, exercises }) {
             onReshuffle={handleReshuffleMcq}
             onSubmit={handleSubmitMcq}
             isSubmitting={isSubmitting}
-            onBack={() => goToStep(3)}
           />
         )}
       </div>

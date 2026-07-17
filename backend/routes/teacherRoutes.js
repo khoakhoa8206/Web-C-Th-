@@ -5,6 +5,8 @@ const {
   generateExercises,
   updateExercises,
   publishSession,
+  scheduleSession,
+  cancelSchedule,
 } = require('../controllers/teacherController');
 const { getClassDashboard } = require('../controllers/dashboardController');
 const {
@@ -15,6 +17,7 @@ const {
   updateStudentRecord,
   deleteStudentRecord,
   getSessions,
+  getSessionExercises,
   updateSession,
   deleteSession,
   getAttempts,
@@ -36,6 +39,12 @@ router.put('/update-exercises/:session_id', validateExercisesBody, updateExercis
 // PUT /api/teacher/publish-session/:session_id
 router.put('/publish-session/:session_id', publishSession);
 
+// PUT /api/teacher/schedule-session/:session_id — hẹn giờ tự động giao bài (mục 5)
+router.put('/schedule-session/:session_id', scheduleSession);
+
+// PUT /api/teacher/cancel-schedule/:session_id — huỷ lịch hẹn giờ, về lại DRAFT
+router.put('/cancel-schedule/:session_id', cancelSchedule);
+
 // --- Dashboard ---
 // GET /api/teacher/dashboard/:class_id
 router.get('/dashboard/:class_id', getClassDashboard);
@@ -53,6 +62,9 @@ router.delete('/classes/:id', deleteClass);
 // --- Sessions ---
 // GET /api/teacher/sessions?class_id=...
 router.get('/sessions', getSessions);
+
+// GET /api/teacher/sessions/:id/exercises — dùng cho màn hình sửa nội dung bài đã giao
+router.get('/sessions/:id/exercises', getSessionExercises);
 
 // PUT /api/teacher/sessions/:id
 router.put('/sessions/:id', updateSession);

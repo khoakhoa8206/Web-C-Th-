@@ -36,6 +36,7 @@ export async function fetchSessionsForClass(classId) {
     status: s.status,
     published_at: s.published_at,
     deadline: s.deadline || null,
+    scheduled_publish_at: s.scheduled_publish_at || null,
   }));
 }
 
@@ -55,6 +56,56 @@ export async function publishExistingSession(id, deadline) {
     body: JSON.stringify(deadline ? { deadline } : {}),
   });
   return json.data;
+}
+
+/** Hẹn giờ tự động giao bài vào 1 thời điểm trong tương lai. */
+export async function scheduleSessionPublish(id, scheduledPublishAt, deadline) {
+  const json = await teacherFetch(`/api/teacher/schedule-session/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      scheduled_publish_at: scheduledPublishAt,
+      ...(deadline ? { deadline } : {}),
+    }),
+  });
+  return json.data;
+}
+
+/** Huỷ lịch hẹn giờ giao bài, đưa session về lại DRAFT. */
+export async function cancelScheduledPublish(id) {
+  const json = await teacherFetch(`/api/teacher/cancel-schedule/${id}`, {
+    method: 'PUT',
+  });
+  return json.data;
+}
+
+/** Lấy nội dung bài tập (4 loại) của 1 session để sửa (kể cả session đã PUBLISHED). */
+export async function fetchSessionExercises(id) {
+  const json = await teacherFetch(`/api/teacher/sessions/${id}/exercises`);
+  const data = json.data;
+  return {
+    session_id: data.session_id,
+    session_title: data.session_title,
+    status: data.status,
+    deadline: data.deadline,
+    flashcards: data.exercises?.flashcards || [],
+    matchup: data.exercises?.match_up || [],
+    fillblanks: data.exercises?.fill_in_blanks || [],
+    mcq: data.exercises?.mcqs || [],
+  };
+}
+
+/** Lưu lại nội dung bài tập đã sửa (kể cả khi session đã PUBLISHED). */
+export async function updateSessionExercises(sessionId, lessonData) {
+  const json = await teacherFetch(`/api/teacher/update-exercises/${sessionId}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      flashcards: lessonData.flashcards || [],
+      match_up: lessonData.matchup || [],
+      fill_in_blanks: lessonData.fillblanks || [],
+      mcqs: lessonData.mcq || [],
+    }),
+  });
+  return json;
 }
 
 /** Xoá session (cascade xoá exercises + attempts). */

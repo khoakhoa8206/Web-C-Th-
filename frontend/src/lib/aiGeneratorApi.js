@@ -59,6 +59,21 @@ export async function publishSession(sessionId, deadline) {
 }
 
 /**
+ * Hẹn giờ tự động giao bài (chuyển session sang SCHEDULED).
+ * PUT /api/teacher/schedule-session/:session_id
+ */
+export async function scheduleSession(sessionId, scheduledPublishAt, deadline) {
+  const json = await teacherFetch(`/api/teacher/schedule-session/${sessionId}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+      scheduled_publish_at: scheduledPublishAt,
+      ...(deadline ? { deadline } : {}),
+    }),
+  });
+  return json.data;
+}
+
+/**
  * Backward compat — saveLesson dùng trong AIGeneratorDashboard.
  * Map sang update + optional publish.
  */

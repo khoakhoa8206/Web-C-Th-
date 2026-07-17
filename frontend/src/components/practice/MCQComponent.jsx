@@ -16,7 +16,6 @@ export default function MCQComponent({
   onReshuffle,
   onSubmit,
   isSubmitting,
-  onBack,
 }) {
   const answeredCount = Object.keys(selections).length;
   const allAnswered = answeredCount === questions.length;
@@ -76,9 +75,6 @@ export default function MCQComponent({
       </div>
 
       <div className="flex gap-3">
-        <Button variant="ghost" onClick={onBack}>
-          ← Quay lại
-        </Button>
         <Button
           variant="primary"
           fullWidth
