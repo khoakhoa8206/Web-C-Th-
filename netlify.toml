@@ -1,0 +1,54 @@
+# 🚀 Netlify Deployment Config for VocabHub
+# Deploy: Frontend (React)
+
+[build]
+  # Build directory - where the frontend code is
+  base = "frontend"
+  
+  # Build command
+  command = "npm install && npm run build"
+  
+  # Where to publish the built files from
+  publish = "dist"
+
+[build.environment]
+  # Node version
+  NODE_VERSION = "20"
+  # npm version
+  NPM_VERSION = "10"
+
+# Environment variables (set in Netlify dashboard as well)
+[build.environment]
+  VITE_API_URL = ""  # Set in Netlify Dashboard: https://your-backend-render-url.com
+
+# Redirect rules for SPA (Single Page Application)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Cache control headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Context-specific configuration
+[context.production]
+  command = "npm install && npm run build"
+
+[context.deploy-preview]
+  command = "npm install && npm run build"
+
+[context.branch-deploy]
+  command = "npm install && npm run build"
