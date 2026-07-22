@@ -1,113 +1,234 @@
 /** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: [
-    "./src/**/*.{js,jsx,ts,tsx}",
-    "./index.html",
-    "./src/**/*.{js,jsx}",
-  ],
+export default {
+  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
   theme: {
     extend: {
       colors: {
-        // Primary Pink scale
         pink: {
-          50: "#FFF0F2",   // Light Pink - nền trang, nền card nhẹ
-          100: "#FFE3E7",
-          200: "#FFD3DA",  // Soft Pink - hover, border, highlight
-          300: "#FFB6C1",
-          400: "#FF8597",  // Medium Pink - nút chính, active
-          500: "#F2617A",
-          600: "#D9465D",  // Dark Pink - text tiêu đề, icon quan trọng
-          700: "#B5344A",
-          800: "#8F2839",
-          900: "#6B1D2A",
+          light: '#FFF0F2',
+          soft: '#FFD3DA',
+          medium: '#FF8597',
+          dark: '#D9465D',
         },
-        // Trạng thái
         success: {
-          bg: "#E8F5E9",
-          DEFAULT: "#4CAF50",
-          text: "#2E7D32",
+          bg: '#E8F5E9',
+          text: '#2E7D32',
+          DEFAULT: '#4CAF50',
         },
         danger: {
-          bg: "#FFEBEE",
-          DEFAULT: "#F44336",
-          text: "#C62828",
+          bg: '#FFEBEE',
+          text: '#C62828',
+          DEFAULT: '#F44336',
         },
         warning: {
-          bg: "#FFFDE7",
-          DEFAULT: "#FBC02D",   // vàng đậm hơn 1 chút để đạt tương phản text đủ đọc
-          text: "#8A6D00",
+          bg: '#FFFDE7',
+          text: '#8A6D00',
+          DEFAULT: '#FBC02D',
         },
-        // Trung tính
         slate: {
-          DEFAULT: "#2C3E50", // Dark Slate - text chính
+          50: '#F8F9FA',
+          100: '#F0F1F3',
+          200: '#E2E5E9',
+          300: '#D4D8DE',
+          400: '#8B96A0',
+          500: '#5F6F7F',
+          600: '#475569',
+          700: '#334155',
+          800: '#1E293B',
+          900: '#0F172A',
         },
-        surface: {
-          DEFAULT: "#FFFFFF",
-          soft: "#F8F9FA",    // Cool Gray - nền phụ
-          border: "#E9ECEF",  // Cool Gray - border phụ
-        },
       },
-      fontFamily: {
-        sans: ["'Nunito'", "'Quicksand'", "ui-sans-serif", "system-ui", "sans-serif"],
+
+      backgroundColor: {
+        'surface-soft': '#F8F9FA',
+        'surface-border': '#E9ECEF',
+        'success-bg': '#E8F5E9',
+        'danger-bg': '#FFEBEE',
+        'warning-bg': '#FFFDE7',
       },
-      borderRadius: {
-        xl: "1rem",
-        "2xl": "1.25rem",
-        "3xl": "1.75rem",
+
+      borderColor: {
+        'surface-border': '#E9ECEF',
       },
+
+      textColor: {
+        'success-text': '#2E7D32',
+        'danger-text': '#C62828',
+        'warning-text': '#8A6D00',
+      },
+
       boxShadow: {
-        sm: "0 2px 8px 0 rgba(217, 70, 93, 0.06)",
-        card: "0 4px 16px 0 rgba(217, 70, 93, 0.08)",
-        "card-hover": "0 8px 24px 0 rgba(217, 70, 93, 0.14)",
-        button: "0 2px 6px 0 rgba(255, 133, 151, 0.35)",
+        // Layered shadows
+        'card': '0 1px 3px rgba(0, 0, 0, 0.05), 0 10px 15px -3px rgba(217, 70, 93, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.8)',
+        'card-hover': '0 1px 3px rgba(0, 0, 0, 0.08), 0 20px 25px -5px rgba(217, 70, 93, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.9)',
+        'card-elevated': '0 4px 6px rgba(0, 0, 0, 0.1), 0 20px 40px -5px rgba(217, 70, 93, 0.15)',
+        'button': '0 2px 6px rgba(255, 133, 151, 0.35)',
+        'button-hover': '0 6px 12px rgba(255, 133, 151, 0.45)',
+        'glass': '0 8px 32px rgba(31, 38, 135, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.3)',
       },
-      keyframes: {
-        // Lật thẻ flashcard (3D flip)
-        flipCard: {
-          "0%": { transform: "rotateY(0deg)" },
-          "100%": { transform: "rotateY(180deg)" },
-        },
-        // Hiệu ứng click nút (bấm lún nhẹ rồi nảy về)
-        buttonPress: {
-          "0%": { transform: "scale(1)" },
-          "50%": { transform: "scale(0.94)" },
-          "100%": { transform: "scale(1)" },
-        },
-        // Hiệu ứng hoàn thành bài tập (bật lên + rung nhẹ ăn mừng)
-        completePop: {
-          "0%": { transform: "scale(0.7)", opacity: "0" },
-          "60%": { transform: "scale(1.08)", opacity: "1" },
-          "80%": { transform: "scale(0.97)" },
-          "100%": { transform: "scale(1)", opacity: "1" },
-        },
-        // Rung nhẹ báo lỗi
-        shakeError: {
-          "0%, 100%": { transform: "translateX(0)" },
-          "25%": { transform: "translateX(-4px)" },
-          "75%": { transform: "translateX(4px)" },
-        },
-        // Fill progress bar mượt
-        progressGrow: {
-          "0%": { width: "0%" },
-          "100%": { width: "var(--progress-value, 0%)" },
-        },
-        fadeInUp: {
-          "0%": { opacity: "0", transform: "translateY(8px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
+
+      borderRadius: {
+        'pill': '9999px',
       },
-      animation: {
-        "flip-card": "flipCard 0.6s cubic-bezier(0.4, 0.2, 0.2, 1) forwards",
-        "button-press": "buttonPress 0.25s ease-in-out",
-        "complete-pop": "completePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards",
-        "shake-error": "shakeError 0.4s ease-in-out",
-        "progress-grow": "progressGrow 0.3s ease-out forwards",
-        "fade-in-up": "fadeInUp 0.3s ease-out forwards",
+
+      transitionDuration: {
+        'fast': '150ms',
+        'base': '300ms',
+        'slow': '500ms',
       },
+
       transitionTimingFunction: {
-        bounce: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        'bounce': 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+        'out-quad': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        'out-cubic': 'cubic-bezier(0.215, 0.61, 0.355, 1)',
+      },
+
+      animation: {
+        // Entrance animations
+        'fade-in-up': 'fadeInUp 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards',
+        'fade-in-scale': 'fadeInScale 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
+        'slide-in-left': 'slideInLeft 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) forwards',
+        
+        // Micro-interactions
+        'pop-in': 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
+        'bounce-slight': 'bounceSlightly 1s ease-in-out infinite',
+        'pulse-soft': 'pulseSoft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        
+        // Drag animations
+        'drag-glow': 'dragGlow 1.5s ease-in-out infinite',
+        
+        // Existing animations (keep for compatibility)
+        'bounce': 'bounce 1s infinite',
+        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'spin': 'spin 1s linear infinite',
+        'ping': 'ping 1s cubic-bezier(0, 0, 0.2, 1) infinite',
+      },
+
+      keyframes: {
+        // Entrance keyframes
+        fadeInUp: {
+          from: { opacity: '0', transform: 'translateY(12px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        fadeInScale: {
+          from: { opacity: '0', transform: 'scale(0.95)' },
+          to: { opacity: '1', transform: 'scale(1)' },
+        },
+        slideInLeft: {
+          from: { opacity: '0', transform: 'translateX(-16px)' },
+          to: { opacity: '1', transform: 'translateX(0)' },
+        },
+
+        // Micro-interactions
+        popIn: {
+          from: { opacity: '0', transform: 'scale(0.8)' },
+          to: { opacity: '1', transform: 'scale(1)' },
+        },
+        bounceSlightly: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-4px)' },
+        },
+        pulseSoft: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.7' },
+        },
+
+        // Drag animation
+        dragGlow: {
+          '0%, 100%': { boxShadow: '0 0 0 0 rgba(255, 133, 151, 0.4)' },
+          '50%': { boxShadow: '0 0 0 8px rgba(255, 133, 151, 0)' },
+        },
+
+        // Keep existing keyframes for compatibility
+        spin: {
+          from: { transform: 'rotate(0deg)' },
+          to: { transform: 'rotate(360deg)' },
+        },
+        ping: {
+          '75%, 100%': { transform: 'scale(2)', opacity: '0' },
+        },
+        pulse: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '.5' },
+        },
+        bounce: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-25%)' },
+        },
+      },
+
+      backgroundImage: {
+        'gradient-pink-coral': 'linear-gradient(135deg, #FF8597 0%, #FF6B7A 100%)',
+        'gradient-pink-coral-hover': 'linear-gradient(135deg, #FF9AA6 0%, #FF7B8A 100%)',
+        'gradient-success-teal': 'linear-gradient(135deg, #4CAF50 0%, #00BCD4 100%)',
+        'gradient-danger-red': 'linear-gradient(135deg, #F44336 0%, #E91E63 100%)',
+        'gradient-card-bg': 'linear-gradient(135deg, #FFF7F9 0%, #FFFAFB 100%)',
+      },
+
+      willChange: {
+        'transform': 'transform',
+        'opacity': 'opacity',
+        'auto': 'auto',
       },
     },
   },
-  plugins: [],
-};
+
+  plugins: [
+    // Custom plugin: Gradient utilities
+    function ({ addUtilities, theme }) {
+      const gradients = {
+        '.bg-gradient-primary': {
+          '@apply bg-gradient-to-r from-pink-600 to-pink-500': {},
+        },
+        '.bg-gradient-primary-hover': {
+          '@apply bg-gradient-to-r from-pink-700 to-pink-600': {},
+        },
+        '.bg-gradient-success': {
+          '@apply bg-gradient-to-r from-green-500 to-teal-500': {},
+        },
+        '.text-gradient-primary': {
+          background: 'linear-gradient(135deg, #FF8597 0%, #FF6B7A 100%)',
+          backgroundClip: 'text',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+        },
+      };
+      addUtilities(gradients);
+    },
+
+    // Custom plugin: Glass morphism
+    function ({ addUtilities }) {
+      const glassmorphism = {
+        '.glass': {
+          backdropFilter: 'blur(10px)',
+          backgroundColor: 'rgba(255, 255, 255, 0.3)',
+          borderColor: 'rgba(255, 255, 255, 0.4)',
+          '@apply border rounded-2xl': {},
+        },
+        '.glass-dark': {
+          backdropFilter: 'blur(10px)',
+          backgroundColor: 'rgba(0, 0, 0, 0.2)',
+          borderColor: 'rgba(255, 255, 255, 0.1)',
+          '@apply border rounded-2xl': {},
+        },
+      };
+      addUtilities(glassmorphism);
+    },
+
+    // Custom plugin: Smooth transitions
+    function ({ addUtilities }) {
+      const transitions = {
+        '.transition-smooth': {
+          '@apply transition-all duration-300 ease-out': {},
+        },
+        '.transition-fast': {
+          '@apply transition-all duration-150 ease-out': {},
+        },
+        '.transition-slow': {
+          '@apply transition-all duration-500 ease-out': {},
+        },
+      };
+      addUtilities(transitions);
+    },
+  ],
+}

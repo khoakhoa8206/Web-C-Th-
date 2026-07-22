@@ -44,7 +44,12 @@ function makeInitialAnswers() {
 }
 
 /**
- * PracticeFlow — luồng làm bài 4 bước.
+ * PracticeFlow v2 — luồng làm bài 4 bước.
+ *
+ * Improvements:
+ * 1. handleRetryMcqOnly(): Chỉ làm lại MCQ (step = 4), giữ answers của step 1-3
+ * 2. handleRetryFromStart(): Reset toàn bộ + step = 1
+ * 3. Truyền onRetryMcqOnly xuống ResultScreen
  *
  * Props: { sessionId, exercises }
  * exercises = { flashcards, match_up, fill_in_blanks, mcqs } từ backend.
@@ -138,8 +143,6 @@ export default function PracticeFlow({ sessionId, exercises }) {
   }, []);
 
   // ---- Chuyển bước: gọi updateAttemptStep trên server ----
-  // Luồng làm bài chỉ đi tới (forward-only), không cho quay lại bước trước,
-  // nên nextStep luôn > step và luôn cần đồng bộ lên server.
   const goToStep = useCallback(
     async (nextStep) => {
       setStepError(null);
@@ -249,9 +252,25 @@ export default function PracticeFlow({ sessionId, exercises }) {
     }
   }, [answers, attemptId, timerSeconds]);
 
-  const handleRetryFromResult = useCallback(() => {
-    // Attempt đã nộp không thể dùng lại: tạo một lượt mới từ bước 1 để
-    // tuân thủ thứ tự bước mà backend xác thực.
+  // ---- RETRY MCQ ONLY ----
+  // Chỉ xoá MCQ selections + shuffle lại, giữ answers từ step 1-3
+  // Không tạo attempt mới — dùng attempt hiện tại
+  const handleRetryMcqOnly = useCallback(() => {
+    setResult(null);
+    setPhase("playing");
+    setStep(4);
+    // Reset MCQ selections, nhưng giữ shuffledQuestions
+    updateAnswers("mcq", (prev) => ({
+      ...prev,
+      selections: {},
+    }));
+    // Bắt đầu timer lại
+    setTimerSeconds(0);
+  }, [updateAnswers]);
+
+  // ---- RETRY FROM START ----
+  // Reset toàn bộ, tạo attempt mới
+  const handleRetryFromStart = useCallback(() => {
     setAnswers(makeInitialAnswers());
     setResult(null);
     setAttemptId(null);
@@ -282,7 +301,8 @@ export default function PracticeFlow({ sessionId, exercises }) {
         result={result}
         pendingSyncNotice={pendingSyncNotice}
         timerSeconds={timerSeconds}
-        onRetry={handleRetryFromResult}
+        onRetry={handleRetryFromStart}
+        onRetryMcqOnly={handleRetryMcqOnly}
         onExit={handleExitAndClearDraft}
       />
     );

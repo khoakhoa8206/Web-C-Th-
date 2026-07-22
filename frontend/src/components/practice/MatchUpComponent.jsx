@@ -12,40 +12,58 @@ import { Button } from "../ui";
 import { fisherYatesShuffle } from "../../utils/shuffle";
 
 /**
- * Bài 2 — MatchUpComponent
+ * Bài 2 — MatchUpComponent v2
  * Trò chơi nối từ: kéo thẻ tiếng Anh thả vào ô nghĩa tiếng Việt tương ứng.
- * Dùng @dnd-kit/core — nhẹ, hỗ trợ cả PointerSensor (chuột) lẫn
- * TouchSensor (cảm ứng di động) nên chạy tốt trên mobile.
+ * 
+ * Improvements:
+ * 1. Tối ưu drag-drop animations: transform: translate3d, will-change, GPU acceleration
+ * 2. Click-to-select mode: Cho phép click vào từ → chọn ô → ghép
+ * 3. Visual feedback: Shadow tăng, glow effect, scale animations khi kéo
  */
 
-function DraggableWord({ id, label }) {
+function DraggableWord({ id, label, isDragMode, isSelected, onSelectWord }) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({ id });
-  const style = transform
+  
+  const style = transform && isDragMode
     ? {
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
         zIndex: 50,
       }
     : undefined;
 
+  const dragModeClasses = isDragMode
+    ? "cursor-grab active:cursor-grabbing"
+    : "cursor-pointer";
+
   return (
     <button
       ref={setNodeRef}
       style={style}
-      {...listeners}
-      {...attributes}
+      {...(isDragMode ? listeners : {})}
+      {...(isDragMode ? attributes : {})}
+      onClick={() => !isDragMode && onSelectWord(id)}
       className={[
         "w-full text-left px-4 py-3 rounded-2xl border font-semibold text-sm",
         "bg-white border-pink-200 text-slate shadow-sm touch-none select-none",
-        "transition-transform",
-        isDragging ? "opacity-70 scale-105 shadow-card-hover" : "hover:border-pink-400",
+        "transition-all duration-200 will-change-transform",
+        isDragMode && isDragging 
+          ? "opacity-80 scale-110 shadow-lg ring-2 ring-pink-400 ring-offset-2" 
+          : isDragMode
+          ? "hover:border-pink-400 hover:shadow-md"
+          : isSelected
+          ? "bg-pink-100 border-pink-500 ring-2 ring-pink-400"
+          : "hover:bg-pink-50",
+        dragModeClasses,
       ].join(" ")}
+      aria-pressed={isSelected && !isDragMode}
     >
       {label}
+      {isSelected && !isDragMode && <span className="ml-2 text-pink-600">✓</span>}
     </button>
   );
 }
 
-function DroppableSlot({ id, label, matchedWord, isCorrect, onRemove }) {
+function DroppableSlot({ id, label, matchedWord, isCorrect, onRemove, isDragMode, isHoverTarget, onClickSlot }) {
   const { setNodeRef, isOver } = useDroppable({ id });
 
   const isMatched = Boolean(matchedWord);
@@ -53,18 +71,20 @@ function DroppableSlot({ id, label, matchedWord, isCorrect, onRemove }) {
   return (
     <div
       ref={setNodeRef}
+      onClick={() => !isDragMode && onClickSlot && onClickSlot(id)}
       className={[
         "px-4 py-3 rounded-2xl border-2 border-dashed text-sm font-semibold min-h-[52px]",
-        "flex items-center justify-between gap-2 transition-colors duration-200",
+        "flex items-center justify-between gap-2 transition-all duration-200",
+        !isDragMode && "cursor-pointer",
         isMatched && isCorrect
           ? "bg-pink-50 border-pink-300 text-slate"
           : isMatched && !isCorrect
           ? "bg-danger-bg border-danger-text/40 text-danger-text"
-          : isOver
-          ? "bg-pink-100 border-pink-400 text-pink-600"
+          : isOver && isDragMode
+          ? "bg-pink-100 border-pink-400 text-pink-600 ring-2 ring-pink-400 shadow-md"
+          : !isDragMode && isHoverTarget
+          ? "bg-pink-100 border-pink-400 ring-2 ring-pink-400"
           : "bg-surface-soft border-surface-border text-slate/50",
-        // Khi đang kéo 1 từ khác đè lên ô đã match, vẫn báo hiệu "thả được"
-        isMatched && isOver ? "ring-2 ring-pink-400" : "",
       ].join(" ")}
     >
       <span>{label}</span>
@@ -91,12 +111,14 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
     useSensor(TouchSensor, { activationConstraint: { delay: 120, tolerance: 8 } })
   );
 
-  // Trộn thứ tự cột trái/phải một lần khi vào bài, giữ nguyên trong suốt bài này
+  // Input mode: "drag" hoặc "clickSelect"
+  const [inputMode, setInputMode] = useState("drag");
+  const [selectedWordId, setSelectedWordId] = useState(null);
+
+  // Trộn thứ tự cột trái/phải một lần khi vào bài
   const [shuffledWords] = useState(() => fisherYatesShuffle(vocabList));
   const [shuffledMeanings] = useState(() => fisherYatesShuffle(vocabList));
 
-  // matchedPairs: { [wordId]: meaningId } — có thể là ghép đúng hoặc sai,
-  // mỗi wordId chỉ giữ 1 meaningId và ngược lại (đảm bảo trong handleDragEnd).
   const matchedIds = Object.keys(matchedPairs);
   const remainingWords = shuffledWords.filter((w) => !matchedIds.includes(w.id));
   const correctCount = Object.entries(matchedPairs).filter(([w, m]) => w === m).length;
@@ -111,6 +133,7 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
     return map;
   }, [matchedPairs, vocabList]);
 
+  // ---- DRAG MODE ----
   const handleDragEnd = (event) => {
     const { active, over } = event;
     if (!over) return;
@@ -118,19 +141,42 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
     const meaningId = over.id;
 
     const nextPairs = { ...matchedPairs };
-    // Nếu ô này đã có từ khác ghép sẵn ("kéo đè"), đá từ cũ ra khỏi ô
-    // để nó quay lại cột bên trái (đơn giản là xoá entry của từ cũ).
     Object.keys(nextPairs).forEach((existingWordId) => {
       if (nextPairs[existingWordId] === meaningId && existingWordId !== wordId) {
         delete nextPairs[existingWordId];
       }
     });
-    // Nếu từ đang kéo đã ghép ở ô khác trước đó, gỡ ghép cũ của nó
     delete nextPairs[wordId];
-    // Ghép cặp mới (có thể đúng hoặc sai — học sinh có thể gỡ/kéo lại sau)
     nextPairs[wordId] = meaningId;
 
     onMatchChange(nextPairs);
+  };
+
+  // ---- CLICK-SELECT MODE ----
+  const handleSelectWord = (wordId) => {
+    if (selectedWordId === wordId) {
+      setSelectedWordId(null);
+    } else {
+      setSelectedWordId(wordId);
+    }
+  };
+
+  const handleClickSlot = (meaningId) => {
+    if (selectedWordId) {
+      const nextPairs = { ...matchedPairs };
+      // Gỡ ghép cũ của từ này (nếu có)
+      delete nextPairs[selectedWordId];
+      // Gỡ ghép cũ của ô này (nếu có)
+      Object.keys(nextPairs).forEach((existingWordId) => {
+        if (nextPairs[existingWordId] === meaningId) {
+          delete nextPairs[existingWordId];
+        }
+      });
+      // Ghép cặp mới
+      nextPairs[selectedWordId] = meaningId;
+      onMatchChange(nextPairs);
+      setSelectedWordId(null);
+    }
   };
 
   const handleRemove = (meaningId) => {
@@ -141,19 +187,68 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
       }
     });
     onMatchChange(nextPairs);
+    if (selectedWordId && !matchedIds.includes(selectedWordId)) {
+      setSelectedWordId(null);
+    }
   };
+
+  const isDragMode = inputMode === "drag";
 
   return (
     <div className="flex flex-col gap-6">
-      <p className="text-sm text-slate/50 text-center">
-        Kéo từ tiếng Anh vào đúng ô nghĩa tiếng Việt · Đã nối đúng {correctCount}/{vocabList.length}
-      </p>
+      <div className="flex flex-col gap-3">
+        <p className="text-sm text-slate/50 text-center">
+          {isDragMode
+            ? "Kéo từ tiếng Anh vào đúng ô nghĩa tiếng Việt"
+            : "Chọn từ → Sau đó chọn ô để ghép"}
+          · Đã nối đúng <span className="font-semibold">{correctCount}/{vocabList.length}</span>
+        </p>
 
-      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+        {/* Input Mode Selector */}
+        <div className="flex gap-2 justify-center">
+          <button
+            onClick={() => {
+              setInputMode("drag");
+              setSelectedWordId(null);
+            }}
+            className={[
+              "px-4 py-2 rounded-full text-xs font-semibold transition-all",
+              inputMode === "drag"
+                ? "bg-pink-600 text-white shadow-md"
+                : "bg-surface-soft text-slate/60 hover:bg-pink-100",
+            ].join(" ")}
+          >
+            🖱 Kéo thả
+          </button>
+          <button
+            onClick={() => {
+              setInputMode("clickSelect");
+              setSelectedWordId(null);
+            }}
+            className={[
+              "px-4 py-2 rounded-full text-xs font-semibold transition-all",
+              inputMode === "clickSelect"
+                ? "bg-pink-600 text-white shadow-md"
+                : "bg-surface-soft text-slate/60 hover:bg-pink-100",
+            ].join(" ")}
+          >
+            👆 Click ghép
+          </button>
+        </div>
+      </div>
+
+      <DndContext sensors={isDragMode ? sensors : undefined} onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-2">
             {remainingWords.map((w) => (
-              <DraggableWord key={w.id} id={w.id} label={w.word} />
+              <DraggableWord
+                key={w.id}
+                id={w.id}
+                label={w.word}
+                isDragMode={isDragMode}
+                isSelected={selectedWordId === w.id && !isDragMode}
+                onSelectWord={handleSelectWord}
+              />
             ))}
             {remainingWords.length === 0 && (
               <p className="text-center text-xs text-slate/30 py-4">Đã kéo hết từ! 🎉</p>
@@ -168,11 +263,28 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
                 matchedWord={meaningToWord[m.id]?.word}
                 isCorrect={m.id === meaningToWord[m.id]?.id}
                 onRemove={() => handleRemove(m.id)}
+                isDragMode={isDragMode}
+                isHoverTarget={selectedWordId !== null && !isDragMode}
+                onClickSlot={handleClickSlot}
               />
             ))}
           </div>
         </div>
       </DndContext>
+
+      {selectedWordId && !isDragMode && (
+        <div className="bg-pink-100 border border-pink-300 rounded-xl px-4 py-2 text-sm text-slate flex items-center justify-between">
+          <span>
+            Đã chọn: <span className="font-semibold">{shuffledWords.find(w => w.id === selectedWordId)?.word}</span>
+          </span>
+          <button
+            onClick={() => setSelectedWordId(null)}
+            className="text-xs font-semibold text-pink-600 hover:text-pink-700 px-2 py-1 rounded hover:bg-pink-200 transition-colors"
+          >
+            Hủy
+          </button>
+        </div>
+      )}
 
       <div className="flex gap-3">
         <Button variant="primary" fullWidth disabled={!allMatched} onClick={onNext}>

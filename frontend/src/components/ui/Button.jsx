@@ -1,86 +1,154 @@
-import React, { useState } from "react";
+import React from "react";
 
 /**
- * Button — nút bấm nguyên tử của Design System Pastel Pink.
- *
- * Variants: primary | secondary | danger | success | ghost
- * Sizes:    sm | md | lg  (mặc định md, luôn >= 44x44px trên mobile)
- *
+ * Button Component v2 — Enhanced with gradients, animations, states
+ * 
+ * Variants: primary, secondary, ghost, danger, success
+ * Sizes: sm, md (default), lg
+ * States: normal, hover, active, disabled, loading
+ * 
  * Usage:
- *   <Button variant="primary" onClick={...}>Lưu từ vựng</Button>
- *   <Button variant="danger" size="sm" isLoading>Xoá</Button>
+ * <Button variant="primary" size="md" disabled={false} loading={false}>
+ *   Click me
+ * </Button>
  */
 
-const VARIANT_STYLES = {
-  primary:
-    "bg-pink-400 text-white hover:bg-pink-500 active:bg-pink-600 shadow-button",
-  secondary:
-    "bg-pink-50 text-pink-600 border border-pink-200 hover:bg-pink-100 active:bg-pink-200",
-  danger:
-    "bg-danger text-white hover:bg-danger-text active:bg-danger-text shadow-button",
-  success:
-    "bg-success text-white hover:brightness-95 active:brightness-90 shadow-button",
-  ghost:
-    "bg-transparent text-slate hover:bg-pink-50 active:bg-pink-100",
+const VARIANTS = {
+  primary: {
+    base: 'bg-gradient-to-r from-pink-600 to-pink-500 text-white font-semibold shadow-button',
+    hover: 'hover:shadow-button-hover hover:from-pink-700 hover:to-pink-600',
+    active: 'active:scale-95',
+  },
+  secondary: {
+    base: 'bg-surface-soft text-slate border border-surface-border font-semibold',
+    hover: 'hover:bg-pink-50 hover:border-pink-300 hover:shadow-sm',
+    active: 'active:scale-95',
+  },
+  ghost: {
+    base: 'bg-transparent text-pink-600 font-semibold',
+    hover: 'hover:bg-pink-50 hover:text-pink-700',
+    active: 'active:scale-95',
+  },
+  danger: {
+    base: 'bg-gradient-to-r from-red-600 to-red-500 text-white font-semibold shadow-button',
+    hover: 'hover:shadow-button-hover hover:from-red-700 hover:to-red-600',
+    active: 'active:scale-95',
+  },
+  success: {
+    base: 'bg-gradient-to-r from-green-600 to-emerald-500 text-white font-semibold shadow-button',
+    hover: 'hover:shadow-button-hover hover:from-green-700 hover:to-emerald-600',
+    active: 'active:scale-95',
+  },
 };
 
-const SIZE_STYLES = {
-  sm: "h-10 px-4 text-sm min-w-[44px]",
-  md: "h-11 px-5 text-base min-w-[44px]",
-  lg: "h-12 px-6 text-lg min-w-[44px]",
+const SIZES = {
+  sm: 'px-3 py-1.5 text-xs rounded-lg',
+  md: 'px-4 py-3 text-sm rounded-2xl',
+  lg: 'px-6 py-4 text-base rounded-2xl',
 };
 
 export default function Button({
   children,
-  variant = "primary",
-  size = "md",
-  disabled = false,
-  isLoading = false,
-  icon = null,
+  variant = 'primary',
+  size = 'md',
   fullWidth = false,
-  className = "",
+  disabled = false,
+  loading = false,
   onClick,
-  type = "button",
-  ...rest
+  className,
+  ...props
 }) {
-  const [isPressed, setIsPressed] = useState(false);
+  const variantStyle = VARIANTS[variant] || VARIANTS.primary;
+  const sizeStyle = SIZES[size] || SIZES.md;
 
-  const handleClick = (e) => {
-    if (disabled || isLoading) return;
-    setIsPressed(true);
-    setTimeout(() => setIsPressed(false), 250);
-    onClick?.(e);
-  };
+  const baseClasses = [
+    'inline-flex items-center justify-center gap-2',
+    'transition-all duration-200 ease-out',
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-pink-400',
+    'disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-none',
+    variantStyle.base,
+    variantStyle.hover,
+    variantStyle.active,
+    sizeStyle,
+    fullWidth && 'w-full',
+    loading && 'opacity-75 cursor-wait',
+    className,
+  ].filter(Boolean).join(' ');
 
   return (
     <button
-      type={type}
-      disabled={disabled || isLoading}
-      onClick={handleClick}
-      aria-busy={isLoading}
-      className={[
-        "inline-flex items-center justify-center gap-2",
-        "rounded-2xl font-semibold select-none",
-        "transition-all duration-200 ease-out",
-        "hover:scale-[1.03] active:scale-[0.96]",
-        "disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100",
-        VARIANT_STYLES[variant],
-        SIZE_STYLES[size],
-        fullWidth ? "w-full" : "",
-        isPressed ? "animate-button-press" : "",
-        className,
-      ].join(" ")}
-      {...rest}
+      className={baseClasses}
+      disabled={disabled || loading}
+      onClick={onClick}
+      {...props}
     >
-      {isLoading ? (
-        <span
-          className="h-4 w-4 rounded-full border-2 border-white/60 border-t-white animate-spin"
-          aria-hidden="true"
-        />
-      ) : (
-        icon && <span className="shrink-0" aria-hidden="true">{icon}</span>
+      {loading && (
+        <span className="inline-block animate-spin">
+          <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="10" fill="none" strokeWidth="2" stroke="currentColor" opacity="0.3" />
+            <path
+              d="M12 2a10 10 0 0 1 10 10"
+              stroke="currentColor"
+              strokeWidth="2"
+              fill="none"
+              strokeLinecap="round"
+            />
+          </svg>
+        </span>
       )}
-      <span>{children}</span>
+      {children}
+    </button>
+  );
+}
+
+/**
+ * Button Group Component — For multiple related buttons
+ * Usage:
+ * <ButtonGroup>
+ *   <Button>Cancel</Button>
+ *   <Button variant="primary">Submit</Button>
+ * </ButtonGroup>
+ */
+export function ButtonGroup({ children, gap = 3 }) {
+  const gapClass = {
+    2: 'gap-2',
+    3: 'gap-3',
+    4: 'gap-4',
+  }[gap] || 'gap-3';
+
+  return (
+    <div className={`flex flex-col sm:flex-row ${gapClass}`}>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Icon Button Component — For icon-only buttons
+ * Usage:
+ * <IconButton icon="×" onClick={() => onClose()} />
+ */
+export function IconButton({
+  icon,
+  label,
+  onClick,
+  variant = 'ghost',
+  size = 'sm',
+  ...props
+}) {
+  return (
+    <button
+      aria-label={label}
+      onClick={onClick}
+      className={[
+        'inline-flex items-center justify-center',
+        'rounded-lg transition-all duration-150',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-pink-400',
+        'hover:bg-pink-50 active:scale-95',
+      ].join(' ')}
+      {...props}
+    >
+      {icon}
     </button>
   );
 }
