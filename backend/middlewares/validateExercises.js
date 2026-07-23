@@ -39,10 +39,14 @@ const exerciseSchema = {
       type: 'array',
       items: {
         type: 'object',
-        required: ['id', 'sentence', 'answer'],
+        required: ['id', 'answer'],
         properties: {
           id: { type: 'string', minLength: 1 },
-          sentence: { type: 'string', minLength: 1 },
+          // Format từ Gemini: word + direction
+          word: { type: 'string' },
+          direction: { type: 'string', enum: ['en_to_vi', 'vi_to_en'] },
+          // Format cũ (từ ManageSessionsPage): sentence
+          sentence: { type: 'string' },
           answer: { type: 'string', minLength: 1 },
         },
       },

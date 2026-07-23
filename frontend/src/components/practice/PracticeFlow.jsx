@@ -10,32 +10,6 @@ import VocabReviewStep from "./VocabReviewStep";
 import { startAttempt, updateAttemptStep, submitAttempt } from "../../lib/studentPracticeApi";
 import { shuffleMcqQuestions } from "../../utils/shuffle";
 
-// ---- AI tự động thêm phiên âm IPA cho từ vựng ----
-async function fetchPhoneticMap(words) {
-  if (!words || words.length === 0) return {};
-  try {
-    const wordList = words.map((w) => w.word).join(", ");
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 500,
-        messages: [{
-          role: "user",
-          content: `Provide IPA phonetic transcription for each English word below. Respond ONLY with a JSON object like {"word": "/phonetic/", ...}. No explanation, no markdown, no extra text.\n\nWords: ${wordList}`,
-        }],
-      }),
-    });
-    const data = await response.json();
-    const text = (data.content || []).map((c) => c.text || "").join("");
-    const clean = text.replace(/\`\`\`json|\`\`\`/g, "").trim();
-    return JSON.parse(clean);
-  } catch {
-    return {};
-  }
-}
-
 const TOTAL_STEPS = 4;
 const STEP_LABELS = ["Flashcard", "Nối từ", "Điền từ", "Trắc nghiệm"];
 
@@ -94,14 +68,6 @@ export default function PracticeFlow({ sessionId, exercises }) {
   const [stepError, setStepError] = useState(null);
 
   const intervalRef = useRef(null);
-  const [phoneticMap, setPhoneticMap] = useState({});
-
-  // Lấy phiên âm AI cho toàn bộ từ vựng khi load
-  useEffect(() => {
-    const words = exercises.flashcards || [];
-    if (words.length === 0) return;
-    fetchPhoneticMap(words).then(setPhoneticMap);
-  }, [exercises.flashcards]);
 
   // ---- Adapt exercises data cho từng component ----
   const flashcardVocab = useMemo(
@@ -110,10 +76,10 @@ export default function PracticeFlow({ sessionId, exercises }) {
         id: f.id,
         word: f.word,
         meaning: f.meaning,
-        phonetic: phoneticMap[f.word] || (f.example ? `Ví dụ: ${f.example}` : ""),
+        phonetic: f.phonetic || "",
         example: f.example || "",
       })),
-    [exercises.flashcards, phoneticMap]
+    [exercises.flashcards]
   );
 
   const matchUpVocab = useMemo(
