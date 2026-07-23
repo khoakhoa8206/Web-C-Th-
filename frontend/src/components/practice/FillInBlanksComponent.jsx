@@ -2,14 +2,10 @@ import React, { useState, useMemo } from "react";
 import { Button, InputField } from "../ui";
 
 /**
- * Bài 3 — FillInBlanksComponent v2
- * Learning Mode: Hiển thị immediate feedback (đáp án đúng ngay lập tức)
- * 
- * Improvements:
- * 1. Instant feedback: Sau mỗi keystroke, kiểm tra nếu đúng/sai
- * 2. Show correct answer ngay khi sai
- * 3. Cho phép học sinh tiếp tục sửa (không chặn)
- * 4. Visual feedback: Badges, colors, animations
+ * Bài 3 — FillInBlanksComponent v3
+ * - Chỉ hiện màu xanh/đỏ sau khi học sinh rời ô input (onBlur)
+ * - Không lộ đáp án đúng khi đang gõ
+ * - Không hiển thị gợi ý hay hint trong khi gõ
  */
 
 function getPromptText(item) {
@@ -27,16 +23,14 @@ function getPlaceholder(item) {
 
 function checkAnswer(studentAnswer, correctAnswers) {
   if (!studentAnswer || !studentAnswer.trim()) return null;
-  
   const normalized = studentAnswer.trim().toLowerCase();
-  const answers = correctAnswers.split("|").map(a => a.trim().toLowerCase());
-  
-  return answers.some(ans => ans === normalized);
+  const answers = correctAnswers.split("|").map((a) => a.trim().toLowerCase());
+  return answers.some((ans) => ans === normalized);
 }
 
 export default function FillInBlanksComponent({ items, values, onChange, onNext }) {
-  // Feedback state: { [itemId]: { isCorrect: bool, correctAnswer: string } }
-  const [feedback, setFeedback] = useState({});
+  // submitted: set của các item.id đã blur (rời ô) — lúc đó mới reveal màu
+  const [submitted, setSubmitted] = useState(new Set());
 
   const isFilled = (item) => {
     const typed = values[item.id];
@@ -46,7 +40,6 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
   const filledCount = items.filter(isFilled).length;
   const allFilled = filledCount === items.length;
 
-  // Tính toán memoized: số câu trả lời đúng
   const correctCount = useMemo(() => {
     return items.filter((item) => {
       const result = checkAnswer(values[item.id], item.correct_answer || item.answer || "");
@@ -55,27 +48,19 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
   }, [items, values]);
 
   const handleChange = (id, val) => {
+    // Khi đang gõ lại sau blur, reset trạng thái submitted để ẩn màu
+    setSubmitted((prev) => {
+      const next = new Set(prev);
+      next.delete(id);
+      return next;
+    });
     onChange({ ...values, [id]: val });
+  };
 
-    // Instant feedback: kiểm tra ngay khi user gõ
-    if (val.trim()) {
-      const item = items.find(i => i.id === id);
-      const isCorrect = checkAnswer(val, item.correct_answer || item.answer || "");
-      
-      setFeedback((prev) => ({
-        ...prev,
-        [id]: {
-          isCorrect,
-          correctAnswer: item.correct_answer || item.answer || "",
-        },
-      }));
-    } else {
-      // Clear feedback nếu xoá trắng
-      setFeedback((prev) => {
-        const next = { ...prev };
-        delete next[id];
-        return next;
-      });
+  const handleBlur = (id) => {
+    // Chỉ đánh dấu submitted nếu có nội dung
+    if (values[id]?.trim()) {
+      setSubmitted((prev) => new Set(prev).add(id));
     }
   };
 
@@ -83,7 +68,7 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <p className="text-base text-slate text-center">
-          Điền {items.length} từ vựng (Bài học — xem đáp án ngay) · Đã điền {filledCount}/{items.length}
+          Điền {items.length} từ vựng · Đã điền {filledCount}/{items.length}
         </p>
         <p className="text-sm text-center text-success-text font-bold">
           ✓ Trả lời đúng: {correctCount}/{items.length}
@@ -92,36 +77,36 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
 
       <div className="space-y-4">
         {items.map((item, idx) => {
-          const itemFeedback = feedback[item.id];
-          const isCorrect = itemFeedback?.isCorrect;
+          const hasBlurred = submitted.has(item.id);
           const hasAnswered = isFilled(item);
+          const isCorrect = hasBlurred
+            ? checkAnswer(values[item.id], item.correct_answer || item.answer || "")
+            : null;
 
           return (
             <div
               key={item.id}
               className={[
                 "rounded-2xl border-2 p-4 transition-all duration-200",
-                hasAnswered && isCorrect
+                hasBlurred && isCorrect
                   ? "bg-success-bg border-success/30"
-                  : hasAnswered && isCorrect === false
+                  : hasBlurred && isCorrect === false
                   ? "bg-danger-bg border-danger/30"
                   : "bg-white border-surface-border",
               ].join(" ")}
             >
               <div className="flex items-center justify-between mb-2">
                 <p className="text-sm text-slate font-semibold">Câu {idx + 1}</p>
-                {hasAnswered && (
+                {hasBlurred && hasAnswered && (
                   <span
                     className={[
                       "text-sm font-bold px-2 py-1 rounded-full",
                       isCorrect
                         ? "bg-success/10 text-success-text"
-                        : isCorrect === false
-                        ? "bg-danger/10 text-danger-text"
-                        : "",
+                        : "bg-danger/10 text-danger-text",
                     ].join(" ")}
                   >
-                    {isCorrect ? "✓ Chính xác" : isCorrect === false ? "✗ Chưa đúng" : ""}
+                    {isCorrect ? "✓ Chính xác" : "✗ Chưa đúng"}
                   </span>
                 )}
               </div>
@@ -133,21 +118,13 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
                 placeholder={getPlaceholder(item)}
                 value={values[item.id] ?? ""}
                 onChange={(e) => handleChange(item.id, e.target.value)}
+                onBlur={() => handleBlur(item.id)}
                 className={[
                   "transition-colors",
-                  hasAnswered && isCorrect ? "border-success" : "",
-                  hasAnswered && isCorrect === false ? "border-danger" : "",
+                  hasBlurred && isCorrect ? "border-success" : "",
+                  hasBlurred && isCorrect === false ? "border-danger" : "",
                 ].join(" ")}
               />
-
-              {/* Show correct answer nếu sai */}
-              {hasAnswered && isCorrect === false && itemFeedback?.correctAnswer && (
-                <div className="mt-2 p-2 bg-success/5 rounded-lg border border-success/20">
-                  <p className="text-xs text-success-text font-semibold">
-                    Đáp án đúng: <span className="font-bold">{itemFeedback.correctAnswer}</span>
-                  </p>
-                </div>
-              )}
             </div>
           );
         })}
