@@ -54,7 +54,7 @@ export default function ManageClassesPage() {
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
           <h2 className="font-bold text-slate text-lg">Quản lý khối lớp</h2>
-          <p className="text-sm text-slate/50">
+          <p className="text-sm text-slate/70">
             Tạo, sửa, xoá các khối lớp. Phải có ít nhất 1 khối lớp để thêm học sinh và giao bài.
           </p>
         </div>
@@ -64,12 +64,12 @@ export default function ManageClassesPage() {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-10 text-slate/40 text-sm">Đang tải...</div>
+        <div className="text-center py-10 text-slate/70 text-sm">Đang tải...</div>
       ) : classes.length === 0 ? (
         <CardContainer className="text-center py-12">
           <span className="text-4xl mb-3 block">📭</span>
           <p className="font-semibold text-slate mb-1">Chưa có khối lớp nào</p>
-          <p className="text-sm text-slate/50 mb-4">
+          <p className="text-sm text-slate/70 mb-4">
             Hãy tạo khối lớp đầu tiên để bắt đầu thêm học sinh và giao bài.
           </p>
           <Button variant="primary" onClick={handleAdd}>
@@ -84,12 +84,12 @@ export default function ManageClassesPage() {
                 <div>
                   <h3 className="font-bold text-slate text-base">{klass.name}</h3>
                   {klass.teacher_name && (
-                    <p className="text-xs text-slate/50">GV: {klass.teacher_name}</p>
+                    <p className="text-xs text-slate/70">GV: {klass.teacher_name}</p>
                   )}
                 </div>
                 <span className="text-2xl">🏫</span>
               </div>
-              <p className="text-xs text-slate/30">
+              <p className="text-xs text-slate/60">
                 Tạo lúc: {new Date(klass.created_at).toLocaleDateString("vi-VN")}
               </p>
               <div className="flex gap-2 mt-auto pt-2">

@@ -252,7 +252,7 @@ export default function ManageSessionsPage() {
     <div className="space-y-6">
       <div>
         <h2 className="text-lg font-bold text-slate mb-1">Quản lý bài tập</h2>
-        <p className="text-sm text-slate/50">Sửa tên, đặt hạn nộp, hoặc xoá bài tập theo khối lớp.</p>
+        <p className="text-sm text-slate/70">Sửa tên, đặt hạn nộp, hoặc xoá bài tập theo khối lớp.</p>
       </div>
 
       {/* Chọn lớp */}
@@ -274,11 +274,11 @@ export default function ManageSessionsPage() {
 
       {/* Danh sách session */}
       {isLoadingSessions && (
-        <p className="text-sm text-slate/50">Đang tải danh sách bài tập...</p>
+        <p className="text-sm text-slate/70">Đang tải danh sách bài tập...</p>
       )}
 
       {!isLoadingSessions && selectedClassId && sessions.length === 0 && (
-        <p className="text-sm text-slate/50">Chưa có bài tập nào cho lớp này.</p>
+        <p className="text-sm text-slate/70">Chưa có bài tập nào cho lớp này.</p>
       )}
 
       {sessions.length > 0 && (
@@ -304,7 +304,7 @@ export default function ManageSessionsPage() {
                       : "Nháp"}
                   </span>
                 </div>
-                <p className="text-xs text-slate/50 mt-0.5">
+                <p className="text-xs text-slate/70 mt-0.5">
                   Hạn nộp: {formatDeadline(s.deadline)}
                   {s.published_at && (
                     <> · Giao: {new Date(s.published_at).toLocaleDateString("vi-VN")}</>
@@ -385,7 +385,7 @@ export default function ManageSessionsPage() {
               {editDeadline && (
                 <button
                   type="button"
-                  className="text-xs text-slate/40 hover:text-danger-text text-left"
+                  className="text-xs text-slate/70 hover:text-danger-text text-left"
                   onClick={() => setEditDeadline("")}
                 >
                   ✕ Xoá deadline (không giới hạn)
@@ -474,7 +474,7 @@ export default function ManageSessionsPage() {
                   Sẽ giao lúc: {formatLocalDatetimeValue(confirmedScheduledAt.value)} ✓
                 </span>
               )}
-            <p className="text-xs text-slate/40">Hệ thống sẽ tự động giao bài đúng vào thời điểm này.</p>
+            <p className="text-xs text-slate/70">Hệ thống sẽ tự động giao bài đúng vào thời điểm này.</p>
           </div>
         )}
 
@@ -498,7 +498,7 @@ export default function ManageSessionsPage() {
             {publishDeadline && (
               <button
                 type="button"
-                className="text-xs text-slate/40 text-left hover:text-danger-text"
+                className="text-xs text-slate/70 text-left hover:text-danger-text"
                 onClick={() => setPublishDeadline("")}
               >
                 ✕ Xoá deadline

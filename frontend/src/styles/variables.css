@@ -36,7 +36,7 @@
   --color-warning-text: #8A6D00;
 
   /* ---- NEUTRAL ---- */
-  --color-text-primary: #2C3E50;
+  --color-text-primary: #1A202C;
   --color-surface: #FFFFFF;
   --color-surface-soft: #F8F9FA;
   --color-border-soft: #E9ECEF;
@@ -93,7 +93,7 @@
     background: linear-gradient(135deg, var(--color-pink-light) 0%, #FFFBFD 100%);
     color: var(--color-text-primary);
     font-family: 'Nunito', 'Quicksand', ui-sans-serif, system-ui, sans-serif;
-    font-weight: 400;
+    font-weight: 500;
   }
 
   /* Typography Improvements */
@@ -165,7 +165,7 @@
   /* ---- INPUTS ---- */
   .input-base {
     @apply w-full px-4 py-3 rounded-2xl border border-surface-border;
-    @apply bg-white text-slate placeholder-slate/40;
+    @apply bg-white text-slate placeholder-slate/60;
     @apply transition-all duration-200;
     @apply focus:border-pink-400 focus:ring-2 focus:ring-pink-200;
   }
@@ -230,6 +230,7 @@
   }
 
   .animate-fade-in-up {
+    opacity: 1; /* fallback */
     animation: fadeInUp 0.5s var(--ease-out-cubic) forwards;
   }
 
@@ -364,26 +365,3 @@
   }
 }
 
-/* ========== DARK MODE SUPPORT (Optional) ========== */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-text-primary: #E2E8F0;
-    --color-surface: #1E293B;
-    --color-surface-soft: #334155;
-    --color-border-soft: #475569;
-  }
-
-  body {
-    background: linear-gradient(135deg, #0F172A 0%, #1A1F35 100%);
-    color: var(--color-text-primary);
-  }
-
-  .card-base,
-  .card-gradient {
-    @apply bg-slate-800 border-slate-700;
-  }
-
-  .input-base {
-    @apply bg-slate-900 border-slate-700 text-slate-100 placeholder-slate-400;
-  }
-}

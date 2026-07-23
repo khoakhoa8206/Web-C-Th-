@@ -10,7 +10,7 @@ export default function StudentTable({ students, attemptsByStudent, isLoading, o
   if (isLoading) {
     return (
       <CardContainer className="text-center py-10">
-        <p className="text-sm text-slate/40">Đang tải dữ liệu học sinh...</p>
+        <p className="text-sm text-slate/70">Đang tải dữ liệu học sinh...</p>
       </CardContainer>
     );
   }
@@ -18,7 +18,7 @@ export default function StudentTable({ students, attemptsByStudent, isLoading, o
   if (students.length === 0) {
     return (
       <CardContainer className="text-center py-10">
-        <p className="text-sm text-slate/40">Chưa có học sinh nào trong khối lớp này.</p>
+        <p className="text-sm text-slate/70">Chưa có học sinh nào trong khối lớp này.</p>
       </CardContainer>
     );
   }
@@ -28,7 +28,7 @@ export default function StudentTable({ students, attemptsByStudent, isLoading, o
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-surface-soft text-left text-xs font-bold text-slate/50 uppercase tracking-wide">
+            <tr className="bg-surface-soft text-left text-xs font-bold text-slate/70 uppercase tracking-wide">
               <th className="px-4 py-3">Họ và Tên</th>
               <th className="px-4 py-3">Trạng thái</th>
               <th className="px-4 py-3 text-center">Lần làm lại</th>

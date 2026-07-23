@@ -135,7 +135,7 @@ export default function ResultScreen({
                 ].join(" ")}
               >
                 🔄 Làm lại bài 4
-                <p className="text-sm text-slate/50 mt-1">(Chỉ làm lại câu hỏi trắc nghiệm)</p>
+                <p className="text-sm text-slate/70 mt-1">(Chỉ làm lại câu hỏi trắc nghiệm)</p>
               </button>
 
               {/* Option 2: Full Restart */}

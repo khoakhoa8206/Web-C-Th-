@@ -40,7 +40,7 @@ export default function GradeSelectPage() {
         >
           <span className="text-5xl" aria-hidden="true">📚</span>
           <span className="font-bold text-lg text-slate">Vào danh sách buổi học</span>
-          <span className="text-sm text-slate/50">
+          <span className="text-sm text-slate/70">
             Xem các buổi học được giao và bắt đầu làm bài
           </span>
         </CardContainer>

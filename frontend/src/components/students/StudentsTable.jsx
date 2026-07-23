@@ -8,7 +8,7 @@ export default function StudentsTable({ students, classes = [], isLoading, onEdi
   if (isLoading) {
     return (
       <CardContainer className="text-center py-10">
-        <p className="text-sm text-slate/40">Đang tải danh sách học sinh...</p>
+        <p className="text-sm text-slate/70">Đang tải danh sách học sinh...</p>
       </CardContainer>
     );
   }
@@ -16,7 +16,7 @@ export default function StudentsTable({ students, classes = [], isLoading, onEdi
   if (students.length === 0) {
     return (
       <CardContainer className="text-center py-10">
-        <p className="text-sm text-slate/40">Chưa có học sinh nào. Bấm "Thêm học sinh" để bắt đầu.</p>
+        <p className="text-sm text-slate/70">Chưa có học sinh nào. Bấm "Thêm học sinh" để bắt đầu.</p>
       </CardContainer>
     );
   }
@@ -26,7 +26,7 @@ export default function StudentsTable({ students, classes = [], isLoading, onEdi
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-surface-soft text-left text-xs font-bold text-slate/50 uppercase tracking-wide">
+            <tr className="bg-surface-soft text-left text-xs font-bold text-slate/70 uppercase tracking-wide">
               <th className="px-4 py-3">Họ và Tên</th>
               <th className="px-4 py-3">Khối lớp</th>
               <th className="px-4 py-3 text-center">Hành động</th>

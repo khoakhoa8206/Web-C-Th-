@@ -49,7 +49,7 @@ export default function DashboardPage() {
       <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
         <h2 className="font-bold text-slate text-lg">Theo dõi tiến độ theo thời gian thực</h2>
       </div>
-      <p className="text-sm text-slate/50 mb-4">
+      <p className="text-sm text-slate/70 mb-4">
         Hàng sẽ tự cập nhật màu sắc và điểm số ngay khi học sinh nộp bài, không cần tải lại trang.
       </p>
 

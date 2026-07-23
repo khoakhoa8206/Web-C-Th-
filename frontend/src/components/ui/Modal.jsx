@@ -44,7 +44,7 @@ export default function Modal({
           <button
             onClick={onClose}
             aria-label="Đóng"
-            className="h-8 w-8 rounded-full flex items-center justify-center text-slate/40 hover:bg-pink-50 hover:text-pink-600 transition-colors"
+            className="h-8 w-8 rounded-full flex items-center justify-center text-slate/70 hover:bg-pink-50 hover:text-pink-600 transition-colors"
           >
             ✕
           </button>

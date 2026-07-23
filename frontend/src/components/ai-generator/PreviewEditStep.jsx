@@ -64,7 +64,7 @@ export default function PreviewEditStep({
     <div className="max-w-3xl mx-auto">
       <CardContainer className="mb-4">
         <h2 className="font-bold text-slate text-lg mb-1">Xem trước & Chỉnh sửa</h2>
-        <p className="text-sm text-slate/50 mb-4">
+        <p className="text-sm text-slate/70 mb-4">
           Click trực tiếp vào từng ô để sửa nội dung AI vừa tạo trước khi giao cho học sinh.
         </p>
         <Tabs items={EXERCISE_TABS} activeId={activeTab} onChange={setActiveTab} />
@@ -169,7 +169,7 @@ export default function PreviewEditStep({
               {scheduleError && (
                 <p className="text-xs text-danger-text">{scheduleError}</p>
               )}
-              <p className="text-xs text-slate/40">Hệ thống sẽ tự động giao bài đúng vào thời điểm này.</p>
+              <p className="text-xs text-slate/70">Hệ thống sẽ tự động giao bài đúng vào thời điểm này.</p>
             </div>
           )}
 
@@ -193,7 +193,7 @@ export default function PreviewEditStep({
               {publishDeadline && (
                 <button
                   type="button"
-                  className="text-xs text-slate/40 hover:text-danger-text"
+                  className="text-xs text-slate/70 hover:text-danger-text"
                   onClick={() => { onDeadlineChange(""); setConfirmedDeadline(""); }}
                 >
                   ✕ Xoá deadline
@@ -205,7 +205,7 @@ export default function PreviewEditStep({
                 Đã chọn: {fmtDatetime(confirmedDeadline)} ✓
               </span>
             )}
-            <p className="text-xs text-slate/40">
+            <p className="text-xs text-slate/70">
               Nếu để trống, học sinh có thể làm bài không giới hạn thời gian. Có thể đặt deadline sau ở tab "Quản lý bài tập".
             </p>
           </div>

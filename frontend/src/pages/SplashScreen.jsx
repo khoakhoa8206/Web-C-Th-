@@ -30,7 +30,7 @@ export default function SplashScreen({ hasError, onRetry }) {
           </div>
           <p className="text-sm font-semibold text-slate">Đang kết nối tới server…</p>
           {showHint && (
-            <p className="text-xs text-slate/50 text-center max-w-xs">
+            <p className="text-xs text-slate/70 text-center max-w-xs">
               Server đang cold-start sau thời gian không hoạt động, có thể mất 30–60 giây. Vui lòng chờ…
             </p>
           )}
@@ -38,7 +38,7 @@ export default function SplashScreen({ hasError, onRetry }) {
       ) : (
         <>
           <p className="text-sm font-semibold text-slate">Không thể kết nối tới server</p>
-          <p className="text-xs text-slate/50">Kiểm tra kết nối mạng hoặc thử lại sau.</p>
+          <p className="text-xs text-slate/70">Kiểm tra kết nối mạng hoặc thử lại sau.</p>
           <button
             onClick={onRetry}
             className="px-6 py-2.5 rounded-2xl bg-pink-500 text-white text-sm font-bold hover:bg-pink-600 transition-colors"

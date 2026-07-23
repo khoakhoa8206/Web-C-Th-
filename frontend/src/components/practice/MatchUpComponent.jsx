@@ -43,7 +43,7 @@ function DroppableSlot({ id, label, matchedWord, isCorrect, onRemove, isHoverTar
           ? "bg-danger-bg border-danger text-danger-text"
           : isHoverTarget
           ? "bg-pink-100 border-pink-400 ring-2 ring-pink-400"
-          : "bg-surface-soft border-surface-border text-slate/50",
+          : "bg-surface-soft border-surface-border text-slate/70",
       ].join(" ")}
     >
       <span>{label}</span>
@@ -134,7 +134,7 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
             />
           ))}
           {remainingWords.length === 0 && (
-            <p className="text-center text-xs text-slate/30 py-4">Đã ghép hết từ! 🎉</p>
+            <p className="text-center text-xs text-slate/60 py-4">Đã ghép hết từ! 🎉</p>
           )}
         </div>
         <div className="space-y-2">

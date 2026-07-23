@@ -14,12 +14,12 @@ export default function FillInBlanksEditTab({ items, onChange }) {
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-slate/40">
+      <p className="text-xs text-slate/70">
         Nên giữ 5-10 từ. Chiều hỏi (Anh→Việt / Việt→Anh) sẽ tự xen kẽ khi học sinh làm bài.
       </p>
       {items.map((item, idx) => (
         <div key={item.id} className="bg-white rounded-2xl border border-surface-border p-3 flex gap-3 items-center">
-          <span className="text-xs font-bold text-slate/30 w-5">{idx + 1}</span>
+          <span className="text-xs font-bold text-slate/60 w-5">{idx + 1}</span>
           <input
             value={item.word}
             onChange={(e) => updateItem(item.id, { word: e.target.value })}

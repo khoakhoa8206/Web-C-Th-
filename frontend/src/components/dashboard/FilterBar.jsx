@@ -16,7 +16,7 @@ export default function FilterBar({
   return (
     <div className="flex flex-col sm:flex-row gap-3 mb-6">
       <div className="flex-1">
-        <label className="block text-xs font-semibold text-slate/50 mb-1">Khối lớp</label>
+        <label className="block text-xs font-semibold text-slate/70 mb-1">Khối lớp</label>
         <select
           value={selectedGradeId}
           onChange={(e) => onGradeChange(e.target.value)}
@@ -31,7 +31,7 @@ export default function FilterBar({
       </div>
 
       <div className="flex-1">
-        <label className="block text-xs font-semibold text-slate/50 mb-1">Buổi học</label>
+        <label className="block text-xs font-semibold text-slate/70 mb-1">Buổi học</label>
         <select
           value={selectedSessionId ?? ""}
           onChange={(e) => onSessionChange(e.target.value)}

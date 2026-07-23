@@ -20,7 +20,7 @@ export default function FlashcardEditTab({ items, onChange }) {
     <div className="space-y-3">
       {items.map((item, idx) => (
         <div key={item.id} className="bg-white rounded-2xl border border-surface-border p-4 flex gap-3 items-start">
-          <span className="text-xs font-bold text-slate/30 mt-2 w-5">{idx + 1}</span>
+          <span className="text-xs font-bold text-slate/60 mt-2 w-5">{idx + 1}</span>
           <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
             <input
               value={item.word}

@@ -314,7 +314,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
       <div className="max-w-2xl mx-auto">
         {/* Header: timer + progress */}
         <div className="flex items-center justify-between mb-4">
-          <Link to="/student" className="text-xs text-slate/40" onClick={handleExitAndClearDraft}>
+          <Link to="/student" className="text-xs text-slate/70" onClick={handleExitAndClearDraft}>
             ← Thoát
           </Link>
           <div className="flex items-center gap-1.5 bg-white rounded-full px-3 py-1 shadow-sm">
@@ -327,7 +327,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
 
         <div className="mb-6">
           <ProgressBar mode="steps" totalSteps={TOTAL_STEPS} currentStep={step} />
-          <p className="text-center text-xs font-semibold text-slate/50 mt-2">
+          <p className="text-center text-xs font-semibold text-slate/70 mt-2">
             Bước {step}/{TOTAL_STEPS} · {STEP_LABELS[step - 1]}
           </p>
         </div>

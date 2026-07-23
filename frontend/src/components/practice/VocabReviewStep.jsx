@@ -13,7 +13,7 @@ export default function VocabReviewStep({ vocabList, onReady, stepError }) {
         <div className="text-center mb-6">
           <p className="text-3xl mb-2">📚</p>
           <h1 className="text-lg font-bold text-slate">Ôn lại từ vựng trước khi làm bài</h1>
-          <p className="text-sm text-slate/50 mt-1">
+          <p className="text-sm text-slate/70 mt-1">
             {vocabList.length} từ vựng · Học kỹ trước khi bấm Sẵn sàng
           </p>
         </div>
@@ -38,7 +38,7 @@ export default function VocabReviewStep({ vocabList, onReady, stepError }) {
               >
                 <p className="text-sm font-bold text-slate pr-2">{item.word}</p>
                 <p className="text-sm text-slate/80 pr-2">{item.meaning}</p>
-                <p className="text-sm text-slate/50 italic">
+                <p className="text-sm text-slate/70 italic">
                   {item.phonetic?.replace(/^Ví dụ:\s*/i, "") || "—"}
                 </p>
               </div>

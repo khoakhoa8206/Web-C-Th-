@@ -29,7 +29,7 @@ export default function FlashcardComponent({ vocabList, flippedIds, onFlip, onNe
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <p className="text-sm text-slate/50">
+      <p className="text-sm text-slate/70">
         Đã lật {flippedIds.length}/{total} thẻ — lật hết để mở khoá bước tiếp theo
       </p>
 
@@ -46,7 +46,7 @@ export default function FlashcardComponent({ vocabList, flippedIds, onFlip, onNe
               <span className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-pink-300" aria-hidden="true" />
             )}
             <p className="text-5xl font-bold text-slate">{current.word}</p>
-            <p className="text-xs text-slate/40">Chạm để xem nghĩa</p>
+            <p className="text-sm text-slate font-medium">Chạm để xem nghĩa</p>
           </div>
 
           {/* Mặt sau — nghĩa tiếng Việt + phát âm */}
@@ -62,7 +62,7 @@ export default function FlashcardComponent({ vocabList, flippedIds, onFlip, onNe
         <Button variant="ghost" size="sm" disabled={activeIndex === 0} onClick={() => goTo(-1)}>
           ← Trước
         </Button>
-        <span className="text-xs text-slate/40 tabular-nums">
+        <span className="text-xs text-slate/70 tabular-nums">
           {activeIndex + 1}/{total}
         </span>
         <Button

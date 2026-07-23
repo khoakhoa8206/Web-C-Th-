@@ -57,7 +57,7 @@ export default function LeaderboardPage() {
         {/* Chọn khối lớp + buổi học */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div>
-            <label className="text-xs font-bold text-slate/50 block mb-1">Khối lớp</label>
+            <label className="text-xs font-bold text-slate/70 block mb-1">Khối lớp</label>
             <select
               className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-sm text-slate outline-none focus:border-pink-400"
               value={selectedClassId}
@@ -70,7 +70,7 @@ export default function LeaderboardPage() {
             </select>
           </div>
           <div>
-            <label className="text-xs font-bold text-slate/50 block mb-1">Buổi học</label>
+            <label className="text-xs font-bold text-slate/70 block mb-1">Buổi học</label>
             <select
               className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-sm text-slate outline-none focus:border-pink-400"
               value={selectedSessionId}
@@ -86,15 +86,15 @@ export default function LeaderboardPage() {
         </div>
 
         {/* Bảng xếp hạng */}
-        {isLoading && <p className="text-sm text-slate/50 text-center py-8">Đang tải…</p>}
+        {isLoading && <p className="text-sm text-slate/70 text-center py-8">Đang tải…</p>}
 
         {leaderboard && (
           <>
-            <p className="text-xs text-slate/40 text-center mb-4">
+            <p className="text-xs text-slate/70 text-center mb-4">
               {leaderboard.class_name} · {leaderboard.session_title}
             </p>
             {leaderboard.ranked.length === 0 && (
-              <p className="text-sm text-slate/50 text-center py-8">
+              <p className="text-sm text-slate/70 text-center py-8">
                 Chưa có học sinh nào hoàn thành buổi học này.
               </p>
             )}
@@ -106,11 +106,11 @@ export default function LeaderboardPage() {
                   </span>
                   <div className="flex-1 min-w-0">
                     <p className="font-bold text-slate truncate">{entry.full_name}</p>
-                    <p className="text-xs text-slate/50">{entry.total_attempts} lần làm</p>
+                    <p className="text-xs text-slate/70">{entry.total_attempts} lần làm</p>
                   </div>
                   <div className="text-right shrink-0">
                     <p className="font-bold text-pink-600">{entry.best_score}%</p>
-                    <p className="text-xs text-slate/50">{formatDuration(entry.best_duration)}</p>
+                    <p className="text-xs text-slate/70">{formatDuration(entry.best_duration)}</p>
                   </div>
                 </CardContainer>
               ))}

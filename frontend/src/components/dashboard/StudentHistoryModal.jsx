@@ -42,10 +42,10 @@ export default function StudentHistoryModal({ student, sessionId, onClose }) {
       title={student ? `Lịch sử làm bài — ${student.full_name}` : ""}
       maxWidth="max-w-2xl"
     >
-      {history === null && <p className="text-sm text-slate/40 text-center py-6">Đang tải lịch sử...</p>}
+      {history === null && <p className="text-sm text-slate/70 text-center py-6">Đang tải lịch sử...</p>}
 
       {history?.length === 0 && (
-        <p className="text-sm text-slate/40 text-center py-6">Học sinh chưa làm bài buổi học này.</p>
+        <p className="text-sm text-slate/70 text-center py-6">Học sinh chưa làm bài buổi học này.</p>
       )}
 
       {history && history.length > 0 && (
