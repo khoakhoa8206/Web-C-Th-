@@ -26,7 +26,7 @@ QUY TẮC BẮT BUỘC:
 {
   "session_title": "string - tiêu đề bài học gợi ý",
   "flashcards": [
-    { "id": "string duy nhất, vd f1", "word": "từ vựng", "meaning": "nghĩa tiếng Việt", "example": "câu ví dụ tiếng Anh" }
+    { "id": "string duy nhất, vd f1", "word": "từ vựng", "phonetic": "phiên âm IPA, vd /rɪˈlʌktənt/", "meaning": "nghĩa tiếng Việt", "example": "câu ví dụ tiếng Anh" }
   ],
   "match_up": [
     { "id": "string duy nhất, vd m1", "term": "từ vựng tiếng Anh", "definition": "định nghĩa/nghĩa tương ứng" }
@@ -47,15 +47,17 @@ QUY TẮC BẮT BUỘC:
 4. "id" trong mỗi phần tử phải là duy nhất trong toàn bộ mảng chứa nó.
 5. Với "match_up", trường "id" của cặp term/definition tương ứng PHẢI GIỐNG NHAU giữa object term và ý nghĩa của nó (dùng để chấm điểm ghép cặp).
 6. Ngôn ngữ nghĩa/định nghĩa dùng tiếng Việt, câu ví dụ/câu hỏi dùng tiếng Anh trừ khi được yêu cầu khác.
-7. Không thêm trường nào ngoài cấu trúc đã mô tả.
-8. Với "fill_in_blanks": mỗi câu hỏi phải tương ứng với 1 từ LẤY TRỰC TIẾP từ danh sách vocab của buổi học
+7. Với "flashcards", trường "phonetic" là BẮT BUỘC — phải điền phiên âm IPA chuẩn cho từng từ tiếng Anh
+   (ví dụ: "reluctant" → "/rɪˈlʌktənt/"). Không để trống, không bỏ qua trường này.
+8. Không thêm trường nào ngoài cấu trúc đã mô tả.
+9. Với "fill_in_blanks": mỗi câu hỏi phải tương ứng với 1 từ LẤY TRỰC TIẾP từ danh sách vocab của buổi học
    (dùng chung nguồn từ vựng với Bài 2 - Match-up), KHÔNG được tự sáng tác câu mới hoặc từ mới.
    - Ngẫu nhiên chọn "direction" cho mỗi câu: "en_to_vi" (cho từ tiếng Anh, hỏi nghĩa tiếng Việt)
      hoặc "vi_to_en" (cho nghĩa tiếng Việt, hỏi từ tiếng Anh).
    - Nếu 1 từ có nhiều nghĩa/cách viết tiếng Việt được chấp nhận, liệt kê TẤT CẢ trong "answer",
      cách nhau bằng dấu | (ví dụ: "book" → "sách|quyển sách|đặt trước|đặt chỗ").
    - Không lặp lại cùng 1 từ vựng quá 1 lần trong cùng bài 3 của 1 buổi học.
-9. Với "mcqs" — ĐÂY LÀ BÀI KIỂM TRA CUỐI CÙNG để xác định học sinh có THỰC SỰ THUỘC từ vựng hay
+10. Với "mcqs" — ĐÂY LÀ BÀI KIỂM TRA CUỐI CÙNG để xác định học sinh có THỰC SỰ THUỘC từ vựng hay
    không (không phải bài nhận biết đơn giản như flashcard/nối từ/điền từ), nên PHẢI có độ khó và
    độ phân hoá CAO HƠN hẳn 3 bài trước:
    - Ưu tiên câu hỏi dạng ÁP DỤNG TRONG NGỮ CẢNH: đặt từ vựng vào 1 câu tiếng Anh có chỗ trống

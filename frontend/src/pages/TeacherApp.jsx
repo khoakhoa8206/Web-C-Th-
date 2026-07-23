@@ -6,7 +6,7 @@ import DashboardPage from "./DashboardPage";
 import ManageStudentsPage from "./ManageStudentsPage";
 import AIGeneratorDashboard from "./AIGeneratorDashboard";
 import ManageSessionsPage from "./ManageSessionsPage";
-import LeaderboardPage from "./LeaderboardPage";
+import TeacherLeaderboardPage from "./TeacherLeaderboardPage";
 
 const TABS = [
   { id: "dashboard", label: "Dashboard", icon: "📊" },
@@ -77,7 +77,7 @@ export default function TeacherApp() {
         {activeTab === "dashboard" && <DashboardPage />}
         {activeTab === "students" && <ManageStudentsPage />}
         {activeTab === "sessions" && <ManageSessionsPage />}
-        {activeTab === "leaderboard" && <LeaderboardPage />}
+        {activeTab === "leaderboard" && <TeacherLeaderboardPage />}
         {activeTab === "ai-generator" && <AIGeneratorDashboard />}
       </main>
     </div>
