@@ -1,7 +1,7 @@
 const { GoogleGenAI } = require('@google/genai');
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.1-pro';
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.5-flash';
 
 if (!GEMINI_API_KEY) {
   throw new Error('[config/geminiClient] Thiếu GEMINI_API_KEY trong biến môi trường.');
