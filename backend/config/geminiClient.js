@@ -99,21 +99,36 @@ không liên quan; độ dài các lựa chọn tương đương nhau.)
  * @param {string} vocabularyList - chuỗi từ vựng, cách nhau bởi dấu phẩy
  * @returns {Promise<object>} object JSON đã được parse (session_title, flashcards, match_up, fill_in_blanks, mcqs)
  */
-async function generateExercisesFromVocabulary(vocabularyList) {
-  const response = await ai.models.generateContent({
-    model: GEMINI_MODEL,
-    contents: [
-      {
-        role: 'user',
-        parts: [{ text: `Danh sách từ vựng: ${vocabularyList}` }],
-      },
-    ],
-    config: {
-      systemInstruction: EXERCISE_SYSTEM_PROMPT,
-      responseMimeType: 'application/json',
-      temperature: 0.6,
-    },
-  });
+async function generateExercisesFromVocabulary(vocabularyList, maxRetries = 3) {
+  let response;
+  for (let attempt = 0; attempt < maxRetries; attempt++) {
+    try {
+      response = await ai.models.generateContent({
+        model: GEMINI_MODEL,
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: `Danh sách từ vựng: ${vocabularyList}` }],
+          },
+        ],
+        config: {
+          systemInstruction: EXERCISE_SYSTEM_PROMPT,
+          responseMimeType: 'application/json',
+          temperature: 0.6,
+        },
+      });
+      break; // thành công thì thoát vòng lặp
+    } catch (err) {
+      const is503 = err?.status === 503 || err?.message?.includes('503') || err?.message?.includes('UNAVAILABLE');
+      if (is503 && attempt < maxRetries - 1) {
+        const delay = Math.pow(2, attempt) * 1000; // 1s → 2s → 4s
+        console.warn(`[Gemini] 503 UNAVAILABLE - retry ${attempt + 1}/${maxRetries} sau ${delay}ms`);
+        await new Promise(res => setTimeout(res, delay));
+      } else {
+        throw err;
+      }
+    }
+  }
 
   const rawText = response.text;
 
