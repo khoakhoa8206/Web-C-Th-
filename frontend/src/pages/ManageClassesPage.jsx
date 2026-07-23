@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, CardContainer, InputField, Modal } from "../components/ui";
 import { fetchClasses, createClass, updateClass, deleteClassById } from "../lib/sessionsApi";
 
- *
+/**
  * ManageClassesPage — quản lý danh sách khối lớp (CRUD).
  * Giáo viên phải tạo ít nhất 1 khối lớp trước khi thêm học sinh hoặc giao bài.
  */
@@ -53,7 +53,7 @@ export default function ManageClassesPage() {
     <div>
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
-          <h2 className="font-bold text-slate-900 text-lg">Quản lý khối lớp</h2>
+          <h2 className="font-bold text-slate text-lg">Quản lý khối lớp</h2>
           <p className="text-sm text-slate-900">
             Tạo, sửa, xoá các khối lớp. Phải có ít nhất 1 khối lớp để thêm học sinh và giao bài.
           </p>
@@ -68,7 +68,7 @@ export default function ManageClassesPage() {
       ) : classes.length === 0 ? (
         <CardContainer className="text-center py-12">
           <span className="text-4xl mb-3 block">📭</span>
-          <p className="font-semibold text-slate-900 mb-1">Chưa có khối lớp nào</p>
+          <p className="font-semibold text-slate mb-1">Chưa có khối lớp nào</p>
           <p className="text-sm text-slate-900 mb-4">
             Hãy tạo khối lớp đầu tiên để bắt đầu thêm học sinh và giao bài.
           </p>
@@ -82,7 +82,7 @@ export default function ManageClassesPage() {
             <CardContainer key={klass.id} className="flex flex-col gap-2">
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <h3 className="font-bold text-slate-900 text-base">{klass.name}</h3>
+                  <h3 className="font-bold text-slate text-base">{klass.name}</h3>
                   {klass.teacher_name && (
                     <p className="text-xs text-slate-900">GV: {klass.teacher_name}</p>
                   )}
@@ -110,15 +110,15 @@ export default function ManageClassesPage() {
         </div>
       )}
 
-      {  Form thêm/sửa * 
+      {/* Form thêm/sửa */}
       <ClassFormModal
         isOpen={formOpen}
         klass={editingClass}
         onClose={() => setFormOpen(false)}
         onSaved={reload}
-       
+      />
 
-      {  Xác nhận xoá * 
+      {/* Xác nhận xoá */}
       <Modal
         isOpen={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
@@ -126,7 +126,7 @@ export default function ManageClassesPage() {
       >
         <p className="text-sm text-slate-900 mb-4">
           Bạn có chắc muốn xoá lớp <strong>{deleteTarget?.name}</strong>?
-          <br  
+          <br />
           <span className="text-red-500 font-semibold">
             Tất cả học sinh, buổi học và bài tập trong lớp này sẽ bị xoá vĩnh viễn.
           </span>
@@ -149,7 +149,7 @@ export default function ManageClassesPage() {
   );
 }
 
- * Modal form thêm/sửa khối lớp */
+/** Modal form thêm/sửa khối lớp */
 function ClassFormModal({ isOpen, klass, onClose, onSaved }) {
   const [name, setName] = useState("");
   const [teacherName, setTeacherName] = useState("");
@@ -202,13 +202,13 @@ function ClassFormModal({ isOpen, klass, onClose, onSaved }) {
           onChange={(e) => setName(e.target.value)}
           error={error}
           autoFocus
-         
+        />
         <InputField
           label="Tên giáo viên (tuỳ chọn)"
           placeholder="VD: Cô Hoa"
           value={teacherName}
           onChange={(e) => setTeacherName(e.target.value)}
-         
+        />
         <div className="flex gap-3 pt-2">
           <Button type="button" variant="ghost" fullWidth onClick={onClose}>
             Huỷ

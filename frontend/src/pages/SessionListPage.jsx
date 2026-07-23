@@ -4,16 +4,16 @@ import { fetchGradeSessions } from "../lib/studentPracticeApi";
 import { CardContainer, Button } from "../components/ui";
 import MyHistoryModal from "../components/practice/MyHistoryModal";
 
- *
+/**
  * SessionListPage — danh sách buổi học PUBLISHED của mọi lớp.
  * Mục 9: Học sinh thấy bài tập của lớp khác nhưng không mở được.
- * Mục 7: Nút Vào làm  Xem lại theo deadline. Nút 🕘 xem lịch sử.
+ * Mục 7: Nút Vào làm / Xem lại theo deadline. Nút 🕘 xem lịch sử.
  * Mục 4: Badge đỏ nếu quá hạn + chưa đạt (chưa có thông tin attempt ở đây — để giai đoạn sau).
  */
 export default function SessionListPage() {
   const navigate = useNavigate();
   const [sessions, setSessions] = useState(null);
-  const [historyModal, setHistoryModal] = useState(null);   { sessionId, sessionTitle }
+  const [historyModal, setHistoryModal] = useState(null); // { sessionId, sessionTitle }
 
   useEffect(() => {
     let cancelled = false;
@@ -23,7 +23,7 @@ export default function SessionListPage() {
     return () => { cancelled = true; };
   }, []);
 
-    Nhóm sessions: lớp mình trước, lớp khác sau
+  // Nhóm sessions: lớp mình trước, lớp khác sau
   const ownSessions = sessions?.filter((s) => s.isOwnClass) ?? [];
   const otherSessions = sessions?.filter((s) => !s.isOwnClass) ?? [];
 
@@ -39,10 +39,10 @@ export default function SessionListPage() {
         className="flex items-center justify-between gap-3"
       >
         <div className="flex-1 min-w-0">
-          <p className="font-bold text-slate-900 truncate">{s.title}</p>
+          <p className="font-bold text-slate truncate">{s.title}</p>
           <div className="flex items-center gap-2 flex-wrap mt-0.5">
             {s.className && (
-              <span className="text-xs bg-gray-100 text-slate-900 px-2 py-0.5 rounded-full">
+              <span className="text-xs bg-surface-soft text-slate-900 px-2 py-0.5 rounded-full">
                 {s.className}
               </span>
             )}
@@ -60,7 +60,7 @@ export default function SessionListPage() {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          {  Link xếp hạng — hiện cho tất cả (lớp mình lẫn lớp khác) * 
+          {/* Link xếp hạng — hiện cho tất cả (lớp mình lẫn lớp khác) */}
           <Link
             to={`/leaderboard?class_id=${s.classId}&session_id=${s.sessionId}`}
             className="text-xs text-slate-900 hover:text-pink-600"
@@ -68,7 +68,7 @@ export default function SessionListPage() {
             🏆 Xếp hạng
           </Link>
 
-          {  Nút lịch sử và làm bài — CHỈ lớp mình * 
+          {/* Nút lịch sử và làm bài — CHỈ lớp mình */}
           {!locked && (
             <>
               <button
@@ -90,14 +90,14 @@ export default function SessionListPage() {
                 <Button
                   variant="primary"
                   size="sm"
-                  onClick={() => navigate(`/student/practice {s.sessionId}`)}
+                  onClick={() => navigate(`/student/practice/${s.sessionId}`)}
                 >
                   Vào làm
                 </Button>
               )}
-            < 
+            </>
           )}
-          {  Lớp khác: không có nút làm bài, chỉ có link xếp hạng ở trên * 
+          {/* Lớp khác: không có nút làm bài, chỉ có link xếp hạng ở trên */}
         </div>
       </CardContainer>
     );
@@ -110,7 +110,7 @@ export default function SessionListPage() {
           <Link to="/student" className="text-pink-600 font-semibold text-sm">
             ← Quay lại
           </Link>
-          <h1 className="text-xl font-bold text-slate-900 >Danh sách buổi học</h1>
+          <h1 className="text-xl font-bold text-slate">Danh sách buổi học</h1>
         </div>
 
         {sessions === null && (
@@ -121,41 +121,33 @@ export default function SessionListPage() {
           <p className="text-sm text-slate-900">Chưa có buổi học nào được giao.</p>
         )}
 
-        {  Bài tập của lớp mình * 
+        {/* Bài tập của lớp mình */}
         {ownSessions.length > 0 && (
-          <div className="space-y-3 mb-6 stagger">
-            <p className="text-sm font-bold text-slate-900 uppercase tracking-wide">Lớp của bạn</p>
-            {ownSessions.map((s, idx) => (
-              <div key={s.sessionId} className="" style={{ animationDelay: `${idx * 75}ms` }}>
-                {renderCard(s)}
-              </div>
-            ))}
+          <div className="space-y-3 mb-6">
+            <p className="text-xs font-bold text-slate-900 uppercase tracking-wide">Lớp của bạn</p>
+            {ownSessions.map(renderCard)}
           </div>
         )}
 
-        {  Bài tập của lớp khác * 
+        {/* Bài tập của lớp khác */}
         {otherSessions.length > 0 && (
-          <div className="space-y-3 stagger">
-            <div className="">
-              <p className="text-sm font-bold text-slate-900 uppercase tracking-wide">Các lớp khác</p>
-              <p className="text-sm text-slate-900">Chỉ xem, không thể làm bài</p>
+          <div className="space-y-3">
+            <div>
+              <p className="text-xs font-bold text-slate-900 uppercase tracking-wide">Các lớp khác</p>
+              <p className="text-xs text-slate-900">Chỉ xem, không thể làm bài</p>
             </div>
-            {otherSessions.map((s, idx) => (
-              <div key={s.sessionId} className="" style={{ animationDelay: `${(idx + 1) * 75}ms` }}>
-                {renderCard(s)}
-              </div>
-            ))}
+            {otherSessions.map(renderCard)}
           </div>
         )}
       </div>
 
-      {  Modal lịch sử * 
+      {/* Modal lịch sử */}
       <MyHistoryModal
         isOpen={!!historyModal}
         sessionId={historyModal?.sessionId}
         sessionTitle={historyModal?.sessionTitle}
         onClose={() => setHistoryModal(null)}
-       
+      />
     </div>
   );
 }

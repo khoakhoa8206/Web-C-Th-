@@ -2,7 +2,7 @@ import React from "react";
 import StudentRow from "./StudentRow";
 import { CardContainer } from "../ui";
 
- *
+/**
  * StudentTable — bảng danh sách học sinh của buổi học đang chọn.
  * Cột: Họ và Tên, Trạng thái, Số lần làm lại, Thời gian làm bài, Chi tiết.
  */
@@ -24,11 +24,11 @@ export default function StudentTable({ students, attemptsByStudent, isLoading, o
   }
 
   return (
-    <CardContainer padded={false} className="overflow-hidden ">
+    <CardContainer padded={false} className="overflow-hidden">
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="bg-gray-100 text-left text-xs font-bold text-slate-900 uppercase tracking-wide">
+            <tr className="bg-surface-soft text-left text-xs font-bold text-slate-900 uppercase tracking-wide">
               <th className="px-4 py-3">Họ và Tên</th>
               <th className="px-4 py-3">Trạng thái</th>
               <th className="px-4 py-3 text-center">Lần làm lại</th>
@@ -43,7 +43,7 @@ export default function StudentTable({ students, attemptsByStudent, isLoading, o
                 student={student}
                 attemptInfo={attemptsByStudent[student.id]}
                 onClickName={onClickName}
-               
+              />
             ))}
           </tbody>
         </table>

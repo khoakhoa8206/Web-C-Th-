@@ -1,7 +1,7 @@
 import React from "react";
-import { Button } from ".. ./ui";
+import { Button } from "../../ui";
 
- *
+/**
  * Tab Flashcard — chỉnh sửa trực tiếp (inline edit) từ, nghĩa, phiên âm
  * của từng thẻ bằng input trong suốt (giống contentEditable nhưng ổn định
  * hơn trên mọi trình duyệt/IME tiếng Việt).
@@ -26,20 +26,20 @@ export default function FlashcardEditTab({ items, onChange }) {
               value={item.word}
               onChange={(e) => updateItem(item.id, { word: e.target.value })}
               placeholder="Từ tiếng Anh"
-              className="rounded-xl border border-slate-300 px-3 py-2 text-sm font-bold text-slate-900 outline-none focus:border-pink-300 focus:bg-white"
-             
+              className="rounded-xl border border-transparent bg-pink-50/60 px-3 py-2 text-sm font-bold text-slate outline-none focus:border-pink-300 focus:bg-white"
+            />
             <input
               value={item.meaning}
               onChange={(e) => updateItem(item.id, { meaning: e.target.value })}
               placeholder="Nghĩa tiếng Việt"
-              className="rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none focus:border-pink-300 focus:bg-white"
-             
+              className="rounded-xl border border-transparent bg-pink-50/60 px-3 py-2 text-sm text-slate outline-none focus:border-pink-300 focus:bg-white"
+            />
             <input
               value={item.phonetic}
               onChange={(e) => updateItem(item.id, { phonetic: e.target.value })}
               placeholder="Phiên âm"
-              className="rounded-xl border border-slate-300 px-3 py-2 text-sm text-slate-900 outline-none focus:border-pink-300 focus:bg-white"
-             
+              className="rounded-xl border border-transparent bg-pink-50/60 px-3 py-2 text-sm text-slate-900 outline-none focus:border-pink-300 focus:bg-white"
+            />
           </div>
           <button
             onClick={() => removeItem(item.id)}

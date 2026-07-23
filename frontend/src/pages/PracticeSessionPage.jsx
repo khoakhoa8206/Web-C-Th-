@@ -28,5 +28,5 @@ export default function PracticeSessionPage() {
     );
   }
 
-  return <PracticeFlow sessionId={sessionId} exercises={exercises}  ;
+  return <PracticeFlow sessionId={sessionId} exercises={exercises} />;
 }

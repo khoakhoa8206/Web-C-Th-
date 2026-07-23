@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from "react";
 import { Button, InputField } from "../ui";
 
- *
+/**
  * Bài 3 — FillInBlanksComponent v2
  * Learning Mode: Hiển thị immediate feedback (đáp án đúng ngay lập tức)
  * 
@@ -35,7 +35,7 @@ function checkAnswer(studentAnswer, correctAnswers) {
 }
 
 export default function FillInBlanksComponent({ items, values, onChange, onNext }) {
-    Feedback state: { [itemId]: { isCorrect: bool, correctAnswer: string } }
+  // Feedback state: { [itemId]: { isCorrect: bool, correctAnswer: string } }
   const [feedback, setFeedback] = useState({});
 
   const isFilled = (item) => {
@@ -46,7 +46,7 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
   const filledCount = items.filter(isFilled).length;
   const allFilled = filledCount === items.length;
 
-    Tính toán memoized: số câu trả lời đúng
+  // Tính toán memoized: số câu trả lời đúng
   const correctCount = useMemo(() => {
     return items.filter((item) => {
       const result = checkAnswer(values[item.id], item.correct_answer || item.answer || "");
@@ -57,7 +57,7 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
   const handleChange = (id, val) => {
     onChange({ ...values, [id]: val });
 
-      Instant feedback: kiểm tra ngay khi user gõ
+    // Instant feedback: kiểm tra ngay khi user gõ
     if (val.trim()) {
       const item = items.find(i => i.id === id);
       const isCorrect = checkAnswer(val, item.correct_answer || item.answer || "");
@@ -70,7 +70,7 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
         },
       }));
     } else {
-        Clear feedback nếu xoá trắng
+      // Clear feedback nếu xoá trắng
       setFeedback((prev) => {
         const next = { ...prev };
         delete next[id];
@@ -80,13 +80,13 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
   };
 
   return (
-    <div className="flex flex-col gap-6 ">
+    <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
         <p className="text-sm text-slate-900 text-center">
-          Điền {items.length} từ vựng (Bài học — xem đáp án ngay) · Đã điền {filledCount} items.length}
+          Điền {items.length} từ vựng (Bài học — xem đáp án ngay) · Đã điền {filledCount}/{items.length}
         </p>
-        <p className="text-sm text-center text-success-text font-semibold">
-          ✓ Trả lời đúng: {correctCount} items.length}
+        <p className="text-xs text-center text-success-text font-semibold">
+          ✓ Trả lời đúng: {correctCount}/{items.length}
         </p>
       </div>
 
@@ -100,25 +100,24 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
             <div
               key={item.id}
               className={[
-                "rounded-2xl border-2 p-4 transition-all duration-200 ",
+                "rounded-2xl border-2 p-4 transition-all duration-200",
                 hasAnswered && isCorrect
-                  ? "bg-success-bg border-slate-300"
+                  ? "bg-success-bg border-success/30"
                   : hasAnswered && isCorrect === false
-                  ? "bg-danger-bg border-slate-300"
+                  ? "bg-danger-bg border-danger/30"
                   : "bg-white border-surface-border",
               ].join(" ")}
-              style={{ animationDelay: `${idx * 75}ms` }}
             >
               <div className="flex items-center justify-between mb-2">
-                <p className="text-sm text-slate-900 font-semibold">Câu {idx + 1}</p>
+                <p className="text-xs text-slate-900 font-semibold">Câu {idx + 1}</p>
                 {hasAnswered && (
                   <span
                     className={[
-                      "text-xs font-bold px-2 py-1 rounded-full ",
+                      "text-xs font-bold px-2 py-1 rounded-full",
                       isCorrect
-                        ? "bg-success text-success-text"
+                        ? "bg-success/10 text-success-text"
                         : isCorrect === false
-                        ? "bg-danger text-danger-text"
+                        ? "bg-danger/10 text-danger-text"
                         : "",
                     ].join(" ")}
                   >
@@ -127,7 +126,7 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
                 )}
               </div>
 
-              <p className="font-semibold text-slate-900 mb-3">{getPromptText(item)}</p>
+              <p className="font-semibold text-slate mb-3">{getPromptText(item)}</p>
 
               <InputField
                 label="Đáp án của bạn"
@@ -139,11 +138,11 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
                   hasAnswered && isCorrect ? "border-success" : "",
                   hasAnswered && isCorrect === false ? "border-danger" : "",
                 ].join(" ")}
-               
+              />
 
-              {  Show correct answer nếu sai * 
+              {/* Show correct answer nếu sai */}
               {hasAnswered && isCorrect === false && itemFeedback?.correctAnswer && (
-                <div className="mt-2 p-2 bg-success rounded-lg border border-slate-300">
+                <div className="mt-2 p-2 bg-success/5 rounded-lg border border-success/20">
                   <p className="text-xs text-success-text font-semibold">
                     Đáp án đúng: <span className="font-bold">{itemFeedback.correctAnswer}</span>
                   </p>

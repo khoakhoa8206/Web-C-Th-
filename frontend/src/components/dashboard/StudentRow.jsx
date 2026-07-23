@@ -2,20 +2,20 @@ import React from "react";
 
 function formatDuration(seconds) {
   if (seconds == null) return "—";
-  const m = Math.floor(seconds  60)
+  const m = Math.floor(seconds / 60)
     .toString()
     .padStart(2, "0");
   const s = (seconds % 60).toString().padStart(2, "0");
   return `${m}:${s}`;
 }
 
- *
+/**
  * StudentRow — 1 hàng trong bảng dashboard.
  * Color coding theo yêu cầu:
  *  - Đạt (score >= 80%)         → bg-emerald-50 text-emerald-700
- *  - Chưa làm  chưa đạt (<80%) → bg-red-50 text-red-700
+ *  - Chưa làm / chưa đạt (<80%) → bg-red-50 text-red-700
  * Khi có sự kiện realtime mới (justUpdated), toàn hàng nhấp nháy nhẹ
- * bằng  + ring tạm thời.
+ * bằng + ring tạm thời.
  */
 export default function StudentRow({ student, attemptInfo, onClickName }) {
   const attempt = attemptInfo?.latestAttempt;
@@ -34,13 +34,13 @@ export default function StudentRow({ student, attemptInfo, onClickName }) {
     <tr
       className={[
         "border-b border-surface-border last:border-0 transition-all duration-300",
-        attemptInfo?.justUpdated ? "bg-gray-100 " : "bg-white",
+        attemptInfo?.justUpdated ? "bg-pink-50/70" : "bg-white",
       ].join(" ")}
     >
       <td className="px-4 py-3">
         <button
           onClick={() => onClickName(student)}
-          className="font-semibold text-slate-900 hover:text-pink-600 hover:underline text-left"
+          className="font-semibold text-slate hover:text-pink-600 hover:underline text-left"
         >
           {student.full_name}
         </button>

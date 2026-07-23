@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../ui";
 
- *
+/**
  * VocabReviewStep — bảng từ vựng ôn lại trước khi làm bài.
  * Props: { vocabList, onReady, stepError }
  * vocabList: [{ id, word, meaning, phonetic (= "Ví dụ: ...") }]
@@ -12,7 +12,7 @@ export default function VocabReviewStep({ vocabList, onReady, stepError }) {
       <div className="max-w-2xl mx-auto px-4 pt-6">
         <div className="text-center mb-6">
           <p className="text-3xl mb-2">📚</p>
-          <h1 className="text-lg font-bold text-slate-900 >Ôn lại từ vựng trước khi làm bài</h1>
+          <h1 className="text-lg font-bold text-slate">Ôn lại từ vựng trước khi làm bài</h1>
           <p className="text-sm text-slate-900 mt-1">
             {vocabList.length} từ vựng · Học kỹ trước khi bấm Sẵn sàng
           </p>
@@ -34,12 +34,12 @@ export default function VocabReviewStep({ vocabList, onReady, stepError }) {
             {vocabList.map((item, idx) => (
               <div
                 key={item.id}
-                className={`grid grid-cols-3 gap-0 px-4 py-3 ${idx % 2 === 1 ? "bg-gray-100" : ""}`}
+                className={`grid grid-cols-3 gap-0 px-4 py-3 ${idx % 2 === 1 ? "bg-pink-50/30" : ""}`}
               >
-                <p className="text-sm font-bold text-slate-900 pr-2">{item.word}</p>
+                <p className="text-sm font-bold text-slate pr-2">{item.word}</p>
                 <p className="text-sm text-slate-900 pr-2">{item.meaning}</p>
                 <p className="text-sm text-slate-900 italic">
-                  {item.phonetic?.replace( Ví dụ:\s*/i, "") || "—"}
+                  {item.phonetic?.replace(/^Ví dụ:\s*/i, "") || "—"}
                 </p>
               </div>
             ))}
@@ -47,7 +47,7 @@ export default function VocabReviewStep({ vocabList, onReady, stepError }) {
         </div>
       </div>
 
-      {  Nút cố định góc dưới-phải * 
+      {/* Nút cố định góc dưới-phải */}
       <div className="fixed bottom-6 right-6">
         <Button variant="primary" onClick={onReady} className="shadow-lg">
           SẴN SÀNG LÀM BÀI →

@@ -1,9 +1,9 @@
 import React from "react";
-import { Button } from ".. ./ui";
+import { Button } from "../../ui";
 
 const OPTION_LABELS = ["A", "B", "C", "D"];
 
- * Tab Trắc nghiệm — chỉnh sửa câu hỏi, 4 đáp án, và chọn đáp án đúng. */
+/** Tab Trắc nghiệm — chỉnh sửa câu hỏi, 4 đáp án, và chọn đáp án đúng. */
 export default function MCQEditTab({ items, onChange }) {
   const updateQuestion = (id, patch) => {
     onChange(items.map((q) => (q.id === id ? { ...q, ...patch } : q)));
@@ -40,8 +40,8 @@ export default function MCQEditTab({ items, onChange }) {
               value={q.question}
               onChange={(e) => updateQuestion(q.id, { question: e.target.value })}
               placeholder="Nội dung câu hỏi"
-              className="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-sm font-bold text-slate-900 outline-none focus:border-pink-300 focus:bg-white"
-             
+              className="flex-1 rounded-xl border border-transparent bg-pink-50/60 px-3 py-2 text-sm font-bold text-slate outline-none focus:border-pink-300 focus:bg-white"
+            />
             <button
               onClick={() => removeQuestion(q.id)}
               className="text-danger-text text-xs font-semibold mt-2.5 shrink-0"
@@ -58,7 +58,7 @@ export default function MCQEditTab({ items, onChange }) {
                   "flex items-center gap-2 rounded-xl border px-3 py-2 cursor-pointer",
                   q.correctIndex === optIdx
                     ? "border-success bg-success-bg"
-                    : "border-surface-border bg-gray-100",
+                    : "border-surface-border bg-surface-soft",
                 ].join(" ")}
               >
                 <input
@@ -67,14 +67,14 @@ export default function MCQEditTab({ items, onChange }) {
                   checked={q.correctIndex === optIdx}
                   onChange={() => updateQuestion(q.id, { correctIndex: optIdx })}
                   className="accent-pink-500"
-                 
+                />
                 <span className="text-xs font-bold text-slate-900 w-4">{OPTION_LABELS[optIdx]}</span>
                 <input
                   value={opt.text}
                   onChange={(e) => updateOption(q.id, optIdx, e.target.value)}
                   placeholder={`Đáp án ${OPTION_LABELS[optIdx]}`}
-                  className="flex-1 bg-transparent text-sm text-slate-900 outline-none"
-                 
+                  className="flex-1 bg-transparent text-sm text-slate outline-none"
+                />
               </label>
             ))}
           </div>

@@ -23,7 +23,7 @@ export default function ManageStudentsPage() {
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
-  const [deleteClassTarget, setDeleteClassTarget] = useState(null);   class object
+  const [deleteClassTarget, setDeleteClassTarget] = useState(null); // class object
   const [deleteClassConfirm, setDeleteClassConfirm] = useState("");
   const [isDeletingClass, setIsDeletingClass] = useState(false);
 
@@ -47,7 +47,7 @@ export default function ManageStudentsPage() {
     try {
       await deleteClass(deleteClassTarget.id);
       setClasses((prev) => prev.filter((c) => c.id !== deleteClassTarget.id));
-        Chuyển sang lớp đầu tiên còn lại
+      // Chuyển sang lớp đầu tiên còn lại
       const remaining = classes.filter((c) => c.id !== deleteClassTarget.id);
       setGradeId(remaining[0]?.id || "");
       setDeleteClassTarget(null);
@@ -98,7 +98,7 @@ export default function ManageStudentsPage() {
     <div>
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
-          <h2 className="font-bold text-slate-900 text-lg">Quản lý danh sách lớp học</h2>
+          <h2 className="font-bold text-slate text-lg">Quản lý danh sách lớp học</h2>
           <p className="text-sm text-slate-900">Thêm, sửa, xoá học sinh và xuất báo cáo điểm.</p>
         </div>
         <div className="flex gap-2">
@@ -117,7 +117,7 @@ export default function ManageStudentsPage() {
           <select
             value={gradeId}
             onChange={(e) => setGradeId(e.target.value)}
-            className="w-full h-11 rounded-2xl border border-surface-border bg-white px-4 text-sm font-semibold text-slate-900 outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-200"
+            className="w-full h-11 rounded-2xl border border-surface-border bg-white px-4 text-sm font-semibold text-slate outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-200"
           >
             {classes.length === 0 && <option value="">Chưa có khối lớp</option>}
             {classes.map((klass) => (
@@ -152,7 +152,7 @@ export default function ManageStudentsPage() {
         isLoading={isLoading}
         onEdit={(student) => setFormState({ isOpen: true, student })}
         onDelete={setStudentToDelete}
-       
+      />
 
       <StudentFormModal
         isOpen={formState.isOpen}
@@ -160,19 +160,19 @@ export default function ManageStudentsPage() {
         classes={classes}
         onClose={() => setFormState({ isOpen: false, student: null })}
         onSubmit={handleSave}
-       
+      />
 
       <ConfirmDeleteModal
         student={studentToDelete}
         onClose={() => setStudentToDelete(null)}
         onConfirm={removeStudent}
-       
+      />
 
       <AddClassModal
         isOpen={isAddClassOpen}
         onClose={() => setIsAddClassOpen(false)}
         onSubmit={handleAddClass}
-       
+      />
 
       <Modal
         isOpen={!!deleteClassTarget}
@@ -188,7 +188,7 @@ export default function ManageStudentsPage() {
             ⚠️ <strong>Cảnh báo:</strong> Xoá khối lớp sẽ xoá cascade toàn bộ{" "}
             <strong>học sinh, bài tập và lịch sử làm bài</strong> của lớp này. Không thể hoàn tác.
           </div>
-          <p className="text-sm text-slate-900 >
+          <p className="text-sm text-slate">
             Gõ <strong>"{deleteClassTarget?.name}"</strong> để xác nhận:
           </p>
           <input
@@ -196,7 +196,7 @@ export default function ManageStudentsPage() {
             placeholder={deleteClassTarget?.name}
             value={deleteClassConfirm}
             onChange={(e) => setDeleteClassConfirm(e.target.value)}
-           
+          />
           <div className="flex gap-3">
             <Button variant="ghost" fullWidth onClick={() => setDeleteClassTarget(null)}>
               Huỷ

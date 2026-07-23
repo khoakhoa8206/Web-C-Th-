@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
- *
+/**
  * Modal — hộp thoại nền mờ dùng chung (lịch sử học sinh, form CRUD...).
  * Đóng bằng nút X, click ra ngoài, hoặc phím Esc.
  */
@@ -29,7 +29,7 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate backdrop-blur-sm p-4 "
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate/40 backdrop-blur-sm p-4"
       onClick={closeOnBackdrop ? onClose : undefined}
     >
       <div
@@ -40,7 +40,7 @@ export default function Modal({
         aria-label={title}
       >
         <div className="sticky top-0 bg-white flex items-center justify-between px-6 py-4 border-b border-surface-border rounded-t-3xl">
-          <h2 className="font-bold text-slate-900 text-lg">{title}</h2>
+          <h2 className="font-bold text-slate text-lg">{title}</h2>
           <button
             onClick={onClose}
             aria-label="Đóng"

@@ -1,6 +1,6 @@
 import React from "react";
 
- *
+/**
  * BadgeStatus — thẻ hiển thị trạng thái hoàn thành bài học/từ vựng.
  *
  * status: "completed" | "failed" | "in-progress"
@@ -9,8 +9,8 @@ import React from "react";
  *   in-progress -> "ĐANG HỌC"    (vàng pastel)
  *
  * Usage:
- *   <BadgeStatus status="completed"  
- *   <BadgeStatus status="failed" animate  
+ *   <BadgeStatus status="completed" />
+ *   <BadgeStatus status="failed" animate />
  */
 const STATUS_CONFIG = {
   completed: {
@@ -47,7 +47,7 @@ export default function BadgeStatus({ status = "in-progress", animate = false, c
         className,
       ].join(" ")}
     >
-      <span className={`h-1.5 w-1.5 rounded-full ${config.dot}`} aria-hidden="true"  
+      <span className={`h-1.5 w-1.5 rounded-full ${config.dot}`} aria-hidden="true" />
       {config.label}
     </span>
   );

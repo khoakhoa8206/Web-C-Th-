@@ -1,6 +1,6 @@
 import React from "react";
 
- *
+/**
  * CardContainer — khối chứa nội dung bo góc lớn, bóng mờ nhẹ.
  *
  * Variants nền: white | tinted (hồng cực nhạt)
@@ -28,7 +28,7 @@ export default function CardContainer({
   return (
     <Component
       className={[
-        "rounded-2xl shadow-sm border border-slate-300",
+        "rounded-2xl shadow-sm border border-surface-border/60",
         toneStyles[tone],
         padded ? "p-5" : "",
         hoverable

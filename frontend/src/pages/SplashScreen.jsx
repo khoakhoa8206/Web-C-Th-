@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
- *
+/**
  * SplashScreen — hiện khi đang chờ backend Render (free tier) cold-start.
  * Props:
  * - hasError: true khi đã hết số lần thử mà server vẫn chưa phản hồi
@@ -25,19 +25,19 @@ export default function SplashScreen({ hasError, onRetry }) {
                 key={i}
                 className="h-2.5 w-2.5 rounded-full bg-pink-400 animate-bounce"
                 style={{ animationDelay: `${i * 0.15}s` }}
-               
+              />
             ))}
           </div>
-          <p className="text-sm font-semibold text-slate-900 >Đang kết nối tới server…</p>
+          <p className="text-sm font-semibold text-slate">Đang kết nối tới server…</p>
           {showHint && (
             <p className="text-xs text-slate-900 text-center max-w-xs">
               Server đang cold-start sau thời gian không hoạt động, có thể mất 30–60 giây. Vui lòng chờ…
             </p>
           )}
-        < 
+        </>
       ) : (
         <>
-          <p className="text-sm font-semibold text-slate-900 >Không thể kết nối tới server</p>
+          <p className="text-sm font-semibold text-slate">Không thể kết nối tới server</p>
           <p className="text-xs text-slate-900">Kiểm tra kết nối mạng hoặc thử lại sau.</p>
           <button
             onClick={onRetry}
@@ -45,7 +45,7 @@ export default function SplashScreen({ hasError, onRetry }) {
           >
             Thử lại
           </button>
-        < 
+        </>
       )}
     </div>
   );
