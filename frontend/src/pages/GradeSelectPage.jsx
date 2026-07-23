@@ -3,11 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { getCurrentUser, clearToken } from "../lib/auth";
 import { CardContainer, Button } from "../components/ui";
 
-/**
- * Trang chào mừng học sinh — hiển thị tên và lớp từ JWT,
- * cung cấp nút đi thẳng đến danh sách buổi học.
- * (class_id trong JWT giờ là UUID nên không còn match với GRADES cố định)
- */
 export default function GradeSelectPage() {
   const navigate = useNavigate();
   const user = getCurrentUser();
@@ -25,25 +20,42 @@ export default function GradeSelectPage() {
             <h1 className="text-xl font-bold text-slate">
               Xin chào, {user?.full_name || user?.name || "Học sinh"} 👋
             </h1>
-            <p className="text-sm text-slate/60">Sẵn sàng cho buổi học hôm nay!</p>
+            <p className="text-sm text-slate/70">Sẵn sàng cho buổi học hôm nay!</p>
           </div>
           <Button variant="ghost" size="sm" onClick={handleLogout}>
             Đăng xuất
           </Button>
         </div>
 
-        <CardContainer
-          tone="tinted"
-          hoverable
-          onClick={() => navigate("/student/sessions")}
-          className="flex flex-col items-center justify-center text-center gap-3 py-10 cursor-pointer"
-        >
-          <span className="text-5xl" aria-hidden="true">📚</span>
-          <span className="font-bold text-lg text-slate">Vào danh sách buổi học</span>
-          <span className="text-sm text-slate/70">
-            Xem các buổi học được giao và bắt đầu làm bài
-          </span>
-        </CardContainer>
+        <div className="space-y-4">
+          {/* Bài tập */}
+          <CardContainer
+            tone="tinted"
+            hoverable
+            onClick={() => navigate("/student/sessions")}
+            className="flex items-center gap-4 py-6 cursor-pointer"
+          >
+            <span className="text-4xl" aria-hidden="true">📚</span>
+            <div>
+              <p className="font-bold text-lg text-slate">Bài tập</p>
+              <p className="text-sm text-slate/70">Xem bài được giao và bắt đầu làm bài</p>
+            </div>
+          </CardContainer>
+
+          {/* Bảng xếp hạng */}
+          <CardContainer
+            tone="white"
+            hoverable
+            onClick={() => navigate("/leaderboard")}
+            className="flex items-center gap-4 py-6 cursor-pointer"
+          >
+            <span className="text-4xl" aria-hidden="true">🏆</span>
+            <div>
+              <p className="font-bold text-lg text-slate">Bảng xếp hạng</p>
+              <p className="text-sm text-slate/70">Xem xếp hạng trong khối lớp của bạn</p>
+            </div>
+          </CardContainer>
+        </div>
       </div>
     </div>
   );

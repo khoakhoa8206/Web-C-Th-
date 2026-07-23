@@ -26,9 +26,9 @@ export default function VocabReviewStep({ vocabList, onReady, stepError }) {
 
         <div className="bg-white rounded-2xl border border-surface-border overflow-hidden">
           <div className="grid grid-cols-3 gap-0 border-b border-surface-border bg-pink-50 px-4 py-2">
-            <p className="text-xs font-bold text-slate/60 uppercase tracking-wide">Từ vựng</p>
-            <p className="text-xs font-bold text-slate/60 uppercase tracking-wide">Nghĩa</p>
-            <p className="text-xs font-bold text-slate/60 uppercase tracking-wide">Ví dụ</p>
+            <p className="text-xs font-bold text-slate/70 uppercase tracking-wide">Từ vựng</p>
+            <p className="text-xs font-bold text-slate/70 uppercase tracking-wide">Phiên âm</p>
+            <p className="text-xs font-bold text-slate/70 uppercase tracking-wide">Nghĩa</p>
           </div>
           <div className="max-h-[60vh] overflow-y-auto divide-y divide-surface-border">
             {vocabList.map((item, idx) => (
@@ -36,11 +36,11 @@ export default function VocabReviewStep({ vocabList, onReady, stepError }) {
                 key={item.id}
                 className={`grid grid-cols-3 gap-0 px-4 py-3 ${idx % 2 === 1 ? "bg-pink-50/30" : ""}`}
               >
-                <p className="text-sm font-bold text-slate pr-2">{item.word}</p>
-                <p className="text-sm text-slate/80 pr-2">{item.meaning}</p>
-                <p className="text-sm text-slate/70 italic">
-                  {item.phonetic?.replace(/^Ví dụ:\s*/i, "") || "—"}
+                <p className="text-base font-bold text-slate pr-2">{item.word}</p>
+                <p className="text-sm text-pink-600 font-medium pr-2">
+                  {item.phonetic && !item.phonetic.startsWith("Ví dụ") ? item.phonetic : "…"}
                 </p>
+                <p className="text-sm text-slate font-medium">{item.meaning}</p>
               </div>
             ))}
           </div>

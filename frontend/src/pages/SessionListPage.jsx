@@ -60,14 +60,6 @@ export default function SessionListPage() {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          {/* Link xếp hạng — hiện cho tất cả (lớp mình lẫn lớp khác) */}
-          <Link
-            to={`/leaderboard?class_id=${s.classId}&session_id=${s.sessionId}`}
-            className="text-xs text-slate/70 hover:text-pink-600"
-          >
-            🏆 Xếp hạng
-          </Link>
-
           {/* Nút lịch sử và làm bài — CHỈ lớp mình */}
           {!locked && (
             <>
@@ -133,8 +125,7 @@ export default function SessionListPage() {
         {otherSessions.length > 0 && (
           <div className="space-y-3">
             <div>
-              <p className="text-xs font-bold text-slate/70 uppercase tracking-wide">Các lớp khác</p>
-              <p className="text-xs text-slate/70">Chỉ xem, không thể làm bài</p>
+              <p className="text-xs font-bold text-slate/70 uppercase tracking-wide">Các lớp khác (chỉ xem)</p>
             </div>
             {otherSessions.map(renderCard)}
           </div>

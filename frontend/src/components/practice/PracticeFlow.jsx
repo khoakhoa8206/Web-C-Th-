@@ -10,6 +10,32 @@ import VocabReviewStep from "./VocabReviewStep";
 import { startAttempt, updateAttemptStep, submitAttempt } from "../../lib/studentPracticeApi";
 import { shuffleMcqQuestions } from "../../utils/shuffle";
 
+// ---- AI tự động thêm phiên âm IPA cho từ vựng ----
+async function fetchPhoneticMap(words) {
+  if (!words || words.length === 0) return {};
+  try {
+    const wordList = words.map((w) => w.word).join(", ");
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-6",
+        max_tokens: 500,
+        messages: [{
+          role: "user",
+          content: `Provide IPA phonetic transcription for each English word below. Respond ONLY with a JSON object like {"word": "/phonetic/", ...}. No explanation, no markdown, no extra text.\n\nWords: ${wordList}`,
+        }],
+      }),
+    });
+    const data = await response.json();
+    const text = (data.content || []).map((c) => c.text || "").join("");
+    const clean = text.replace(/\`\`\`json|\`\`\`/g, "").trim();
+    return JSON.parse(clean);
+  } catch {
+    return {};
+  }
+}
+
 const TOTAL_STEPS = 4;
 const STEP_LABELS = ["Flashcard", "Nối từ", "Điền từ", "Trắc nghiệm"];
 
@@ -68,6 +94,14 @@ export default function PracticeFlow({ sessionId, exercises }) {
   const [stepError, setStepError] = useState(null);
 
   const intervalRef = useRef(null);
+  const [phoneticMap, setPhoneticMap] = useState({});
+
+  // Lấy phiên âm AI cho toàn bộ từ vựng khi load
+  useEffect(() => {
+    const words = exercises.flashcards || [];
+    if (words.length === 0) return;
+    fetchPhoneticMap(words).then(setPhoneticMap);
+  }, [exercises.flashcards]);
 
   // ---- Adapt exercises data cho từng component ----
   const flashcardVocab = useMemo(
@@ -76,9 +110,10 @@ export default function PracticeFlow({ sessionId, exercises }) {
         id: f.id,
         word: f.word,
         meaning: f.meaning,
-        phonetic: f.example ? `Ví dụ: ${f.example}` : "",
+        phonetic: phoneticMap[f.word] || (f.example ? `Ví dụ: ${f.example}` : ""),
+        example: f.example || "",
       })),
-    [exercises.flashcards]
+    [exercises.flashcards, phoneticMap]
   );
 
   const matchUpVocab = useMemo(
@@ -104,14 +139,17 @@ export default function PracticeFlow({ sessionId, exercises }) {
     [exercises.mcqs]
   );
 
-  // ---- Timer chạy ngầm khi phase === "playing" ----
+  // ---- Timer chỉ chạy ở bước 4 (Trắc nghiệm) ----
   useEffect(() => {
-    if (phase !== "playing") return undefined;
+    if (phase !== "playing" || step !== 4) {
+      clearInterval(intervalRef.current);
+      return undefined;
+    }
     intervalRef.current = setInterval(() => {
       setTimerSeconds((prev) => prev + 1);
     }, 1000);
     return () => clearInterval(intervalRef.current);
-  }, [phase]);
+  }, [phase, step]);
 
   // ---- Lưu Draft vào LocalStorage ----
   useEffect(() => {
@@ -253,19 +291,17 @@ export default function PracticeFlow({ sessionId, exercises }) {
   }, [answers, attemptId, timerSeconds]);
 
   // ---- RETRY MCQ ONLY ----
-  // Chỉ xoá MCQ selections + shuffle lại, giữ answers từ step 1-3
-  // Không tạo attempt mới — dùng attempt hiện tại
+  // Chỉ xoá MCQ selections, giữ answers từ step 1-3 và tiếp tục đếm thời gian
   const handleRetryMcqOnly = useCallback(() => {
     setResult(null);
     setPhase("playing");
     setStep(4);
-    // Reset MCQ selections, nhưng giữ shuffledQuestions
+    // Reset MCQ selections, giữ shuffledQuestions
+    // KHÔNG reset timerSeconds — thời gian tính tiếp từ lần làm trước
     updateAnswers("mcq", (prev) => ({
       ...prev,
       selections: {},
     }));
-    // Bắt đầu timer lại
-    setTimerSeconds(0);
   }, [updateAnswers]);
 
   // ---- RETRY FROM START ----
@@ -317,12 +353,16 @@ export default function PracticeFlow({ sessionId, exercises }) {
           <Link to="/student" className="text-xs text-slate/70" onClick={handleExitAndClearDraft}>
             ← Thoát
           </Link>
-          <div className="flex items-center gap-1.5 bg-white rounded-full px-3 py-1 shadow-sm">
-            <span aria-hidden="true">⏱</span>
-            <span className="text-sm font-bold text-pink-600 tabular-nums">
-              {formatTime(timerSeconds)}
-            </span>
-          </div>
+          {step === 4 ? (
+            <div className="flex items-center gap-1.5 bg-white rounded-full px-3 py-1 shadow-sm">
+              <span aria-hidden="true">⏱</span>
+              <span className="text-sm font-bold text-pink-600 tabular-nums">
+                {formatTime(timerSeconds)}
+              </span>
+            </div>
+          ) : (
+            <div className="h-7" />
+          )}
         </div>
 
         <div className="mb-6">

@@ -107,8 +107,15 @@ export default function App() {
             }
           />
 
-          {/* ---------------- Bảng xếp hạng (public, không cần đăng nhập) ---------------- */}
-          <Route path="/leaderboard" element={<LeaderboardPage />} />
+          {/* ---------------- Bảng xếp hạng (cần đăng nhập, chỉ xem nội bộ khối) ---------------- */}
+          <Route
+            path="/leaderboard"
+            element={
+              <ProtectedRoute>
+                <LeaderboardPage />
+              </ProtectedRoute>
+            }
+          />
 
           {/* ---------------- Teacher View ---------------- */}
           <Route path="/teacher/*" element={<TeacherApp />} />
