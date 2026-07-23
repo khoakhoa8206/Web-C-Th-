@@ -23,7 +23,7 @@ export default function MCQComponent({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-slate/50">
+        <p className="text-base text-slate">
           Đã trả lời {answeredCount}/{questions.length} câu
         </p>
         <button
@@ -38,7 +38,7 @@ export default function MCQComponent({
       <div className="space-y-5">
         {questions.map((q, qIdx) => (
           <div key={q.id} className="bg-white rounded-2xl border border-surface-border p-4">
-            <p className="font-bold text-slate mb-3">
+            <p className="font-bold text-lg text-slate mb-3">
               Câu {qIdx + 1}. {q.question}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -50,7 +50,7 @@ export default function MCQComponent({
                     type="button"
                     onClick={() => onSelect(q.id, optIdx)}
                     className={[
-                      "text-left px-4 py-2.5 rounded-xl border text-sm font-medium",
+                      "text-left px-4 py-2.5 rounded-xl border text-base font-medium",
                       "transition-all duration-150 flex items-center gap-2",
                       isSelected
                         ? "bg-pink-400 border-pink-400 text-white shadow-button"

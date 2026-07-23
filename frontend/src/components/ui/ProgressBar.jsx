@@ -42,7 +42,7 @@ export default function ProgressBar({
                       ? "bg-success text-white"
                       : isActive
                       ? "bg-pink-400 text-white ring-4 ring-pink-100"
-                      : "bg-surface-soft text-slate/40 border border-surface-border",
+                      : "bg-surface-soft text-slate/60 border border-surface-border",
                   ].join(" ")}
                 >
                   {isCompleted ? "✓" : stepNumber}

@@ -20,7 +20,7 @@ export default function Tabs({ items, activeId, onChange, className = "" }) {
               "transition-all duration-200",
               isActive
                 ? "bg-white text-pink-600 shadow-sm"
-                : "text-slate/50 hover:text-slate",
+                : "text-slate/70 hover:text-slate",
             ].join(" ")}
           >
             {item.icon && <span aria-hidden="true">{item.icon}</span>}

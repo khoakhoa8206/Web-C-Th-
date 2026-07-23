@@ -38,7 +38,7 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <InputField
             label="Họ và Tên"
-            placeholder="Ví dụ: Nguyễn Văn A"
+            placeholder="Nhập họ và tên"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             error={touched && !fullName.trim() ? "Vui lòng nhập họ và tên." : error}

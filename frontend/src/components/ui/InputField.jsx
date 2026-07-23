@@ -61,7 +61,7 @@ export default function InputField({
           aria-invalid={!!error}
           aria-describedby={error ? `${inputId}-error` : undefined}
           className={[
-            "w-full h-11 rounded-2xl bg-white text-slate placeholder:text-slate/40",
+            "w-full h-11 rounded-2xl bg-white text-slate placeholder:text-slate/60",
             "border transition-all duration-200 ease-out outline-none",
             icon ? "pl-11 pr-4" : "px-4",
             error
@@ -80,7 +80,7 @@ export default function InputField({
         </p>
       ) : (
         helperText && (
-          <p className="text-xs text-slate/60">{helperText}</p>
+          <p className="text-xs text-slate/70">{helperText}</p>
         )
       )}
     </div>

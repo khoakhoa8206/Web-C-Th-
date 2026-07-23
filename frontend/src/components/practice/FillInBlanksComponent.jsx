@@ -82,10 +82,10 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <p className="text-sm text-slate/50 text-center">
+        <p className="text-base text-slate text-center">
           Điền {items.length} từ vựng (Bài học — xem đáp án ngay) · Đã điền {filledCount}/{items.length}
         </p>
-        <p className="text-xs text-center text-success-text font-semibold">
+        <p className="text-sm text-center text-success-text font-bold">
           ✓ Trả lời đúng: {correctCount}/{items.length}
         </p>
       </div>
@@ -109,11 +109,11 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
               ].join(" ")}
             >
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs text-slate/40 font-semibold">Câu {idx + 1}</p>
+                <p className="text-sm text-slate font-semibold">Câu {idx + 1}</p>
                 {hasAnswered && (
                   <span
                     className={[
-                      "text-xs font-bold px-2 py-1 rounded-full",
+                      "text-sm font-bold px-2 py-1 rounded-full",
                       isCorrect
                         ? "bg-success/10 text-success-text"
                         : isCorrect === false
@@ -126,7 +126,7 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
                 )}
               </div>
 
-              <p className="font-semibold text-slate mb-3">{getPromptText(item)}</p>
+              <p className="font-bold text-lg text-slate mb-3">{getPromptText(item)}</p>
 
               <InputField
                 label="Đáp án của bạn"

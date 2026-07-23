@@ -45,13 +45,13 @@ export default function FlashcardComponent({ vocabList, flippedIds, onFlip, onNe
             {!isCurrentSeen && (
               <span className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-pink-300" aria-hidden="true" />
             )}
-            <p className="text-2xl font-bold text-slate">{current.word}</p>
+            <p className="text-5xl font-bold text-slate">{current.word}</p>
             <p className="text-xs text-slate/40">Chạm để xem nghĩa</p>
           </div>
 
           {/* Mặt sau — nghĩa tiếng Việt + phát âm */}
           <div className="flip-card-face flip-card-face-back absolute inset-0 rounded-3xl bg-pink-400 text-white shadow-card flex flex-col items-center justify-center gap-2 p-6">
-            <p className="text-2xl font-bold">{current.meaning}</p>
+            <p className="text-4xl font-bold">{current.meaning}</p>
             <p className="text-sm text-white/80">{current.phonetic}</p>
           </div>
         </div>

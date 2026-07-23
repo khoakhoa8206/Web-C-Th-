@@ -34,7 +34,7 @@ export default function StudentRow({ student, attemptInfo, onClickName }) {
     <tr
       className={[
         "border-b border-surface-border last:border-0 transition-all duration-300",
-        attemptInfo?.justUpdated ? "bg-pink-50/70 animate-fade-in-up" : "bg-white",
+        attemptInfo?.justUpdated ? "bg-pink-50/70" : "bg-white",
       ].join(" ")}
     >
       <td className="px-4 py-3">

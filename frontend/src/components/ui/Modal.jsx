@@ -29,7 +29,7 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate/40 backdrop-blur-sm p-4 animate-fade-in-up"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate/40 backdrop-blur-sm p-4"
       onClick={closeOnBackdrop ? onClose : undefined}
     >
       <div

@@ -84,20 +84,7 @@ export default {
       },
 
       animation: {
-        // Entrance animations
-        'fade-in-up': 'fadeInUp 0.5s cubic-bezier(0.215, 0.61, 0.355, 1) forwards',
-        'fade-in-scale': 'fadeInScale 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards',
-        'slide-in-left': 'slideInLeft 0.4s cubic-bezier(0.215, 0.61, 0.355, 1) forwards',
-        
-        // Micro-interactions
-        'pop-in': 'popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards',
-        'bounce-slight': 'bounceSlightly 1s ease-in-out infinite',
-        'pulse-soft': 'pulseSoft 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        
-        // Drag animations
-        'drag-glow': 'dragGlow 1.5s ease-in-out infinite',
-        
-        // Existing animations (keep for compatibility)
+        // Keep only standard Tailwind animations
         'bounce': 'bounce 1s infinite',
         'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'spin': 'spin 1s linear infinite',
@@ -105,41 +92,7 @@ export default {
       },
 
       keyframes: {
-        // Entrance keyframes
-        fadeInUp: {
-          from: { opacity: '0', transform: 'translateY(12px)' },
-          to: { opacity: '1', transform: 'translateY(0)' },
-        },
-        fadeInScale: {
-          from: { opacity: '0', transform: 'scale(0.95)' },
-          to: { opacity: '1', transform: 'scale(1)' },
-        },
-        slideInLeft: {
-          from: { opacity: '0', transform: 'translateX(-16px)' },
-          to: { opacity: '1', transform: 'translateX(0)' },
-        },
-
-        // Micro-interactions
-        popIn: {
-          from: { opacity: '0', transform: 'scale(0.8)' },
-          to: { opacity: '1', transform: 'scale(1)' },
-        },
-        bounceSlightly: {
-          '0%, 100%': { transform: 'translateY(0)' },
-          '50%': { transform: 'translateY(-4px)' },
-        },
-        pulseSoft: {
-          '0%, 100%': { opacity: '1' },
-          '50%': { opacity: '0.7' },
-        },
-
-        // Drag animation
-        dragGlow: {
-          '0%, 100%': { boxShadow: '0 0 0 0 rgba(255, 133, 151, 0.4)' },
-          '50%': { boxShadow: '0 0 0 8px rgba(255, 133, 151, 0)' },
-        },
-
-        // Keep existing keyframes for compatibility
+        // Standard Tailwind keyframes
         spin: {
           from: { transform: 'rotate(0deg)' },
           to: { transform: 'rotate(360deg)' },
