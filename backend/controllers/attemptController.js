@@ -12,12 +12,15 @@ const TOTAL_STEPS = 4; // 1: flashcards, 2: match_up, 3: fill_in_blanks, 4: mcqs
  * Tạo 1 bản ghi attempts mới với current_step = 1, attempt_number tự tăng theo học sinh + session.
  */
 const startAttempt = asyncHandler(async (req, res) => {
-  const { session_id } = req.body;
+  const { session_id, skip_to_step } = req.body;
   const student_id = req.user.student_id; // lấy từ JWT đã xác thực
 
   if (!session_id) {
     throw new ApiError(400, 'Vui lòng cung cấp session_id.');
   }
+
+  // skip_to_step chỉ cho phép nhảy tới step 4 (MCQ retry)
+  const initialStep = skip_to_step === 4 ? 4 : 1;
 
   const { data: session, error: sessionError } = await supabase
     .from('sessions')
@@ -60,7 +63,7 @@ const startAttempt = asyncHandler(async (req, res) => {
       session_id,
       student_id,
       attempt_number: attemptNumber,
-      current_step: 1,
+      current_step: initialStep,
       status: 'IN_PROGRESS',
     })
     .select()

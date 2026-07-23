@@ -260,18 +260,24 @@ export default function PracticeFlow({ sessionId, exercises }) {
   }, [answers, attemptId, timerSeconds]);
 
   // ---- RETRY MCQ ONLY ----
-  // Chỉ xoá MCQ selections, giữ answers từ step 1-3 và tiếp tục đếm thời gian
-  const handleRetryMcqOnly = useCallback(() => {
-    setResult(null);
-    setPhase("playing");
-    setStep(4);
-    // Reset MCQ selections, giữ shuffledQuestions
-    // KHÔNG reset timerSeconds — thời gian tính tiếp từ lần làm trước
-    updateAnswers("mcq", (prev) => ({
-      ...prev,
-      selections: {},
-    }));
-  }, [updateAnswers]);
+  // Tạo attempt MỚI bắt đầu thẳng từ step 4 (MCQ), reset timer về 0
+  const handleRetryMcqOnly = useCallback(async () => {
+    setStepError(null);
+    try {
+      const data = await startAttempt(sessionId, 4);
+      setAttemptId(data.attempt_id);
+      setTimerSeconds(0);
+      setResult(null);
+      setPhase("playing");
+      setStep(4);
+      updateAnswers("mcq", (prev) => ({
+        ...prev,
+        selections: {},
+      }));
+    } catch (err) {
+      setStepError(err.message || "Không thể bắt đầu làm lại bài 4.");
+    }
+  }, [sessionId, updateAnswers]);
 
   // ---- RETRY FROM START ----
   // Reset toàn bộ, tạo attempt mới

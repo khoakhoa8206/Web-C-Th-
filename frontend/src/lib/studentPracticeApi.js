@@ -104,10 +104,13 @@ export async function fetchMcqQuestions() {
  * Bắt đầu lượt làm bài.
  * POST /api/attempts/start
  */
-export async function startAttempt(sessionId) {
+export async function startAttempt(sessionId, skipToStep) {
   const json = await apiFetch('/api/attempts/start', {
     method: 'POST',
-    body: JSON.stringify({ session_id: sessionId }),
+    body: JSON.stringify({
+      session_id: sessionId,
+      ...(skipToStep ? { skip_to_step: skipToStep } : {}),
+    }),
   });
   return json.data;
 }
