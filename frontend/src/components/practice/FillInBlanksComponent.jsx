@@ -82,7 +82,7 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <p className="text-sm text-slate-900 text-center">
+        <p className="text-sm text-slate/50 text-center">
           Điền {items.length} từ vựng (Bài học — xem đáp án ngay) · Đã điền {filledCount}/{items.length}
         </p>
         <p className="text-xs text-center text-success-text font-semibold">
@@ -109,7 +109,7 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
               ].join(" ")}
             >
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs text-slate-900 font-semibold">Câu {idx + 1}</p>
+                <p className="text-xs text-slate/40 font-semibold">Câu {idx + 1}</p>
                 {hasAnswered && (
                   <span
                     className={[

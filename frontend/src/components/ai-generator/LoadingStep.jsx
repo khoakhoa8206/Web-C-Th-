@@ -12,7 +12,7 @@ export default function LoadingStep() {
         <span className="absolute inset-0 flex items-center justify-center text-xl">✨</span>
       </div>
       <p className="text-sm font-semibold text-pink-600">AI đang soạn bài cho bạn...</p>
-      <p className="text-xs text-slate-900">Đang dựng Flashcard, Nối từ, Điền từ và Trắc nghiệm</p>
+      <p className="text-xs text-slate/40">Đang dựng Flashcard, Nối từ, Điền từ và Trắc nghiệm</p>
     </div>
   );
 }

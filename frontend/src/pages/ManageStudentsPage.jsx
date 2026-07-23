@@ -99,7 +99,7 @@ export default function ManageStudentsPage() {
       <div className="flex items-center justify-between mb-4 flex-wrap gap-3">
         <div>
           <h2 className="font-bold text-slate text-lg">Quản lý danh sách lớp học</h2>
-          <p className="text-sm text-slate-900">Thêm, sửa, xoá học sinh và xuất báo cáo điểm.</p>
+          <p className="text-sm text-slate/50">Thêm, sửa, xoá học sinh và xuất báo cáo điểm.</p>
         </div>
         <div className="flex gap-2">
           <Button variant="secondary" onClick={handleExportCsv} isLoading={isExporting}>
@@ -112,7 +112,7 @@ export default function ManageStudentsPage() {
       </div>
 
       <div className="mb-4 max-w-xs">
-        <label className="block text-xs font-semibold text-slate-900 mb-1">Khối lớp</label>
+        <label className="block text-xs font-semibold text-slate/50 mb-1">Khối lớp</label>
         <div className="flex gap-2">
           <select
             value={gradeId}

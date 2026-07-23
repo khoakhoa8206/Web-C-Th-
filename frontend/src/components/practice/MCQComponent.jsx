@@ -23,7 +23,7 @@ export default function MCQComponent({
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-900">
+        <p className="text-sm text-slate/50">
           Đã trả lời {answeredCount}/{questions.length} câu
         </p>
         <button

@@ -15,7 +15,7 @@ function formatDuration(seconds) {
  *  - Đạt (score >= 80%)         → bg-emerald-50 text-emerald-700
  *  - Chưa làm / chưa đạt (<80%) → bg-red-50 text-red-700
  * Khi có sự kiện realtime mới (justUpdated), toàn hàng nhấp nháy nhẹ
- * bằng + ring tạm thời.
+ * bằng animate-fade-in-up + ring tạm thời.
  */
 export default function StudentRow({ student, attemptInfo, onClickName }) {
   const attempt = attemptInfo?.latestAttempt;
@@ -34,7 +34,7 @@ export default function StudentRow({ student, attemptInfo, onClickName }) {
     <tr
       className={[
         "border-b border-surface-border last:border-0 transition-all duration-300",
-        attemptInfo?.justUpdated ? "bg-pink-50/70" : "bg-white",
+        attemptInfo?.justUpdated ? "bg-pink-50/70 animate-fade-in-up" : "bg-white",
       ].join(" ")}
     >
       <td className="px-4 py-3">
@@ -51,10 +51,10 @@ export default function StudentRow({ student, attemptInfo, onClickName }) {
           {hasAttempted && ` (${attempt.score}%)`}
         </span>
       </td>
-      <td className="px-4 py-3 text-center text-sm text-slate-900 tabular-nums">
+      <td className="px-4 py-3 text-center text-sm text-slate/70 tabular-nums">
         {attemptInfo?.attemptsCount ?? 0}
       </td>
-      <td className="px-4 py-3 text-center text-sm text-slate-900 tabular-nums">
+      <td className="px-4 py-3 text-center text-sm text-slate/70 tabular-nums">
         {formatDuration(attempt?.duration_seconds)}
       </td>
       <td className="px-4 py-3 text-center">

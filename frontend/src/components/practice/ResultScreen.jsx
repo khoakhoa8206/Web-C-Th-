@@ -41,7 +41,7 @@ export default function ResultScreen({
           <h1 className="text-3xl font-extrabold bg-gradient-to-r from-pink-600 to-pink-500 bg-clip-text text-transparent mb-2">
             {passed ? "HOÀN THÀNH" : "CHƯA ĐẠT"}
           </h1>
-          <p className="text-slate-900 text-sm mb-6">
+          <p className="text-slate/60 text-sm mb-6">
             {passed
               ? "Tuyệt vời! Bạn đã nắm vững từ vựng buổi học này."
               : "Cố lên! Hãy lựa chọn cách ôn lại phù hợp nhất."}
@@ -51,17 +51,17 @@ export default function ResultScreen({
           <div className="grid grid-cols-3 gap-3 mb-6 p-4 bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl">
             <div className="text-center">
               <p className="text-3xl font-extrabold text-pink-600">{score}%</p>
-              <p className="text-xs text-slate-900 mt-1">Điểm số</p>
+              <p className="text-xs text-slate/40 mt-1">Điểm số</p>
             </div>
             <div className="text-center border-l border-r border-pink-200">
               <p className="text-3xl font-extrabold text-slate">
                 {correctCount}/{total}
               </p>
-              <p className="text-xs text-slate-900 mt-1">Câu đúng</p>
+              <p className="text-xs text-slate/40 mt-1">Câu đúng</p>
             </div>
             <div className="text-center">
               <p className="text-3xl font-extrabold text-slate">{formatTime(timerSeconds)}</p>
-              <p className="text-xs text-slate-900 mt-1">Thời gian</p>
+              <p className="text-xs text-slate/40 mt-1">Thời gian</p>
             </div>
           </div>
 
@@ -114,7 +114,7 @@ export default function ResultScreen({
         {!passed && (
           <CardContainer tone="white">
             <h2 className="font-bold text-slate mb-3">📚 Chọn cách ôn lại</h2>
-            <p className="text-sm text-slate-900 mb-4">
+            <p className="text-sm text-slate/60 mb-4">
               Bạn cần đạt 80% trở lên. Hãy lựa chọn một trong hai cách ôn lại dưới đây:
             </p>
           </CardContainer>
@@ -135,7 +135,7 @@ export default function ResultScreen({
                 ].join(" ")}
               >
                 <span className="text-lg">🔄</span> Làm lại bài 4
-                <p className="text-xs text-slate-900 mt-1">(Chỉ làm lại câu hỏi trắc nghiệm)</p>
+                <p className="text-xs text-slate/50 mt-1">(Chỉ làm lại câu hỏi trắc nghiệm)</p>
               </button>
 
               {/* Option 2: Full Restart */}

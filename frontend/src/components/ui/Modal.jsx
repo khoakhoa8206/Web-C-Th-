@@ -29,7 +29,7 @@ export default function Modal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate/40 backdrop-blur-sm p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate/40 backdrop-blur-sm p-4 animate-fade-in-up"
       onClick={closeOnBackdrop ? onClose : undefined}
     >
       <div
@@ -44,7 +44,7 @@ export default function Modal({
           <button
             onClick={onClose}
             aria-label="Đóng"
-            className="h-8 w-8 rounded-full flex items-center justify-center text-slate-900 hover:bg-pink-50 hover:text-pink-600 transition-colors"
+            className="h-8 w-8 rounded-full flex items-center justify-center text-slate/40 hover:bg-pink-50 hover:text-pink-600 transition-colors"
           >
             ✕
           </button>

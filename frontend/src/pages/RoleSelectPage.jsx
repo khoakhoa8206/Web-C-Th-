@@ -15,19 +15,19 @@ export default function RoleSelectPage() {
       <div className="w-full max-w-md text-center">
         <p className="text-4xl mb-2">📖</p>
         <h1 className="text-xl font-bold text-slate mb-1">Học Từ Vựng Tiếng Anh</h1>
-        <p className="text-sm text-slate-900 mb-8">Bạn đang truy cập với vai trò nào?</p>
+        <p className="text-sm text-slate/50 mb-8">Bạn đang truy cập với vai trò nào?</p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <CardContainer hoverable onClick={() => navigate("/student")} className="py-8">
             <p className="text-3xl mb-2">🧑‍🎓</p>
             <p className="font-bold text-slate">Học sinh</p>
-            <p className="text-xs text-slate-900 mt-1">Vào học từ vựng</p>
+            <p className="text-xs text-slate/40 mt-1">Vào học từ vựng</p>
           </CardContainer>
 
           <CardContainer hoverable onClick={() => navigate("/teacher")} className="py-8" tone="tinted">
             <p className="text-3xl mb-2">🧑‍🏫</p>
             <p className="font-bold text-slate">Giáo viên</p>
-            <p className="text-xs text-slate-900 mt-1">Dashboard quản lý lớp học</p>
+            <p className="text-xs text-slate/40 mt-1">Dashboard quản lý lớp học</p>
           </CardContainer>
         </div>
       </div>

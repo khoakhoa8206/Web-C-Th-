@@ -61,11 +61,11 @@ export default function MyHistoryModal({ sessionId, sessionTitle, isOpen, onClos
       maxWidth="max-w-lg"
     >
       {history === null && (
-        <p className="text-sm text-slate-900 text-center py-6">Đang tải lịch sử...</p>
+        <p className="text-sm text-slate/40 text-center py-6">Đang tải lịch sử...</p>
       )}
 
       {history?.length === 0 && (
-        <p className="text-sm text-slate-900 text-center py-6">Bạn chưa làm bài này lần nào.</p>
+        <p className="text-sm text-slate/40 text-center py-6">Bạn chưa làm bài này lần nào.</p>
       )}
 
       {history && history.length > 0 && (
@@ -88,7 +88,7 @@ export default function MyHistoryModal({ sessionId, sessionTitle, isOpen, onClos
                 <BadgeStatus status={attempt.passed ? "completed" : "failed"} />
               </div>
 
-              <p className="text-sm text-slate-900">
+              <p className="text-sm text-slate/60">
                 Điểm: <span className="font-bold text-slate">{attempt.score}%</span>
                 {" · "}
                 <span className="font-bold text-slate">
@@ -111,10 +111,10 @@ export default function MyHistoryModal({ sessionId, sessionTitle, isOpen, onClos
               {expandedId === attempt.id && (
                 <div className="mt-3 bg-surface-soft rounded-xl p-3">
                   {loadingDetailId === attempt.id && (
-                    <p className="text-xs text-slate-900">Đang tải…</p>
+                    <p className="text-xs text-slate/40">Đang tải…</p>
                   )}
                   {detailCache[attempt.id] && !detailCache[attempt.id].can_view_detail && (
-                    <p className="text-xs text-slate-900">
+                    <p className="text-xs text-slate/60">
                       Hãy làm lại và đạt ≥80% để xem đáp án.
                     </p>
                   )}

@@ -42,7 +42,7 @@ export default function ProgressBar({
                       ? "bg-success text-white"
                       : isActive
                       ? "bg-pink-400 text-white ring-4 ring-pink-100"
-                      : "bg-surface-soft text-slate-900 border border-surface-border",
+                      : "bg-surface-soft text-slate/40 border border-surface-border",
                   ].join(" ")}
                 >
                   {isCompleted ? "✓" : stepNumber}
@@ -72,7 +72,7 @@ export default function ProgressBar({
     <div className={`w-full ${className}`}>
       {showLabel && (
         <div className="flex justify-between mb-1.5">
-          <span className="text-xs font-semibold text-slate-900">Tiến trình</span>
+          <span className="text-xs font-semibold text-slate/70">Tiến trình</span>
           <span className="text-xs font-bold text-slate">{clamped}%</span>
         </div>
       )}

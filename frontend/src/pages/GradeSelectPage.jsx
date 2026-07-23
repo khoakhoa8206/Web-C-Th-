@@ -25,7 +25,7 @@ export default function GradeSelectPage() {
             <h1 className="text-xl font-bold text-slate">
               Xin chào, {user?.full_name || user?.name || "Học sinh"} 👋
             </h1>
-            <p className="text-sm text-slate-900">Sẵn sàng cho buổi học hôm nay!</p>
+            <p className="text-sm text-slate/60">Sẵn sàng cho buổi học hôm nay!</p>
           </div>
           <Button variant="ghost" size="sm" onClick={handleLogout}>
             Đăng xuất
@@ -40,7 +40,7 @@ export default function GradeSelectPage() {
         >
           <span className="text-5xl" aria-hidden="true">📚</span>
           <span className="font-bold text-lg text-slate">Vào danh sách buổi học</span>
-          <span className="text-sm text-slate-900">
+          <span className="text-sm text-slate/50">
             Xem các buổi học được giao và bắt đầu làm bài
           </span>
         </CardContainer>

@@ -84,7 +84,7 @@ function DroppableSlot({ id, label, matchedWord, isCorrect, onRemove, isDragMode
           ? "bg-pink-100 border-pink-400 text-pink-600 ring-2 ring-pink-400 shadow-md"
           : !isDragMode && isHoverTarget
           ? "bg-pink-100 border-pink-400 ring-2 ring-pink-400"
-          : "bg-surface-soft border-surface-border text-slate-900",
+          : "bg-surface-soft border-surface-border text-slate/50",
       ].join(" ")}
     >
       <span>{label}</span>
@@ -96,7 +96,7 @@ function DroppableSlot({ id, label, matchedWord, isCorrect, onRemove, isDragMode
             e.stopPropagation();
             onRemove();
           }}
-          className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold bg-white/70 hover:bg-white text-slate-900 hover:text-danger-text transition-colors"
+          className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold bg-white/70 hover:bg-white text-slate/60 hover:text-danger-text transition-colors"
         >
           ×
         </button>
@@ -197,7 +197,7 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
-        <p className="text-sm text-slate-900 text-center">
+        <p className="text-sm text-slate/50 text-center">
           {isDragMode
             ? "Kéo từ tiếng Anh vào đúng ô nghĩa tiếng Việt"
             : "Chọn từ → Sau đó chọn ô để ghép"}
@@ -215,7 +215,7 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
               "px-4 py-2 rounded-full text-xs font-semibold transition-all",
               inputMode === "drag"
                 ? "bg-pink-600 text-white shadow-md"
-                : "bg-surface-soft text-slate-900 hover:bg-pink-100",
+                : "bg-surface-soft text-slate/60 hover:bg-pink-100",
             ].join(" ")}
           >
             🖱 Kéo thả
@@ -229,7 +229,7 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
               "px-4 py-2 rounded-full text-xs font-semibold transition-all",
               inputMode === "clickSelect"
                 ? "bg-pink-600 text-white shadow-md"
-                : "bg-surface-soft text-slate-900 hover:bg-pink-100",
+                : "bg-surface-soft text-slate/60 hover:bg-pink-100",
             ].join(" ")}
           >
             👆 Click ghép
@@ -251,7 +251,7 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
               />
             ))}
             {remainingWords.length === 0 && (
-              <p className="text-center text-xs text-slate-900 py-4">Đã kéo hết từ! 🎉</p>
+              <p className="text-center text-xs text-slate/30 py-4">Đã kéo hết từ! 🎉</p>
             )}
           </div>
           <div className="space-y-2">

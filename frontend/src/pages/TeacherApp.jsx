@@ -43,9 +43,9 @@ export default function TeacherApp() {
     return (
       <div className="min-h-screen bg-surface-soft flex items-center justify-center p-6">
         <CardContainer className="w-full max-w-sm">
-          <Link to="/" className="text-xs text-slate-900 hover:text-pink-600">← Trang chủ</Link>
+          <Link to="/" className="text-xs text-slate/40 hover:text-pink-600">← Trang chủ</Link>
           <h1 className="font-extrabold text-slate text-xl mt-4">Đăng nhập giáo viên</h1>
-          <p className="text-sm text-slate-900 mt-1 mb-6">Nhập mật khẩu được cấu hình trên server.</p>
+          <p className="text-sm text-slate/50 mt-1 mb-6">Nhập mật khẩu được cấu hình trên server.</p>
           <form onSubmit={handleLogin} className="space-y-4">
             <InputField label="Mật khẩu" type="password" value={password} onChange={(e) => setPassword(e.target.value)} error={error} autoFocus />
             <Button type="submit" variant="primary" fullWidth isLoading={isLoggingIn}>Đăng nhập</Button>
@@ -60,11 +60,11 @@ export default function TeacherApp() {
       <header className="bg-white border-b border-surface-border sticky top-0 z-30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:justify-between">
           <div>
-            <Link to="/" className="text-xs text-slate-900 hover:text-pink-600">
+            <Link to="/" className="text-xs text-slate/40 hover:text-pink-600">
               ← Trang chủ
             </Link>
             <h1 className="font-extrabold text-slate text-lg">Teacher Dashboard</h1>
-            <p className="text-xs text-slate-900">Theo dõi tiến độ học sinh theo thời gian thực</p>
+            <p className="text-xs text-slate/40">Theo dõi tiến độ học sinh theo thời gian thực</p>
           </div>
           <Tabs items={TABS} activeId={activeTab} onChange={setActiveTab} className="sm:w-auto" />
           <Button variant="secondary" onClick={() => { clearTeacherToken(); setAuthenticated(false); }}>
