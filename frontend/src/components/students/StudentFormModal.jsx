@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, InputField } from "../ui";
 
-/**
+ *
  * StudentFormModal — dùng chung cho cả "Thêm học sinh mới" và "Chỉnh sửa".
  * Nếu `student` có giá trị → chế độ sửa (điền sẵn dữ liệu); ngược lại → thêm mới.
  */
@@ -46,14 +46,14 @@ export default function StudentFormModal({ isOpen, student, classes, onClose, on
           onChange={(e) => setFullName(e.target.value)}
           error={error}
           autoFocus
-        />
+         
 
         <div>
-          <label className="block text-sm font-semibold text-slate mb-1.5">Khối lớp</label>
+          <label className="block text-sm font-semibold text-slate-900 mb-1.5">Khối lớp</label>
           <select
             value={classId}
             onChange={(e) => setClassId(e.target.value)}
-            className="w-full h-11 rounded-2xl border border-surface-border bg-white px-4 text-sm font-semibold text-slate outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-200"
+            className="w-full h-11 rounded-2xl border border-surface-border bg-white px-4 text-sm font-semibold text-slate-900 outline-none focus:border-pink-400 focus:ring-2 focus:ring-pink-200"
           >
             {classes.map((klass) => (
               <option key={klass.id} value={klass.id}>

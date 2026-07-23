@@ -6,27 +6,27 @@ import AddClassModal from "../components/students/AddClassModal";
 import { fetchClasses, createClass } from "../lib/sessionsApi";
 import { generateLessonFromVocab, updateExercises, publishSession, scheduleSession } from "../lib/aiGeneratorApi";
 
-/**
+ *
  * AIGeneratorDashboard — Tab "Soạn bài bằng AI".
  * State machine 4 bước: input → loading → preview (bao gồm cả bước 4: kích hoạt).
  */
 export default function AIGeneratorDashboard() {
-  const [step, setStep] = useState("input"); // input | loading | preview
+  const [step, setStep] = useState("input");   input | loading | preview
   const [classes, setClasses] = useState([]);
   const [classId, setClassId] = useState("");
   const [sessionId, setSessionId] = useState(null);
   const [vocabText, setVocabText] = useState("");
   const [lessonData, setLessonData] = useState(null);
   const [error, setError] = useState("");
-  const [isSaving, setIsSaving] = useState(null); // null | "DRAFT" | "PUBLISHED"
+  const [isSaving, setIsSaving] = useState(null);   null | "DRAFT" | "PUBLISHED"
   const [savedStatus, setSavedStatus] = useState(null);
   const [isAddClassOpen, setIsAddClassOpen] = useState(false);
   const [publishDeadline, setPublishDeadline] = useState("");
-  // true nếu bước "lưu nội dung bài tập" (updateExercises) đã thành công nhưng
-  // "giao bài" (publishSession) thất bại — cho phép bấm lại chỉ để thử giao bài,
-  // tránh gọi lại updateExercises không cần thiết.
+    true nếu bước "lưu nội dung bài tập" (updateExercises) đã thành công nhưng
+    "giao bài" (publishSession) thất bại — cho phép bấm lại chỉ để thử giao bài,
+    tránh gọi lại updateExercises không cần thiết.
   const [exercisesSavedPendingPublish, setExercisesSavedPendingPublish] = useState(false);
-  // Khoá đồng bộ (không phụ thuộc re-render) để chặn double-click gọi API trùng lặp.
+    Khoá đồng bộ (không phụ thuộc re-render) để chặn double-click gọi API trùng lặp.
   const savingLockRef = useRef(false);
 
   useEffect(() => {
@@ -61,13 +61,13 @@ export default function AIGeneratorDashboard() {
 
   const handleChangeSection = (section, items) => {
     setLessonData((prev) => ({ ...prev, [section]: items }));
-    // Nội dung vừa đổi nên nếu trước đó đang ở trạng thái "chỉ cần giao bài",
-    // phải lưu lại nội dung mới trước khi giao.
+      Nội dung vừa đổi nên nếu trước đó đang ở trạng thái "chỉ cần giao bài",
+      phải lưu lại nội dung mới trước khi giao.
     setExercisesSavedPendingPublish(false);
   };
 
   const handleSave = async (status) => {
-    // Chặn double-click / bấm nhiều lần
+      Chặn double-click  bấm nhiều lần
     if (savingLockRef.current) return;
     savingLockRef.current = true;
 
@@ -112,7 +112,7 @@ export default function AIGeneratorDashboard() {
     setSavedStatus(null);
     setError("");
     try {
-      // Lưu nội dung trước khi đặt lịch (nếu chưa lưu lần này)
+        Lưu nội dung trước khi đặt lịch (nếu chưa lưu lần này)
       if (!exercisesSavedPendingPublish) {
         await updateExercises(sessionId, lessonData);
         setExercisesSavedPendingPublish(true);
@@ -146,11 +146,11 @@ export default function AIGeneratorDashboard() {
             vocabText={vocabText}
             onVocabTextChange={setVocabText}
             onGenerate={handleGenerate}
-          />
-        </>
+           
+        < 
       )}
 
-      {step === "loading" && <LoadingStep />}
+      {step === "loading" && <LoadingStep  }
 
       {step === "preview" && lessonData && (
         <>
@@ -169,15 +169,15 @@ export default function AIGeneratorDashboard() {
             savedStatus={savedStatus}
             publishDeadline={publishDeadline}
             onDeadlineChange={setPublishDeadline}
-          />
-        </>
+           
+        < 
       )}
 
       <AddClassModal
         isOpen={isAddClassOpen}
         onClose={() => setIsAddClassOpen(false)}
         onSubmit={handleAddClass}
-      />
+       
     </div>
   );
 }

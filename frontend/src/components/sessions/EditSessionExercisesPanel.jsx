@@ -4,7 +4,7 @@ import FlashcardEditTab from "../ai-generator/tabs/FlashcardEditTab";
 import MatchUpEditTab from "../ai-generator/tabs/MatchUpEditTab";
 import FillInBlanksEditTab from "../ai-generator/tabs/FillInBlanksEditTab";
 import MCQEditTab from "../ai-generator/tabs/MCQEditTab";
-import { fetchSessionExercises, updateSessionExercises } from "../../lib/sessionsApi";
+import { fetchSessionExercises, updateSessionExercises } from ".. ./lib/sessionsApi";
 
 const EXERCISE_TABS = [
   { id: "flashcards", label: "Flashcard", icon: "🃏" },
@@ -13,7 +13,7 @@ const EXERCISE_TABS = [
   { id: "mcq", label: "Trắc nghiệm", icon: "☑️" },
 ];
 
-/**
+ *
  * EditSessionExercisesPanel — màn hình toàn màn hình để giáo viên sửa trực tiếp
  * nội dung 4 loại bài tập (flashcards, match_up, fill_in_blanks, mcqs) của MỘT
  * session bất kể trạng thái DRAFT hay PUBLISHED (mục 7 trong FIX_REQUESTS).
@@ -81,18 +81,18 @@ export default function EditSessionExercisesPanel({ sessionId, onClose, onSaved 
   };
 
   return (
-    <div className="fixed inset-0 z-40 bg-surface-soft overflow-y-auto">
+    <div className="fixed inset-0 z-40 bg-gray-100 overflow-y-auto">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6">
         <div className="flex items-center justify-between mb-4">
           <div>
             <button
               type="button"
               onClick={onClose}
-              className="text-xs text-slate-600 hover:text-pink-600 mb-1"
+              className="text-xs text-slate-900 hover:text-pink-600 mb-1"
             >
               ← Quay lại danh sách bài tập
             </button>
-            <h2 className="font-extrabold text-slate text-lg truncate">
+            <h2 className="font-extrabold text-slate-900 text-lg truncate">
               Sửa nội dung: {sessionTitle || "..."}
             </h2>
           </div>
@@ -104,7 +104,7 @@ export default function EditSessionExercisesPanel({ sessionId, onClose, onSaved 
           </p>
         )}
 
-        {isLoading && <p className="text-sm text-slate-600">Đang tải nội dung bài tập...</p>}
+        {isLoading && <p className="text-sm text-slate-900">Đang tải nội dung bài tập...</p>}
         {loadError && (
           <p className="text-sm text-danger-text bg-danger-bg rounded-xl px-4 py-2 mb-4">
             {loadError}
@@ -114,7 +114,7 @@ export default function EditSessionExercisesPanel({ sessionId, onClose, onSaved 
         {!isLoading && lessonData && (
           <>
             <CardContainer className="mb-4">
-              <Tabs items={EXERCISE_TABS} activeId={activeTab} onChange={setActiveTab} />
+              <Tabs items={EXERCISE_TABS} activeId={activeTab} onChange={setActiveTab}  
             </CardContainer>
 
             <CardContainer className="mb-4">
@@ -122,25 +122,25 @@ export default function EditSessionExercisesPanel({ sessionId, onClose, onSaved 
                 <FlashcardEditTab
                   items={lessonData.flashcards}
                   onChange={(items) => handleChangeSection("flashcards", items)}
-                />
+                 
               )}
               {activeTab === "matchup" && (
                 <MatchUpEditTab
                   items={lessonData.matchup}
                   onChange={(items) => handleChangeSection("matchup", items)}
-                />
+                 
               )}
               {activeTab === "fillblanks" && (
                 <FillInBlanksEditTab
                   items={lessonData.fillblanks}
                   onChange={(items) => handleChangeSection("fillblanks", items)}
-                />
+                 
               )}
               {activeTab === "mcq" && (
                 <MCQEditTab
                   items={lessonData.mcq}
                   onChange={(items) => handleChangeSection("mcq", items)}
-                />
+                 
               )}
             </CardContainer>
 
@@ -163,7 +163,7 @@ export default function EditSessionExercisesPanel({ sessionId, onClose, onSaved 
                 💾 Lưu thay đổi nội dung bài tập
               </Button>
             </div>
-          </>
+          < 
         )}
       </div>
     </div>

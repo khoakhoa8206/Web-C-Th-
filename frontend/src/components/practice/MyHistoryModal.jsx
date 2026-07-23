@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Modal, BadgeStatus } from "../ui";
-import { fetchMyAttemptHistory, fetchAttemptDetail } from "../../lib/studentPracticeApi";
+import { fetchMyAttemptHistory, fetchAttemptDetail } from ".. ./lib/studentPracticeApi";
 
 function formatDuration(seconds) {
-  const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const m = Math.floor(seconds  60).toString().padStart(2, "0");
   const s = (seconds % 60).toString().padStart(2, "0");
   return `${m}:${s}`;
 }
@@ -17,7 +17,7 @@ function formatDateTime(iso) {
   });
 }
 
-/**
+ *
  * MyHistoryModal — học sinh xem lịch sử làm bài của chính mình.
  * Props: { sessionId, sessionTitle, isOpen, onClose }
  */
@@ -41,13 +41,13 @@ export default function MyHistoryModal({ sessionId, sessionTitle, isOpen, onClos
       return;
     }
     setExpandedId(attemptId);
-    if (detailCache[attemptId]) return; // đã có cache
+    if (detailCache[attemptId]) return;   đã có cache
     setLoadingDetailId(attemptId);
     try {
       const data = await fetchAttemptDetail(attemptId);
       setDetailCache((prev) => ({ ...prev, [attemptId]: data }));
     } catch {
-      /* bỏ qua */
+        bỏ qua */
     } finally {
       setLoadingDetailId(null);
     }
@@ -61,11 +61,11 @@ export default function MyHistoryModal({ sessionId, sessionTitle, isOpen, onClos
       maxWidth="max-w-lg"
     >
       {history === null && (
-        <p className="text-sm text-slate-600 text-center py-6">Đang tải lịch sử...</p>
+        <p className="text-sm text-slate-900 text-center py-6">Đang tải lịch sử...</p>
       )}
 
       {history?.length === 0 && (
-        <p className="text-sm text-slate-600 text-center py-6">Bạn chưa làm bài này lần nào.</p>
+        <p className="text-sm text-slate-900 text-center py-6">Bạn chưa làm bài này lần nào.</p>
       )}
 
       {history && history.length > 0 && (
@@ -78,24 +78,24 @@ export default function MyHistoryModal({ sessionId, sessionTitle, isOpen, onClos
                   attempt.passed ? "bg-success" : "bg-danger",
                 ].join(" ")}
                 aria-hidden="true"
-              />
+               
 
               <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
-                <p className="font-bold text-slate">
+                <p className="font-bold text-slate-900 >
                   Lần {attempt.attempt_number ?? idx + 1}
                   {attempt.passed && <span className="text-success-text"> (Đạt)</span>}
                 </p>
-                <BadgeStatus status={attempt.passed ? "completed" : "failed"} />
+                <BadgeStatus status={attempt.passed ? "completed" : "failed"}  
               </div>
 
-              <p className="text-sm text-slate-700">
-                Điểm: <span className="font-bold text-slate">{attempt.score}%</span>
+              <p className="text-sm text-slate-900">
+                Điểm: <span className="font-bold text-slate-900 >{attempt.score}%</span>
                 {" · "}
-                <span className="font-bold text-slate">
-                  {attempt.correct_count}/{attempt.total_questions}
+                <span className="font-bold text-slate-900 >
+                  {attempt.correct_count} attempt.total_questions}
                 </span> câu đúng
                 {attempt.duration_seconds != null && (
-                  <> · {formatDuration(attempt.duration_seconds)}</>
+                  <> · {formatDuration(attempt.duration_seconds)}< 
                 )}
                 {" · "}
                 {formatDateTime(attempt.created_at)}
@@ -109,12 +109,12 @@ export default function MyHistoryModal({ sessionId, sessionTitle, isOpen, onClos
               </button>
 
               {expandedId === attempt.id && (
-                <div className="mt-3 bg-surface-soft rounded-xl p-3">
+                <div className="mt-3 bg-gray-100 rounded-xl p-3">
                   {loadingDetailId === attempt.id && (
-                    <p className="text-xs text-slate-600">Đang tải…</p>
+                    <p className="text-xs text-slate-900">Đang tải…</p>
                   )}
                   {detailCache[attempt.id] && !detailCache[attempt.id].can_view_detail && (
-                    <p className="text-xs text-slate-700">
+                    <p className="text-xs text-slate-900">
                       Hãy làm lại và đạt ≥80% để xem đáp án.
                     </p>
                   )}

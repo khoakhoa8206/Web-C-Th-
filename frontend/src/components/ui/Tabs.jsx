@@ -1,13 +1,13 @@
 import React from "react";
 
-/**
+ *
  * Tabs — thanh chuyển tab dùng chung (điều hướng chính, hoặc 4 tab bài tập
  * trong AI Generator).
  * items: [{ id, label, icon? }]
  */
 export default function Tabs({ items, activeId, onChange, className = "" }) {
   return (
-    <div className={`flex gap-1 bg-surface-soft rounded-2xl p-1 ${className}`}>
+    <div className={`flex gap-1 bg-gray-100 rounded-2xl p-1 ${className}`}>
       {items.map((item) => {
         const isActive = item.id === activeId;
         return (
@@ -20,7 +20,7 @@ export default function Tabs({ items, activeId, onChange, className = "" }) {
               "transition-all duration-200",
               isActive
                 ? "bg-white text-pink-600 shadow-sm"
-                : "text-slate-600 hover:text-slate",
+                : "text-slate-900 hover:text-slate-900 ,
             ].join(" ")}
           >
             {item.icon && <span aria-hidden="true">{item.icon}</span>}

@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from "react";
 import { Button } from "../ui";
-import { fisherYatesShuffle } from "../../utils/shuffle";
+import { fisherYatesShuffle } from ".. ./utils/shuffle";
 
-/**
+ *
  * Bài 2 — MatchUpComponent v3 (Click-Select Mode Only)
  * Trò chơi nối từ: nhấn chọn từ tiếng Anh → chọn ô nghĩa tiếng Việt → ghép
  * 
@@ -19,7 +19,7 @@ function SelectableWord({ id, label, isSelected, onSelectWord }) {
       onClick={() => onSelectWord(id)}
       className={[
         "w-full text-left px-4 py-3 rounded-2xl border font-semibold text-sm",
-        "bg-white border-pink-200 text-slate shadow-sm touch-none select-none",
+        "bg-white border-pink-200 text-slate-900 shadow-sm touch-none select-none",
         "transition-all duration-200 cursor-pointer",
         isSelected
           ? "bg-pink-100 border-pink-500 ring-2 ring-pink-400"
@@ -43,12 +43,12 @@ function MatchSlot({ id, label, matchedWord, isCorrect, onRemove, isHoverTarget,
         "px-4 py-3 rounded-2xl border-2 border-dashed text-sm font-semibold min-h-[52px]",
         "flex items-center justify-between gap-2 transition-all duration-300 cursor-pointer",
         isMatched && isCorrect
-          ? "bg-success-bg border-success text-success-text animate-pop-in"
+          ? "bg-success-bg border-success text-success-text "
           : isMatched && !isCorrect
           ? "bg-danger-bg border-danger text-danger-text"
           : isHoverTarget
           ? "bg-pink-100 border-pink-400 ring-2 ring-pink-400"
-          : "bg-surface-soft border-surface-border text-slate-600",
+          : "bg-gray-100 border-surface-border text-slate-900",
       ].join(" ")}
     >
       <span>{label}</span>
@@ -60,7 +60,7 @@ function MatchSlot({ id, label, matchedWord, isCorrect, onRemove, isHoverTarget,
             e.stopPropagation();
             onRemove();
           }}
-          className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold bg-white/70 hover:bg-white text-slate-600 hover:text-danger-text transition-colors"
+          className="shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold bg-white hover:bg-white text-slate-900 hover:text-danger-text transition-colors"
         >
           ×
         </button>
@@ -72,7 +72,7 @@ function MatchSlot({ id, label, matchedWord, isCorrect, onRemove, isHoverTarget,
 export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChange, onNext }) {
   const [selectedWordId, setSelectedWordId] = useState(null);
 
-  // Trộn thứ tự cột trái/phải một lần khi vào bài
+    Trộn thứ tự cột trái/phải một lần khi vào bài
   const [shuffledWords] = useState(() => fisherYatesShuffle(vocabList));
   const [shuffledMeanings] = useState(() => fisherYatesShuffle(vocabList));
 
@@ -90,7 +90,7 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
     return map;
   }, [matchedPairs, vocabList]);
 
-  // ---- CLICK-SELECT MODE ----
+    ---- CLICK-SELECT MODE ----
   const handleSelectWord = (wordId) => {
     if (selectedWordId === wordId) {
       setSelectedWordId(null);
@@ -102,15 +102,15 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
   const handleClickSlot = (meaningId) => {
     if (selectedWordId) {
       const nextPairs = { ...matchedPairs };
-      // Gỡ ghép cũ của từ này (nếu có)
+        Gỡ ghép cũ của từ này (nếu có)
       delete nextPairs[selectedWordId];
-      // Gỡ ghép cũ của ô này (nếu có)
+        Gỡ ghép cũ của ô này (nếu có)
       Object.keys(nextPairs).forEach((existingWordId) => {
         if (nextPairs[existingWordId] === meaningId) {
           delete nextPairs[existingWordId];
         }
       });
-      // Ghép cặp mới
+        Ghép cặp mới
       nextPairs[selectedWordId] = meaningId;
       onMatchChange(nextPairs);
       setSelectedWordId(null);
@@ -131,10 +131,10 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
   };
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in-up">
+    <div className="flex flex-col gap-6 ">
       <div className="flex flex-col gap-3">
-        <p className="text-sm text-slate-600 text-center">
-          Chọn từ → Sau đó chọn ô để ghép · Đã nối đúng <span className="font-semibold">{correctCount}/{vocabList.length}</span>
+        <p className="text-sm text-slate-900 text-center">
+          Chọn từ → Sau đó chọn ô để ghép · Đã nối đúng <span className="font-semibold">{correctCount} vocabList.length}</span>
         </p>
       </div>
 
@@ -147,10 +147,10 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
               label={w.word}
               isSelected={selectedWordId === w.id}
               onSelectWord={handleSelectWord}
-            />
+             
           ))}
           {remainingWords.length === 0 && (
-            <p className="text-center text-sm text-slate-600 py-4">Đã ghép hết từ! 🎉</p>
+            <p className="text-center text-sm text-slate-900 py-4">Đã ghép hết từ! 🎉</p>
           )}
         </div>
         <div className="space-y-2">
@@ -164,13 +164,13 @@ export default function MatchUpComponent({ vocabList, matchedPairs, onMatchChang
               onRemove={() => handleRemove(m.id)}
               isHoverTarget={selectedWordId !== null}
               onClickSlot={handleClickSlot}
-            />
+             
           ))}
         </div>
       </div>
 
       {selectedWordId && (
-        <div className="bg-pink-100 border border-pink-300 rounded-xl px-4 py-2 text-sm text-slate-700 flex items-center justify-between animate-fade-in-scale">
+        <div className="bg-pink-100 border border-pink-300 rounded-xl px-4 py-2 text-sm text-slate-900 flex items-center justify-between ">
           <span>
             Đã chọn: <span className="font-semibold">{shuffledWords.find(w => w.id === selectedWordId)?.word}</span>
           </span>

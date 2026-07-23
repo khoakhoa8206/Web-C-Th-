@@ -1,9 +1,9 @@
 import React from "react";
-import { Button } from "../../ui";
+import { Button } from ".. ./ui";
 
 const OPTION_LABELS = ["A", "B", "C", "D"];
 
-/** Tab Trắc nghiệm — chỉnh sửa câu hỏi, 4 đáp án, và chọn đáp án đúng. */
+ * Tab Trắc nghiệm — chỉnh sửa câu hỏi, 4 đáp án, và chọn đáp án đúng. */
 export default function MCQEditTab({ items, onChange }) {
   const updateQuestion = (id, patch) => {
     onChange(items.map((q) => (q.id === id ? { ...q, ...patch } : q)));
@@ -35,13 +35,13 @@ export default function MCQEditTab({ items, onChange }) {
       {items.map((q, qIdx) => (
         <div key={q.id} className="bg-white rounded-2xl border border-surface-border p-4">
           <div className="flex items-start gap-2 mb-3">
-            <span className="text-xs font-bold text-slate-600 mt-2.5 w-5">{qIdx + 1}</span>
+            <span className="text-xs font-bold text-slate-900 mt-2.5 w-5">{qIdx + 1}</span>
             <input
               value={q.question}
               onChange={(e) => updateQuestion(q.id, { question: e.target.value })}
               placeholder="Nội dung câu hỏi"
-              className="flex-1 rounded-xl border border-transparent bg-pink-50/60 px-3 py-2 text-sm font-bold text-slate outline-none focus:border-pink-300 focus:bg-white"
-            />
+              className="flex-1 rounded-xl border border-slate-300 px-3 py-2 text-sm font-bold text-slate-900 outline-none focus:border-pink-300 focus:bg-white"
+             
             <button
               onClick={() => removeQuestion(q.id)}
               className="text-danger-text text-xs font-semibold mt-2.5 shrink-0"
@@ -58,7 +58,7 @@ export default function MCQEditTab({ items, onChange }) {
                   "flex items-center gap-2 rounded-xl border px-3 py-2 cursor-pointer",
                   q.correctIndex === optIdx
                     ? "border-success bg-success-bg"
-                    : "border-surface-border bg-surface-soft",
+                    : "border-surface-border bg-gray-100",
                 ].join(" ")}
               >
                 <input
@@ -67,18 +67,18 @@ export default function MCQEditTab({ items, onChange }) {
                   checked={q.correctIndex === optIdx}
                   onChange={() => updateQuestion(q.id, { correctIndex: optIdx })}
                   className="accent-pink-500"
-                />
-                <span className="text-xs font-bold text-slate-600 w-4">{OPTION_LABELS[optIdx]}</span>
+                 
+                <span className="text-xs font-bold text-slate-900 w-4">{OPTION_LABELS[optIdx]}</span>
                 <input
                   value={opt.text}
                   onChange={(e) => updateOption(q.id, optIdx, e.target.value)}
                   placeholder={`Đáp án ${OPTION_LABELS[optIdx]}`}
-                  className="flex-1 bg-transparent text-sm text-slate outline-none"
-                />
+                  className="flex-1 bg-transparent text-sm text-slate-900 outline-none"
+                 
               </label>
             ))}
           </div>
-          <p className="text-xs text-slate-600 pl-7 mt-2">Chọn nút tròn để đánh dấu đáp án đúng</p>
+          <p className="text-xs text-slate-900 pl-7 mt-2">Chọn nút tròn để đánh dấu đáp án đúng</p>
         </div>
       ))}
       <Button variant="ghost" size="sm" onClick={addQuestion}>

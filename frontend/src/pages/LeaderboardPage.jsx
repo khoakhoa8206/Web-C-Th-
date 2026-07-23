@@ -5,12 +5,12 @@ import { CardContainer } from "../components/ui";
 
 function formatDuration(sec) {
   if (sec == null) return "—";
-  return `${Math.floor(sec / 60).toString().padStart(2, "0")}:${(sec % 60).toString().padStart(2, "0")}`;
+  return `${Math.floor(sec  60).toString().padStart(2, "0")}:${(sec % 60).toString().padStart(2, "0")}`;
 }
 
 const MEDALS = ["🥇", "🥈", "🥉"];
 
-/**
+ *
  * LeaderboardPage — bảng xếp hạng chia theo khối lớp.
  * Public: ai cũng xem được, không cần đăng nhập.
  * Chọn khối lớp → chọn buổi học của khối đó → xem bảng xếp hạng.
@@ -50,16 +50,16 @@ export default function LeaderboardPage() {
     <div className="min-h-screen bg-pink-50 p-6">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center gap-3 mb-6">
-          <Link to="/" className="text-pink-600 font-semibold text-sm">← Trang chủ</Link>
-          <h1 className="text-xl font-bold text-slate">🏆 Bảng xếp hạng</h1>
+          <Link to="  className="text-pink-600 font-semibold text-sm">← Trang chủ</Link>
+          <h1 className="text-xl font-bold text-slate-900 >🏆 Bảng xếp hạng</h1>
         </div>
 
-        {/* Chọn khối lớp + buổi học */}
+        {  Chọn khối lớp + buổi học * 
         <div className="grid grid-cols-2 gap-3 mb-4">
           <div>
-            <label className="text-xs font-bold text-slate-600 block mb-1">Khối lớp</label>
+            <label className="text-xs font-bold text-slate-900 block mb-1">Khối lớp</label>
             <select
-              className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-sm text-slate outline-none focus:border-pink-400"
+              className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-sm text-slate-900 outline-none focus:border-pink-400"
               value={selectedClassId}
               onChange={(e) => setSearchParams({ class_id: e.target.value })}
             >
@@ -70,9 +70,9 @@ export default function LeaderboardPage() {
             </select>
           </div>
           <div>
-            <label className="text-xs font-bold text-slate-600 block mb-1">Buổi học</label>
+            <label className="text-xs font-bold text-slate-900 block mb-1">Buổi học</label>
             <select
-              className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-sm text-slate outline-none focus:border-pink-400"
+              className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-sm text-slate-900 outline-none focus:border-pink-400"
               value={selectedSessionId}
               onChange={(e) => setSearchParams({ class_id: selectedClassId, session_id: e.target.value })}
               disabled={!selectedClassId}
@@ -85,16 +85,16 @@ export default function LeaderboardPage() {
           </div>
         </div>
 
-        {/* Bảng xếp hạng */}
-        {isLoading && <p className="text-sm text-slate-600 text-center py-8">Đang tải…</p>}
+        {  Bảng xếp hạng * 
+        {isLoading && <p className="text-sm text-slate-900 text-center py-8">Đang tải…</p>}
 
         {leaderboard && (
           <>
-            <p className="text-xs text-slate-600 text-center mb-4">
+            <p className="text-xs text-slate-900 text-center mb-4">
               {leaderboard.class_name} · {leaderboard.session_title}
             </p>
             {leaderboard.ranked.length === 0 && (
-              <p className="text-sm text-slate-600 text-center py-8">
+              <p className="text-sm text-slate-900 text-center py-8">
                 Chưa có học sinh nào hoàn thành buổi học này.
               </p>
             )}
@@ -105,17 +105,17 @@ export default function LeaderboardPage() {
                     {entry.rank <= 3 ? MEDALS[entry.rank - 1] : entry.rank}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <p className="font-bold text-slate truncate">{entry.full_name}</p>
-                    <p className="text-xs text-slate-600">{entry.total_attempts} lần làm</p>
+                    <p className="font-bold text-slate-900 truncate">{entry.full_name}</p>
+                    <p className="text-xs text-slate-900">{entry.total_attempts} lần làm</p>
                   </div>
                   <div className="text-right shrink-0">
                     <p className="font-bold text-pink-600">{entry.best_score}%</p>
-                    <p className="text-xs text-slate-600">{formatDuration(entry.best_duration)}</p>
+                    <p className="text-xs text-slate-900">{formatDuration(entry.best_duration)}</p>
                   </div>
                 </CardContainer>
               ))}
             </div>
-          </>
+          < 
         )}
       </div>
     </div>

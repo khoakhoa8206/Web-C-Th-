@@ -17,8 +17,8 @@ export default function ConfirmDeleteModal({ student, onClose, onConfirm }) {
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Xoá học sinh" maxWidth="max-w-sm">
-      <p className="text-sm text-slate-700 mb-6">
-        Bạn có chắc muốn xoá <span className="font-bold text-slate">{student?.full_name}</span> khỏi lớp
+      <p className="text-sm text-slate-900 mb-6">
+        Bạn có chắc muốn xoá <span className="font-bold text-slate-900 >{student?.full_name}</span> khỏi lớp
         học? Hành động này không thể hoàn tác.
       </p>
       <div className="flex gap-3">

@@ -30,7 +30,7 @@ function toLocalDatetimeValue(iso) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 
-// Hiển thị giá trị "đã chốt" của ô datetime-local (vd: "20/07/2026 23:59") cho badge xác nhận
+  Hiển thị giá trị "đã chốt" của ô datetime-local (vd: "20 2026 23:59") cho badge xác nhận
 function formatLocalDatetimeValue(value) {
   if (!value) return "Không giới hạn";
   const d = new Date(value);
@@ -44,7 +44,7 @@ function formatLocalDatetimeValue(value) {
   });
 }
 
-/**
+ *
  * ManageSessionsPage — Giáo viên xem, sửa, xoá bài tập.
  */
 export default function ManageSessionsPage() {
@@ -53,32 +53,32 @@ export default function ManageSessionsPage() {
   const [sessions, setSessions] = useState([]);
   const [isLoadingSessions, setIsLoadingSessions] = useState(false);
 
-  // Edit modal
-  const [editTarget, setEditTarget] = useState(null); // session object
+    Edit modal
+  const [editTarget, setEditTarget] = useState(null);   session object
   const [editTitle, setEditTitle] = useState("");
   const [editDeadline, setEditDeadline] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const [editError, setEditError] = useState("");
-  // Deadline đã "chốt" (bấm Xác nhận) cho từng session — giữ nguyên dù modal
-  // đóng/mở lại do bấm nhầm backdrop/Huỷ, chỉ mất khi lưu thành công lên server.
-  const [confirmedEditDeadline, setConfirmedEditDeadline] = useState(null); // { sessionId, value }
+    Deadline đã "chốt" (bấm Xác nhận) cho từng session — giữ nguyên dù modal
+    đóng/mở lại do bấm nhầm backdrop/Huỷ, chỉ mất khi lưu thành công lên server.
+  const [confirmedEditDeadline, setConfirmedEditDeadline] = useState(null);   { sessionId, value }
 
-  // Delete modal
+    Delete modal
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [isDeleting, setIsDeleting] = useState(false);
 
-  // Publish modal
+    Publish modal
   const [publishTarget, setPublishTarget] = useState(null);
   const [publishDeadline, setPublishDeadline] = useState("");
   const [isPublishing, setIsPublishing] = useState(false);
-  const [confirmedPublishDeadline, setConfirmedPublishDeadline] = useState(null); // { sessionId, value }
-  // "now" = giao ngay (hành vi cũ) | "schedule" = hẹn giờ tự động giao (mục 5)
+  const [confirmedPublishDeadline, setConfirmedPublishDeadline] = useState(null);   { sessionId, value }
+    "now" = giao ngay (hành vi cũ) | "schedule" = hẹn giờ tự động giao (mục 5)
   const [publishMode, setPublishMode] = useState("now");
   const [scheduledAt, setScheduledAt] = useState("");
-  const [confirmedScheduledAt, setConfirmedScheduledAt] = useState(null); // { sessionId, value }
+  const [confirmedScheduledAt, setConfirmedScheduledAt] = useState(null);   { sessionId, value }
   const [scheduleError, setScheduleError] = useState("");
 
-  // Sửa nội dung bài tập (flashcards/match_up/fill_in_blanks/mcqs) — mục 7
+    Sửa nội dung bài tập (flashcards/match_up/fill_in_blanks/mcqs) — mục 7
   const [editContentSessionId, setEditContentSessionId] = useState(null);
 
   useEffect(() => {
@@ -99,8 +99,8 @@ export default function ManageSessionsPage() {
   const openEdit = (s) => {
     setEditTarget(s);
     setEditTitle(s.title);
-    // Nếu có deadline đã "chốt" trước đó cho đúng session này (do lỡ đóng modal
-    // mà chưa lưu), khôi phục lại thay vì lấy giá trị gốc từ server.
+      Nếu có deadline đã "chốt" trước đó cho đúng session này (do lỡ đóng modal
+      mà chưa lưu), khôi phục lại thay vì lấy giá trị gốc từ server.
     if (confirmedEditDeadline && confirmedEditDeadline.sessionId === s.id) {
       setEditDeadline(confirmedEditDeadline.value);
     } else {
@@ -199,7 +199,7 @@ export default function ManageSessionsPage() {
       return;
     }
 
-    // publishMode === "now"
+      publishMode === "now"
     setIsPublishing(true);
     try {
       const deadlineISO = publishDeadline ? new Date(publishDeadline).toISOString() : null;
@@ -251,15 +251,15 @@ export default function ManageSessionsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-lg font-bold text-slate mb-1">Quản lý bài tập</h2>
-        <p className="text-sm text-slate-600">Sửa tên, đặt hạn nộp, hoặc xoá bài tập theo khối lớp.</p>
+        <h2 className="text-lg font-bold text-slate-900 mb-1">Quản lý bài tập</h2>
+        <p className="text-sm text-slate-900">Sửa tên, đặt hạn nộp, hoặc xoá bài tập theo khối lớp.</p>
       </div>
 
-      {/* Chọn lớp */}
+      {  Chọn lớp * 
       <div className="max-w-xs">
-        <label className="text-sm font-semibold text-slate block mb-1.5">Chọn khối lớp</label>
+        <label className="text-sm font-semibold text-slate-900 block mb-1.5">Chọn khối lớp</label>
         <select
-          className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-slate text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none"
+          className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-slate-900 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none"
           value={selectedClassId}
           onChange={(e) => setSelectedClassId(e.target.value)}
         >
@@ -272,13 +272,13 @@ export default function ManageSessionsPage() {
         </select>
       </div>
 
-      {/* Danh sách session */}
+      {  Danh sách session * 
       {isLoadingSessions && (
-        <p className="text-sm text-slate-600">Đang tải danh sách bài tập...</p>
+        <p className="text-sm text-slate-900">Đang tải danh sách bài tập...</p>
       )}
 
       {!isLoadingSessions && selectedClassId && sessions.length === 0 && (
-        <p className="text-sm text-slate-600">Chưa có bài tập nào cho lớp này.</p>
+        <p className="text-sm text-slate-900">Chưa có bài tập nào cho lớp này.</p>
       )}
 
       {sessions.length > 0 && (
@@ -287,7 +287,7 @@ export default function ManageSessionsPage() {
             <CardContainer key={s.id} className="flex items-center justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <p className="font-bold text-slate truncate">{s.title}</p>
+                  <p className="font-bold text-slate-900 truncate">{s.title}</p>
                   <span
                     className={`text-xs px-2 py-0.5 rounded-full font-semibold ${
                       s.status === "PUBLISHED"
@@ -304,10 +304,10 @@ export default function ManageSessionsPage() {
                       : "Nháp"}
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 mt-0.5">
+                <p className="text-xs text-slate-900 mt-0.5">
                   Hạn nộp: {formatDeadline(s.deadline)}
                   {s.published_at && (
-                    <> · Giao: {new Date(s.published_at).toLocaleDateString("vi-VN")}</>
+                    <> · Giao: {new Date(s.published_at).toLocaleDateString("vi-VN")}< 
                   )}
                 </p>
               </div>
@@ -352,7 +352,7 @@ export default function ManageSessionsPage() {
         </div>
       )}
 
-      {/* Modal sửa */}
+      {  Modal sửa * 
       <Modal
         isOpen={!!editTarget}
         onClose={() => setEditTarget(null)}
@@ -365,15 +365,15 @@ export default function ManageSessionsPage() {
             value={editTitle}
             onChange={(e) => setEditTitle(e.target.value)}
             error={editError}
-          />
+           
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-slate">Hạn nộp bài (tuỳ chọn)</label>
+            <label className="text-sm font-semibold text-slate-900 >Hạn nộp bài (tuỳ chọn)</label>
             <input
               type="datetime-local"
-              className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-slate text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none"
+              className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-slate-900 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none"
               value={editDeadline}
               onChange={(e) => setEditDeadline(e.target.value)}
-            />
+             
             <div className="flex items-center gap-2 flex-wrap">
               <button
                 type="button"
@@ -385,7 +385,7 @@ export default function ManageSessionsPage() {
               {editDeadline && (
                 <button
                   type="button"
-                  className="text-xs text-slate-600 hover:text-danger-text text-left"
+                  className="text-xs text-slate-900 hover:text-danger-text text-left"
                   onClick={() => setEditDeadline("")}
                 >
                   ✕ Xoá deadline (không giới hạn)
@@ -411,18 +411,18 @@ export default function ManageSessionsPage() {
         </div>
       </Modal>
 
-      {/* Modal xác nhận giao bài */}
+      {  Modal xác nhận giao bài * 
       <Modal
         isOpen={!!publishTarget}
         onClose={() => setPublishTarget(null)}
         title="Giao bài tập"
         closeOnBackdrop={false}
       >
-        <p className="text-sm text-slate-700 mb-4">
+        <p className="text-sm text-slate-900 mb-4">
           Giao bài <strong>"{publishTarget?.title}"</strong> cho học sinh?
         </p>
 
-        {/* Mode tabs: giao ngay / hẹn giờ */}
+        {  Mode tabs: giao ngay  hẹn giờ * 
         <div className="flex gap-2 mb-4">
           <button
             type="button"
@@ -430,7 +430,7 @@ export default function ManageSessionsPage() {
             className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition-colors ${
               publishMode === "now"
                 ? "bg-pink-500 text-white border-pink-500"
-                : "bg-white text-slate border-surface-border hover:border-pink-300"
+                : "bg-white text-slate-900 border-surface-border hover:border-pink-300"
             }`}
           >
             🚀 Giao ngay
@@ -441,23 +441,23 @@ export default function ManageSessionsPage() {
             className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition-colors ${
               publishMode === "schedule"
                 ? "bg-blue-500 text-white border-blue-500"
-                : "bg-white text-slate border-surface-border hover:border-blue-300"
+                : "bg-white text-slate-900 border-surface-border hover:border-blue-300"
             }`}
           >
             🕐 Hẹn giờ giao
           </button>
         </div>
 
-        {/* Hẹn giờ: chọn ngày giờ sẽ tự động giao bài */}
+        {  Hẹn giờ: chọn ngày giờ sẽ tự động giao bài * 
         {publishMode === "schedule" && (
           <div className="flex flex-col gap-1.5 mb-4 p-3 bg-blue-50 rounded-2xl">
-            <label className="text-sm font-semibold text-slate">Thời điểm tự động giao bài</label>
+            <label className="text-sm font-semibold text-slate-900 >Thời điểm tự động giao bài</label>
             <input
               type="datetime-local"
-              className="w-full h-11 rounded-2xl bg-white border border-blue-200 px-4 text-slate text-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none"
+              className="w-full h-11 rounded-2xl bg-white border border-blue-200 px-4 text-slate-900 text-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none"
               value={scheduledAt}
               onChange={(e) => { setScheduledAt(e.target.value); setScheduleError(""); }}
-            />
+             
             <div className="flex items-center gap-2 flex-wrap">
               <button
                 type="button"
@@ -474,19 +474,19 @@ export default function ManageSessionsPage() {
                   Sẽ giao lúc: {formatLocalDatetimeValue(confirmedScheduledAt.value)} ✓
                 </span>
               )}
-            <p className="text-xs text-slate-600">Hệ thống sẽ tự động giao bài đúng vào thời điểm này.</p>
+            <p className="text-xs text-slate-900">Hệ thống sẽ tự động giao bài đúng vào thời điểm này.</p>
           </div>
         )}
 
-        {/* Hạn nộp bài (chung cho cả 2 chế độ) */}
+        {  Hạn nộp bài (chung cho cả 2 chế độ) * 
         <div className="flex flex-col gap-1.5 mb-5">
-          <label className="text-sm font-semibold text-slate">Hạn nộp bài (tuỳ chọn)</label>
+          <label className="text-sm font-semibold text-slate-900 >Hạn nộp bài (tuỳ chọn)</label>
           <input
             type="datetime-local"
-            className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-slate text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none"
+            className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-slate-900 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none"
             value={publishDeadline}
             onChange={(e) => setPublishDeadline(e.target.value)}
-          />
+           
           <div className="flex items-center gap-2 flex-wrap">
             <button
               type="button"
@@ -498,7 +498,7 @@ export default function ManageSessionsPage() {
             {publishDeadline && (
               <button
                 type="button"
-                className="text-xs text-slate-600 text-left hover:text-danger-text"
+                className="text-xs text-slate-900 text-left hover:text-danger-text"
                 onClick={() => setPublishDeadline("")}
               >
                 ✕ Xoá deadline
@@ -535,16 +535,16 @@ export default function ManageSessionsPage() {
         </div>
       </Modal>
 
-      {/* Modal xác nhận xoá */}
+      {  Modal xác nhận xoá * 
       <Modal
         isOpen={!!deleteTarget}
         onClose={() => setDeleteTarget(null)}
         title="Xoá bài tập"
         maxWidth="max-w-sm"
       >
-        <p className="text-sm text-slate-700 mb-6">
+        <p className="text-sm text-slate-900 mb-6">
           Bạn chắc chắn muốn xoá bài tập{" "}
-          <span className="font-bold text-slate">"{deleteTarget?.title}"</span>? Hành động này sẽ xoá
+          <span className="font-bold text-slate-900 >"{deleteTarget?.title}"</span>? Hành động này sẽ xoá
           luôn toàn bộ điểm số và lịch sử làm bài của học sinh và{" "}
           <span className="font-bold text-danger-text">KHÔNG THỂ hoàn tác</span>.
         </p>
@@ -567,7 +567,7 @@ export default function ManageSessionsPage() {
         <EditSessionExercisesPanel
           sessionId={editContentSessionId}
           onClose={() => setEditContentSessionId(null)}
-        />
+         
       )}
     </div>
   );

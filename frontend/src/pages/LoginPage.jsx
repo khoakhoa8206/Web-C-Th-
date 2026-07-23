@@ -10,9 +10,9 @@ export default function LoginPage() {
   const { login, isLoggingIn, error } = useAuth();
   const navigate = useNavigate();
 
-  // Đã đăng nhập rồi thì không cần xem lại trang login
+    Đã đăng nhập rồi thì không cần xem lại trang login
   if (getCurrentUser()) {
-    return <Navigate to="/student" replace />;
+    return <Navigate to="/student" replace  ;
   }
 
   const handleSubmit = async (e) => {
@@ -26,13 +26,13 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen bg-pink-50 flex items-center justify-center p-6">
       <CardContainer className="w-full max-w-sm" tone="white">
-        <Link to="/" className="text-xs text-slate-600 hover:text-pink-600">← Trang chủ</Link>
+        <Link to="  className="text-xs text-slate-900 hover:text-pink-600">← Trang chủ</Link>
         <div className="text-center mb-6 mt-2">
           <div className="mx-auto h-14 w-14 rounded-2xl bg-pink-100 flex items-center justify-center text-2xl mb-3">
             📖
           </div>
           <h1 className="text-xl font-bold text-pink-600">Học Từ Vựng Tiếng Anh</h1>
-          <p className="text-sm text-slate-700 mt-1">Nhập tên để bắt đầu buổi học</p>
+          <p className="text-sm text-slate-900 mt-1">Nhập tên để bắt đầu buổi học</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -45,7 +45,7 @@ export default function LoginPage() {
             autoFocus
             autoComplete="off"
             name="student-fullname-no-autofill"
-          />
+           
           <Button type="submit" variant="primary" fullWidth isLoading={isLoggingIn}>
             Đăng nhập
           </Button>

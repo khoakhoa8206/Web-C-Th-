@@ -1,6 +1,6 @@
 import React from "react";
 
-/**
+ *
  * Button Component v2 — Enhanced with gradients, animations, states
  * 
  * Variants: primary, secondary, ghost, danger, success
@@ -20,7 +20,7 @@ const VARIANTS = {
     active: 'active:scale-95',
   },
   secondary: {
-    base: 'bg-surface-soft text-slate border border-surface-border font-semibold',
+    base: 'bg-gray-100 text-slate-900 border border-surface-border font-semibold',
     hover: 'hover:bg-pink-50 hover:border-pink-300 hover:shadow-sm',
     active: 'active:scale-95',
   },
@@ -85,14 +85,14 @@ export default function Button({
       {loading && (
         <span className="inline-block animate-spin">
           <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="10" fill="none" strokeWidth="2" stroke="currentColor" opacity="0.3" />
+            <circle cx="12" cy="12" r="10" fill="none" strokeWidth="2" stroke="currentColor" opacity="0.3"  
             <path
               d="M12 2a10 10 0 0 1 10 10"
               stroke="currentColor"
               strokeWidth="2"
               fill="none"
               strokeLinecap="round"
-            />
+             
           </svg>
         </span>
       )}
@@ -101,7 +101,7 @@ export default function Button({
   );
 }
 
-/**
+ *
  * Button Group Component — For multiple related buttons
  * Usage:
  * <ButtonGroup>
@@ -123,10 +123,10 @@ export function ButtonGroup({ children, gap = 3 }) {
   );
 }
 
-/**
+ *
  * Icon Button Component — For icon-only buttons
  * Usage:
- * <IconButton icon="×" onClick={() => onClose()} />
+ * <IconButton icon="×" onClick={() => onClose()}  
  */
 export function IconButton({
   icon,

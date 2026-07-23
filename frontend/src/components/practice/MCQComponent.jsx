@@ -3,7 +3,7 @@ import { Button } from "../ui";
 
 const OPTION_LABELS = ["A", "B", "C", "D"];
 
-/**
+ *
  * Bài 4 — MCQComponent (Trắc nghiệm)
  * Nhận danh sách câu hỏi ĐÃ được trộn (Fisher-Yates) từ PracticeFlow —
  * cả thứ tự câu hỏi lẫn thứ tự đáp án A/B/C/D đều được trộn lại mỗi khi
@@ -21,10 +21,10 @@ export default function MCQComponent({
   const allAnswered = answeredCount === questions.length;
 
   return (
-    <div className="flex flex-col gap-6 animate-fade-in-up">
+    <div className="flex flex-col gap-6 ">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-600">
-          Đã trả lời {answeredCount}/{questions.length} câu
+        <p className="text-sm text-slate-900">
+          Đã trả lời {answeredCount} questions.length} câu
         </p>
         <button
           type="button"
@@ -39,10 +39,10 @@ export default function MCQComponent({
         {questions.map((q, qIdx) => (
           <div 
             key={q.id} 
-            className="bg-white rounded-2xl border border-surface-border p-4 animate-fade-in-scale"
+            className="bg-white rounded-2xl border border-surface-border p-4 "
             style={{ animationDelay: `${qIdx * 75}ms` }}
           >
-            <p className="font-bold text-slate mb-3">
+            <p className="font-bold text-slate-900 mb-3">
               Câu {qIdx + 1}. {q.question}
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -57,14 +57,14 @@ export default function MCQComponent({
                       "text-left px-4 py-2.5 rounded-xl border text-sm font-medium",
                       "transition-all duration-200 flex items-center gap-2",
                       isSelected
-                        ? "bg-pink-400 border-pink-400 text-white shadow-button scale-105 animate-pop-in"
-                        : "bg-surface-soft border-surface-border text-slate hover:border-pink-300",
+                        ? "bg-pink-400 border-pink-400 text-white shadow-button scale-105 "
+                        : "bg-gray-100 border-surface-border text-slate-900 hover:border-pink-300",
                     ].join(" ")}
                   >
                     <span
                       className={[
                         "h-6 w-6 shrink-0 rounded-full flex items-center justify-center text-xs font-bold",
-                        isSelected ? "bg-white/25" : "bg-white border border-surface-border",
+                        isSelected ? "bg-white" : "bg-white border border-surface-border",
                       ].join(" ")}
                     >
                       {OPTION_LABELS[optIdx]}

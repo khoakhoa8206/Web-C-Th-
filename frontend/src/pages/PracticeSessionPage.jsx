@@ -10,7 +10,7 @@ export default function PracticeSessionPage() {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-pink-50 flex items-center justify-center">
-        <p className="text-slate-600 text-sm">Đang tải bài tập...</p>
+        <p className="text-slate-900 text-sm">Đang tải bài tập...</p>
       </div>
     );
   }
@@ -28,5 +28,5 @@ export default function PracticeSessionPage() {
     );
   }
 
-  return <PracticeFlow sessionId={sessionId} exercises={exercises} />;
+  return <PracticeFlow sessionId={sessionId} exercises={exercises}  ;
 }

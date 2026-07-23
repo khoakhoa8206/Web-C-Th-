@@ -25,7 +25,7 @@ export default function DashboardPage() {
     });
   }, []);
 
-  // Tải danh sách buổi học khi đổi khối lớp
+    Tải danh sách buổi học khi đổi khối lớp
   useEffect(() => {
     if (!gradeId) return;
     fetchSessionsForClass(gradeId).then((data) => {
@@ -34,7 +34,7 @@ export default function DashboardPage() {
     });
   }, [gradeId]);
 
-  // Tải danh sách học sinh của khối lớp
+    Tải danh sách học sinh của khối lớp
   useEffect(() => {
     if (!gradeId) return;
     setIsLoadingStudents(true);
@@ -47,9 +47,9 @@ export default function DashboardPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-1 flex-wrap gap-2">
-        <h2 className="font-bold text-slate text-lg">Theo dõi tiến độ theo thời gian thực</h2>
+        <h2 className="font-bold text-slate-900 text-lg">Theo dõi tiến độ theo thời gian thực</h2>
       </div>
-      <p className="text-sm text-slate-600 mb-4">
+      <p className="text-sm text-slate-900 mb-4">
         Hàng sẽ tự cập nhật màu sắc và điểm số ngay khi học sinh nộp bài, không cần tải lại trang.
       </p>
 
@@ -60,20 +60,20 @@ export default function DashboardPage() {
         selectedSessionId={sessionId}
         onGradeChange={setGradeId}
         onSessionChange={setSessionId}
-      />
+       
 
       <StudentTable
         students={students}
         attemptsByStudent={attemptsByStudent}
         isLoading={isLoadingStudents || isLoadingAttempts}
         onClickName={setSelectedStudent}
-      />
+       
 
       <StudentHistoryModal
         student={selectedStudent}
         sessionId={sessionId}
         onClose={() => setSelectedStudent(null)}
-      />
+       
     </div>
   );
 }

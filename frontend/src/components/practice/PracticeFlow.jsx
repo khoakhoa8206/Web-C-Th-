@@ -7,8 +7,8 @@ import FillInBlanksComponent from "./FillInBlanksComponent";
 import MCQComponent from "./MCQComponent";
 import ResultScreen from "./ResultScreen";
 import VocabReviewStep from "./VocabReviewStep";
-import { startAttempt, updateAttemptStep, submitAttempt } from "../../lib/studentPracticeApi";
-import { shuffleMcqQuestions } from "../../utils/shuffle";
+import { startAttempt, updateAttemptStep, submitAttempt } from ".. ./lib/studentPracticeApi";
+import { shuffleMcqQuestions } from ".. ./utils/shuffle";
 
 const TOTAL_STEPS = 4;
 const STEP_LABELS = ["Flashcard", "Nối từ", "Điền từ", "Trắc nghiệm"];
@@ -18,7 +18,7 @@ function draftKey(sessionId) {
 }
 
 function formatTime(totalSeconds) {
-  const m = Math.floor(totalSeconds / 60)
+  const m = Math.floor(totalSeconds  60)
     .toString()
     .padStart(2, "0");
   const s = (totalSeconds % 60).toString().padStart(2, "0");
@@ -43,7 +43,7 @@ function makeInitialAnswers() {
   };
 }
 
-/**
+ *
  * PracticeFlow v2 — luồng làm bài 4 bước.
  *
  * Improvements:
@@ -69,7 +69,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
 
   const intervalRef = useRef(null);
 
-  // ---- Adapt exercises data cho từng component ----
+    ---- Adapt exercises data cho từng component ----
   const flashcardVocab = useMemo(
     () =>
       (exercises.flashcards || []).map((f) => ({
@@ -104,7 +104,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
     [exercises.mcqs]
   );
 
-  // ---- Timer chạy ngầm khi phase === "playing" ----
+    ---- Timer chạy ngầm khi phase === "playing" ----
   useEffect(() => {
     if (phase !== "playing") return undefined;
     intervalRef.current = setInterval(() => {
@@ -113,7 +113,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
     return () => clearInterval(intervalRef.current);
   }, [phase]);
 
-  // ---- Lưu Draft vào LocalStorage ----
+    ---- Lưu Draft vào LocalStorage ----
   useEffect(() => {
     if (phase === "ready" || phase === "playing" || phase === "result") {
       localStorage.setItem(
@@ -123,7 +123,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
     }
   }, [sessionId, phase, step, timerSeconds, answers, result, attemptId]);
 
-  // ---- BẮT ĐẦU LÀM BÀI: tạo attempt trên server ----
+    ---- BẮT ĐẦU LÀM BÀI: tạo attempt trên server ----
   const handleReady = useCallback(async () => {
     setStepError(null);
     try {
@@ -142,7 +142,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
     }));
   }, []);
 
-  // ---- Chuyển bước: gọi updateAttemptStep trên server ----
+    ---- Chuyển bước: gọi updateAttemptStep trên server ----
   const goToStep = useCallback(
     async (nextStep) => {
       setStepError(null);
@@ -159,7 +159,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
     [attemptId]
   );
 
-  // ---- Chuẩn bị MCQ khi vào bước 4 ----
+    ---- Chuẩn bị MCQ khi vào bước 4 ----
   useEffect(() => {
     if (step === 4 && phase === "playing" && !answers.mcq.shuffledQuestions && mcqQuestions.length > 0) {
       updateAnswers("mcq", (prev) => ({
@@ -176,23 +176,23 @@ export default function PracticeFlow({ sessionId, exercises }) {
     }));
   }, [updateAnswers, mcqQuestions]);
 
-  // ---- NỘP BÀI: thu thập answers, gọi submitAttempt ----
+    ---- NỘP BÀI: thu thập answers, gọi submitAttempt ----
   const handleSubmitMcq = useCallback(async () => {
     setIsSubmitting(true);
     setStepError(null);
 
-    // Thu thập match_up answers
+      Thu thập match_up answers
     const matchUpAnswers = Object.entries(answers.matchup.matchedPairs).map(
       ([id, matched_id]) => ({ id, matched_id })
     );
 
-    // Thu thập fill_in_blanks answers
+      Thu thập fill_in_blanks answers
     const fillAnswers = Object.entries(answers.fillblanks.values).map(([id, val]) => ({
       id,
       student_answer: val,
     }));
 
-    // Thu thập mcqs answers: map selection index → option text
+      Thu thập mcqs answers: map selection index → option text
     const { shuffledQuestions, selections } = answers.mcq;
     const mcqAnswers = Object.entries(selections).map(([questionId, optionIndex]) => {
       const question = (shuffledQuestions || []).find((q) => q.id === questionId);
@@ -227,7 +227,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
       setPendingSyncNotice(false);
     } catch (err) {
       setStepError(err.message || "Lỗi khi nộp bài.");
-      // Chấm điểm cục bộ nếu server lỗi
+        Chấm điểm cục bộ nếu server lỗi
       const gradedLocal = (shuffledQuestions || []).map((q) => ({
         questionId: q.id,
         selectedIndex: selections[q.id] ?? -1,
@@ -235,7 +235,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
         isCorrect: selections[q.id] === q.correctIndex,
       }));
       const localCorrect = gradedLocal.filter((a) => a.isCorrect).length;
-      const localScore = gradedLocal.length > 0 ? Math.round((localCorrect / gradedLocal.length) * 100) : 0;
+      const localScore = gradedLocal.length > 0 ? Math.round((localCorrect  gradedLocal.length) * 100) : 0;
       setResult({
         score: localScore,
         passed: localScore >= 80,
@@ -252,32 +252,32 @@ export default function PracticeFlow({ sessionId, exercises }) {
     }
   }, [answers, attemptId, timerSeconds]);
 
-  // ---- RETRY MCQ ONLY ----
-  // Tạo attempt mới để tránh lỗi 409 (Conflict)
-  // Lỗi 409 xảy ra vì attempt cũ đã có status = 'PASSED'/'FAILED'
-  // Giải pháp: Gọi startAttempt() để tạo attempt_id mới, rồi mới cho làm lại bài 4
+    ---- RETRY MCQ ONLY ----
+    Tạo attempt mới để tránh lỗi 409 (Conflict)
+    Lỗi 409 xảy ra vì attempt cũ đã có status = 'PASSED' FAILED'
+    Giải pháp: Gọi startAttempt() để tạo attempt_id mới, rồi mới cho làm lại bài 4
   const handleRetryMcqOnly = useCallback(async () => {
     setStepError(null);
     try {
       const data = await startAttempt(sessionId);
-      setAttemptId(data.attempt_id); // Set attempt_id mới
+      setAttemptId(data.attempt_id);   Set attempt_id mới
       setResult(null);
       setPhase("playing");
       setStep(4);
-      // Reset MCQ selections
+        Reset MCQ selections
       updateAnswers("mcq", (prev) => ({
         ...prev,
         selections: {},
       }));
-      // Bắt đầu timer lại
+        Bắt đầu timer lại
       setTimerSeconds(0);
     } catch (err) {
       setStepError(err.message || "Không thể bắt đầu làm lại bài. Vui lòng thử lại.");
     }
   }, [sessionId, updateAnswers]);
 
-  // ---- RETRY FROM START ----
-  // Reset toàn bộ, tạo attempt mới
+    ---- RETRY FROM START ----
+    Reset toàn bộ, tạo attempt mới
   const handleRetryFromStart = useCallback(() => {
     setAnswers(makeInitialAnswers());
     setResult(null);
@@ -291,18 +291,18 @@ export default function PracticeFlow({ sessionId, exercises }) {
     localStorage.removeItem(draftKey(sessionId));
   }, [sessionId]);
 
-  // ================== MÀN HÌNH: CHƯA BẮT ĐẦU (Ôn từ vựng) ==================
+    ================== MÀN HÌNH: CHƯA BẮT ĐẦU (Ôn từ vựng) ==================
   if (phase === "ready") {
     return (
       <VocabReviewStep
         vocabList={flashcardVocab}
         onReady={handleReady}
         stepError={stepError}
-      />
+       
     );
   }
 
-  // ================== MÀN HÌNH: KẾT QUẢ ==================
+    ================== MÀN HÌNH: KẾT QUẢ ==================
   if (phase === "result" && result) {
     return (
       <ResultScreen
@@ -312,17 +312,17 @@ export default function PracticeFlow({ sessionId, exercises }) {
         onRetry={handleRetryFromStart}
         onRetryMcqOnly={handleRetryMcqOnly}
         onExit={handleExitAndClearDraft}
-      />
+       
     );
   }
 
-  // ================== MÀN HÌNH: ĐANG LÀM BÀI ==================
+    ================== MÀN HÌNH: ĐANG LÀM BÀI ==================
   return (
     <div className="min-h-screen bg-pink-50 p-4 sm:p-6">
       <div className="max-w-2xl mx-auto">
-        {/* Header: timer + progress */}
+        {  Header: timer + progress * 
         <div className="flex items-center justify-between mb-4">
-          <Link to="/student" className="text-xs text-slate-600" onClick={handleExitAndClearDraft}>
+          <Link to="/student" className="text-xs text-slate-900" onClick={handleExitAndClearDraft}>
             ← Thoát
           </Link>
           <div className="flex items-center gap-1.5 bg-white rounded-full px-3 py-1 shadow-sm">
@@ -334,9 +334,9 @@ export default function PracticeFlow({ sessionId, exercises }) {
         </div>
 
         <div className="mb-6">
-          <ProgressBar mode="steps" totalSteps={TOTAL_STEPS} currentStep={step} />
-          <p className="text-center text-xs font-semibold text-slate-600 mt-2">
-            Bước {step}/{TOTAL_STEPS} · {STEP_LABELS[step - 1]}
+          <ProgressBar mode="steps" totalSteps={TOTAL_STEPS} currentStep={step}  
+          <p className="text-center text-xs font-semibold text-slate-900 mt-2">
+            Bước {step} TOTAL_STEPS} · {STEP_LABELS[step - 1]}
           </p>
         </div>
 
@@ -358,7 +358,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
               }))
             }
             onNext={() => goToStep(2)}
-          />
+           
         )}
 
         {step === 2 && (
@@ -367,7 +367,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
             matchedPairs={answers.matchup.matchedPairs}
             onMatchChange={(pairs) => updateAnswers("matchup", { matchedPairs: pairs })}
             onNext={() => goToStep(3)}
-          />
+           
         )}
 
         {step === 3 && (
@@ -376,7 +376,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
             values={answers.fillblanks.values}
             onChange={(values) => updateAnswers("fillblanks", { values })}
             onNext={() => goToStep(4)}
-          />
+           
         )}
 
         {step === 4 && answers.mcq.shuffledQuestions && (
@@ -392,7 +392,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
             onReshuffle={handleReshuffleMcq}
             onSubmit={handleSubmitMcq}
             isSubmitting={isSubmitting}
-          />
+           
         )}
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Button } from "../ui";
 
-/**
+ *
  * Bài 1 — FlashcardComponent
  * Thẻ lật từ vựng: mặt trước hiển thị từ tiếng Anh, click để lật ra mặt sau
  * gồm nghĩa tiếng Việt + phiên âm. Học sinh phải lật qua HẾT danh sách từ
@@ -28,42 +28,42 @@ export default function FlashcardComponent({ vocabList, flippedIds, onFlip, onNe
   const isCurrentSeen = flippedIds.includes(current.id);
 
   return (
-    <div className="flex flex-col items-center gap-6 animate-fade-in-up">
-      <p className="text-sm text-slate-600">
-        Đã lật {flippedIds.length}/{total} thẻ — lật hết để mở khoá bước tiếp theo
+    <div className="flex flex-col items-center gap-6 ">
+      <p className="text-sm text-slate-900">
+        Đã lật {flippedIds.length} total} thẻ — lật hết để mở khoá bước tiếp theo
       </p>
 
-      {/* Flashcard 3D flip */}
+      {  Flashcard 3D flip * 
       <div className="flip-card-scene w-full max-w-xs h-52" onClick={handleFlip}>
         <div
           className={`flip-card-inner relative w-full h-full cursor-pointer ${
             isFlipped ? "is-flipped" : ""
           }`}
         >
-          {/* Mặt trước — từ tiếng Anh */}
+          {  Mặt trước — từ tiếng Anh * 
           <div className="flip-card-face absolute inset-0 rounded-3xl bg-white shadow-card border border-pink-100 flex flex-col items-center justify-center gap-2 p-6">
             {!isCurrentSeen && (
-              <span className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-pink-300" aria-hidden="true" />
+              <span className="absolute top-3 right-3 h-2.5 w-2.5 rounded-full bg-pink-300" aria-hidden="true"  
             )}
-            <p className="text-2xl font-bold text-slate">{current.word}</p>
-            <p className="text-xs text-slate-600">Chạm để xem nghĩa</p>
+            <p className="text-2xl font-bold text-slate-900 >{current.word}</p>
+            <p className="text-xs text-slate-900">Chạm để xem nghĩa</p>
           </div>
 
-          {/* Mặt sau — nghĩa tiếng Việt + phát âm */}
+          {  Mặt sau — nghĩa tiếng Việt + phát âm * 
           <div className="flip-card-face flip-card-face-back absolute inset-0 rounded-3xl bg-pink-400 text-white shadow-card flex flex-col items-center justify-center gap-2 p-6">
             <p className="text-2xl font-bold">{current.meaning}</p>
-            <p className="text-sm text-white/80">{current.phonetic}</p>
+            <p className="text-sm text-white">{current.phonetic}</p>
           </div>
         </div>
       </div>
 
-      {/* Điều hướng thẻ */}
+      {  Điều hướng thẻ * 
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="sm" disabled={activeIndex === 0} onClick={() => goTo(-1)}>
           ← Trước
         </Button>
-        <span className="text-xs text-slate-600 tabular-nums">
-          {activeIndex + 1}/{total}
+        <span className="text-xs text-slate-900 tabular-nums">
+          {activeIndex + 1} total}
         </span>
         <Button
           variant="ghost"

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Modal, Button, InputField } from "../ui";
 
-/**
+ *
  * AddClassModal — form tạo mới một khối/lớp học (VD: "Khối 8", "Lớp 8A1").
  */
 export default function AddClassModal({ isOpen, onClose, onSubmit }) {
@@ -43,7 +43,7 @@ export default function AddClassModal({ isOpen, onClose, onSubmit }) {
           onChange={(e) => setName(e.target.value)}
           error={error}
           autoFocus
-        />
+         
         <div className="flex gap-3 pt-2">
           <Button type="button" variant="ghost" fullWidth onClick={onClose}>
             Huỷ

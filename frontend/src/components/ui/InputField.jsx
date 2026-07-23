@@ -1,6 +1,6 @@
 import React, { useId, useState } from "react";
 
-/**
+ *
  * InputField — ô nhập liệu mềm mại của Design System Pastel Pink.
  *
  * Props:
@@ -14,7 +14,7 @@ import React, { useId, useState } from "react";
  *     label="Từ vựng"
  *     placeholder="Nhập từ tiếng Anh..."
  *     error={errors.word}
- *   />
+ *    
  */
 export default function InputField({
   label,
@@ -30,7 +30,7 @@ export default function InputField({
   const inputId = id || generatedId;
   const [shake, setShake] = useState(false);
 
-  // Rung nhẹ khi lỗi mới xuất hiện
+    Rung nhẹ khi lỗi mới xuất hiện
   React.useEffect(() => {
     if (error) {
       setShake(true);
@@ -44,7 +44,7 @@ export default function InputField({
       {label && (
         <label
           htmlFor={inputId}
-          className="text-sm font-semibold text-slate"
+          className="text-sm font-semibold text-slate-900 
         >
           {label}
         </label>
@@ -52,7 +52,7 @@ export default function InputField({
 
       <div className="relative">
         {icon && (
-          <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-pink-400">
+          <span className="absolute left-3.5 top-1 -translate-y-1 text-pink-700">
             {icon}
           </span>
         )}
@@ -61,17 +61,17 @@ export default function InputField({
           aria-invalid={!!error}
           aria-describedby={error ? `${inputId}-error` : undefined}
           className={[
-            "w-full h-11 rounded-2xl bg-white text-slate placeholder:text-slate-600",
+            "w-full h-11 rounded-2xl bg-white text-slate-900 placeholder:text-slate-900",
             "border transition-all duration-200 ease-out outline-none",
             icon ? "pl-11 pr-4" : "px-4",
             error
-              ? "border-danger bg-danger-bg/40 focus:ring-2 focus:ring-danger/30"
+              ? "border-slate-300"
               : "border-surface-border focus:border-pink-400 focus:ring-2 focus:ring-pink-200",
             shake ? "animate-shake-error" : "",
             className,
           ].join(" ")}
           {...rest}
-        />
+         
       </div>
 
       {error ? (
@@ -80,7 +80,7 @@ export default function InputField({
         </p>
       ) : (
         helperText && (
-          <p className="text-xs text-slate-700">{helperText}</p>
+          <p className="text-xs text-slate-900">{helperText}</p>
         )
       )}
     </div>

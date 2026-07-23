@@ -22,8 +22,8 @@ function fmtDatetime(value) {
   });
 }
 
-/**
- * Bước 3+4 — Xem trước & Sửa trực tiếp, sau đó Kích hoạt (Lưu nháp / Giao bài).
+ *
+ * Bước 3+4 — Xem trước & Sửa trực tiếp, sau đó Kích hoạt (Lưu nháp  Giao bài).
  * lessonData: { flashcards, matchup, fillblanks, mcq } — chỉnh trực tiếp qua
  * các ô input trong từng tab con (inline edit).
  */
@@ -32,7 +32,7 @@ export default function PreviewEditStep({
   onChangeSection,
   onSaveDraft,
   onPublish,
-  onSchedule,     // (scheduledAt, deadline) => void — hẹn giờ giao bài (mục 5)
+  onSchedule,       (scheduledAt, deadline) => void — hẹn giờ giao bài (mục 5)
   isSaving,
   savedStatus,
   publishDeadline = "",
@@ -41,7 +41,7 @@ export default function PreviewEditStep({
   const [activeTab, setActiveTab] = useState("flashcards");
   const [confirmedDeadline, setConfirmedDeadline] = useState("");
 
-  // Publish mode: giao ngay hoặc hẹn giờ (mục 5)
+    Publish mode: giao ngay hoặc hẹn giờ (mục 5)
   const [publishMode, setPublishMode] = useState("now");
   const [scheduledAt, setScheduledAt] = useState("");
   const [confirmedScheduledAt, setConfirmedScheduledAt] = useState("");
@@ -63,11 +63,11 @@ export default function PreviewEditStep({
   return (
     <div className="max-w-3xl mx-auto">
       <CardContainer className="mb-4">
-        <h2 className="font-bold text-slate text-lg mb-1">Xem trước & Chỉnh sửa</h2>
-        <p className="text-sm text-slate-600 mb-4">
+        <h2 className="font-bold text-slate-900 text-lg mb-1">Xem trước & Chỉnh sửa</h2>
+        <p className="text-sm text-slate-900 mb-4">
           Click trực tiếp vào từng ô để sửa nội dung AI vừa tạo trước khi giao cho học sinh.
         </p>
-        <Tabs items={EXERCISE_TABS} activeId={activeTab} onChange={setActiveTab} />
+        <Tabs items={EXERCISE_TABS} activeId={activeTab} onChange={setActiveTab}  
       </CardContainer>
 
       <CardContainer className="mb-4">
@@ -75,22 +75,22 @@ export default function PreviewEditStep({
           <FlashcardEditTab
             items={lessonData.flashcards}
             onChange={(items) => onChangeSection("flashcards", items)}
-          />
+           
         )}
         {activeTab === "matchup" && (
           <MatchUpEditTab
             items={lessonData.matchup}
             onChange={(items) => onChangeSection("matchup", items)}
-          />
+           
         )}
         {activeTab === "fillblanks" && (
           <FillInBlanksEditTab
             items={lessonData.fillblanks}
             onChange={(items) => onChangeSection("fillblanks", items)}
-          />
+           
         )}
         {activeTab === "mcq" && (
-          <MCQEditTab items={lessonData.mcq} onChange={(items) => onChangeSection("mcq", items)} />
+          <MCQEditTab items={lessonData.mcq} onChange={(items) => onChangeSection("mcq", items)}  
         )}
       </CardContainer>
 
@@ -99,7 +99,7 @@ export default function PreviewEditStep({
           className={`text-sm text-center mb-3 font-semibold ${
             savedStatus === "PUBLISHED" ? "text-success-text"
             : savedStatus === "SCHEDULED" ? "text-blue-600"
-            : "text-slate-700"
+            : "text-slate-900"
           }`}
         >
           {savedStatus === "PUBLISHED"
@@ -110,12 +110,12 @@ export default function PreviewEditStep({
         </p>
       )}
 
-      {/* Hạn nộp bài + chế độ giao bài */}
+      {  Hạn nộp bài + chế độ giao bài * 
       {onDeadlineChange && (
         <CardContainer className="mb-4 space-y-4">
-          {/* Mode chọn cách giao */}
+          {  Mode chọn cách giao * 
           <div>
-            <p className="text-sm font-semibold text-slate mb-2">Cách giao bài</p>
+            <p className="text-sm font-semibold text-slate-900 mb-2">Cách giao bài</p>
             <div className="flex gap-2">
               <button
                 type="button"
@@ -123,7 +123,7 @@ export default function PreviewEditStep({
                 className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition-colors ${
                   publishMode === "now"
                     ? "bg-pink-500 text-white border-pink-500"
-                    : "bg-white text-slate border-surface-border hover:border-pink-300"
+                    : "bg-white text-slate-900 border-surface-border hover:border-pink-300"
                 }`}
               >
                 🚀 Giao ngay
@@ -134,7 +134,7 @@ export default function PreviewEditStep({
                 className={`flex-1 py-2 rounded-xl text-sm font-semibold border transition-colors ${
                   publishMode === "schedule"
                     ? "bg-blue-500 text-white border-blue-500"
-                    : "bg-white text-slate border-surface-border hover:border-blue-300"
+                    : "bg-white text-slate-900 border-surface-border hover:border-blue-300"
                 }`}
               >
                 🕐 Hẹn giờ giao
@@ -142,16 +142,16 @@ export default function PreviewEditStep({
             </div>
           </div>
 
-          {/* Hẹn giờ giao bài */}
+          {  Hẹn giờ giao bài * 
           {publishMode === "schedule" && (
             <div className="flex flex-col gap-1.5 p-3 bg-blue-50 rounded-2xl">
-              <label className="text-sm font-semibold text-slate">Thời điểm tự động giao bài</label>
+              <label className="text-sm font-semibold text-slate-900 >Thời điểm tự động giao bài</label>
               <input
                 type="datetime-local"
-                className="w-full h-11 rounded-2xl bg-white border border-blue-200 px-4 text-slate text-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none"
+                className="w-full h-11 rounded-2xl bg-white border border-blue-200 px-4 text-slate-900 text-sm focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none"
                 value={scheduledAt}
                 onChange={(e) => { setScheduledAt(e.target.value); setScheduleError(""); }}
-              />
+               
               <div className="flex items-center gap-2">
                 <button
                   type="button"
@@ -169,19 +169,19 @@ export default function PreviewEditStep({
               {scheduleError && (
                 <p className="text-xs text-danger-text">{scheduleError}</p>
               )}
-              <p className="text-xs text-slate-600">Hệ thống sẽ tự động giao bài đúng vào thời điểm này.</p>
+              <p className="text-xs text-slate-900">Hệ thống sẽ tự động giao bài đúng vào thời điểm này.</p>
             </div>
           )}
 
-          {/* Hạn nộp bài (chung cho cả 2 chế độ) */}
+          {  Hạn nộp bài (chung cho cả 2 chế độ) * 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-semibold text-slate">🗓 Hạn nộp bài (tuỳ chọn)</label>
+            <label className="text-sm font-semibold text-slate-900 >🗓 Hạn nộp bài (tuỳ chọn)</label>
             <input
               type="datetime-local"
-              className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-slate text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none"
+              className="w-full h-11 rounded-2xl bg-white border border-surface-border px-4 text-slate-900 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-200 outline-none"
               value={publishDeadline}
               onChange={(e) => onDeadlineChange(e.target.value)}
-            />
+             
             <div className="flex items-center gap-2 flex-wrap">
               <button
                 type="button"
@@ -193,7 +193,7 @@ export default function PreviewEditStep({
               {publishDeadline && (
                 <button
                   type="button"
-                  className="text-xs text-slate-600 hover:text-danger-text"
+                  className="text-xs text-slate-900 hover:text-danger-text"
                   onClick={() => { onDeadlineChange(""); setConfirmedDeadline(""); }}
                 >
                   ✕ Xoá deadline
@@ -205,7 +205,7 @@ export default function PreviewEditStep({
                 Đã chọn: {fmtDatetime(confirmedDeadline)} ✓
               </span>
             )}
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-slate-900">
               Nếu để trống, học sinh có thể làm bài không giới hạn thời gian. Có thể đặt deadline sau ở tab "Quản lý bài tập".
             </p>
           </div>

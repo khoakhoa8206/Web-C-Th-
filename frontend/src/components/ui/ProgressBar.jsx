@@ -1,13 +1,13 @@
 import React from "react";
 
-/**
+ *
  * ProgressBar — thanh tiến trình của Design System Pastel Pink.
  *
  * Mode "percent": hiển thị % hoàn thành dạng thanh liền mạch.
- *   <ProgressBar mode="percent" value={65} />
+ *   <ProgressBar mode="percent" value={65}  
  *
  * Mode "steps": hiển thị các bước rời rạc (1 -> 2 -> 3 -> 4).
- *   <ProgressBar mode="steps" totalSteps={4} currentStep={2} />
+ *   <ProgressBar mode="steps" totalSteps={4} currentStep={2}  
  *
  * Màu thanh tự đổi theo ngưỡng khi mode="percent":
  *   >= 80%  -> success (Hoàn thành)
@@ -42,7 +42,7 @@ export default function ProgressBar({
                       ? "bg-success text-white"
                       : isActive
                       ? "bg-pink-400 text-white ring-4 ring-pink-100"
-                      : "bg-surface-soft text-slate-600 border border-surface-border",
+                      : "bg-gray-100 text-slate-900 border border-surface-border",
                   ].join(" ")}
                 >
                   {isCompleted ? "✓" : stepNumber}
@@ -54,7 +54,7 @@ export default function ProgressBar({
                     "flex-1 h-1 mx-1.5 rounded-full transition-all duration-300 ease-out",
                     stepNumber < currentStep ? "bg-success" : "bg-surface-border",
                   ].join(" ")}
-                />
+                 
               )}
             </React.Fragment>
           );
@@ -63,7 +63,7 @@ export default function ProgressBar({
     );
   }
 
-  // mode === "percent"
+    mode === "percent"
   const clamped = Math.max(0, Math.min(100, value));
   const barColor =
     clamped >= 80 ? "bg-success" : clamped > 0 ? "bg-warning" : "bg-pink-200";
@@ -72,8 +72,8 @@ export default function ProgressBar({
     <div className={`w-full ${className}`}>
       {showLabel && (
         <div className="flex justify-between mb-1.5">
-          <span className="text-xs font-semibold text-slate-700">Tiến trình</span>
-          <span className="text-xs font-bold text-slate">{clamped}%</span>
+          <span className="text-xs font-semibold text-slate-900">Tiến trình</span>
+          <span className="text-xs font-bold text-slate-900 >{clamped}%</span>
         </div>
       )}
       <div
@@ -81,12 +81,12 @@ export default function ProgressBar({
         aria-valuenow={clamped}
         aria-valuemin={0}
         aria-valuemax={100}
-        className="h-3 w-full rounded-full bg-surface-soft overflow-hidden"
+        className="h-3 w-full rounded-full bg-gray-100 overflow-hidden"
       >
         <div
           className={`h-full rounded-full ${barColor} transition-all duration-300 ease-out`}
           style={{ width: `${clamped}%` }}
-        />
+         
       </div>
     </div>
   );
