@@ -119,7 +119,10 @@ export default function PracticeFlow({ sessionId, exercises }) {
 
   // ---- Lưu Draft vào LocalStorage ----
   useEffect(() => {
-    if (phase === "ready" || phase === "playing" || phase === "result") {
+    if (phase === "result") {
+      // Kết quả đã có → xóa draft, không cần giữ nữa
+      localStorage.removeItem(draftKey(sessionId));
+    } else if (phase === "ready" || phase === "playing") {
       localStorage.setItem(
         draftKey(sessionId),
         JSON.stringify({ phase, step, timerSeconds, answers, result, attemptId })

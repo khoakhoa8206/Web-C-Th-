@@ -51,7 +51,7 @@ export function subscribeToAttempts(sessionId, onEvent) {
     } catch (err) {
       console.warn('[subscribeToAttempts] polling error:', err.message);
     }
-    if (active) setTimeout(poll, 10000);
+    if (active) setTimeout(poll, 3000);
   };
 
   poll();
