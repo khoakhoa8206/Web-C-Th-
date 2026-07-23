@@ -35,7 +35,7 @@ export default function MCQEditTab({ items, onChange }) {
       {items.map((q, qIdx) => (
         <div key={q.id} className="bg-white rounded-2xl border border-surface-border p-4">
           <div className="flex items-start gap-2 mb-3">
-            <span className="text-xs font-bold text-slate/30 mt-2.5 w-5">{qIdx + 1}</span>
+            <span className="text-xs font-bold text-slate-600 mt-2.5 w-5">{qIdx + 1}</span>
             <input
               value={q.question}
               onChange={(e) => updateQuestion(q.id, { question: e.target.value })}
@@ -68,7 +68,7 @@ export default function MCQEditTab({ items, onChange }) {
                   onChange={() => updateQuestion(q.id, { correctIndex: optIdx })}
                   className="accent-pink-500"
                 />
-                <span className="text-xs font-bold text-slate/40 w-4">{OPTION_LABELS[optIdx]}</span>
+                <span className="text-xs font-bold text-slate-600 w-4">{OPTION_LABELS[optIdx]}</span>
                 <input
                   value={opt.text}
                   onChange={(e) => updateOption(q.id, optIdx, e.target.value)}
@@ -78,7 +78,7 @@ export default function MCQEditTab({ items, onChange }) {
               </label>
             ))}
           </div>
-          <p className="text-xs text-slate/30 pl-7 mt-2">Chọn nút tròn để đánh dấu đáp án đúng</p>
+          <p className="text-xs text-slate-600 pl-7 mt-2">Chọn nút tròn để đánh dấu đáp án đúng</p>
         </div>
       ))}
       <Button variant="ghost" size="sm" onClick={addQuestion}>

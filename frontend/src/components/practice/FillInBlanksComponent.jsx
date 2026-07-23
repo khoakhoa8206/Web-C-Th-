@@ -80,12 +80,12 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 animate-fade-in-up">
       <div className="flex flex-col gap-2">
-        <p className="text-sm text-slate/50 text-center">
+        <p className="text-sm text-slate-600 text-center">
           Điền {items.length} từ vựng (Bài học — xem đáp án ngay) · Đã điền {filledCount}/{items.length}
         </p>
-        <p className="text-xs text-center text-success-text font-semibold">
+        <p className="text-sm text-center text-success-text font-semibold">
           ✓ Trả lời đúng: {correctCount}/{items.length}
         </p>
       </div>
@@ -100,20 +100,21 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
             <div
               key={item.id}
               className={[
-                "rounded-2xl border-2 p-4 transition-all duration-200",
+                "rounded-2xl border-2 p-4 transition-all duration-200 animate-fade-in-scale",
                 hasAnswered && isCorrect
                   ? "bg-success-bg border-success/30"
                   : hasAnswered && isCorrect === false
                   ? "bg-danger-bg border-danger/30"
                   : "bg-white border-surface-border",
               ].join(" ")}
+              style={{ animationDelay: `${idx * 75}ms` }}
             >
               <div className="flex items-center justify-between mb-2">
-                <p className="text-xs text-slate/40 font-semibold">Câu {idx + 1}</p>
+                <p className="text-sm text-slate-600 font-semibold">Câu {idx + 1}</p>
                 {hasAnswered && (
                   <span
                     className={[
-                      "text-xs font-bold px-2 py-1 rounded-full",
+                      "text-xs font-bold px-2 py-1 rounded-full animate-pop-in",
                       isCorrect
                         ? "bg-success/10 text-success-text"
                         : isCorrect === false

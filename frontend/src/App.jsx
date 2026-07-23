@@ -17,7 +17,7 @@ const LeaderboardPage = lazy(() => import("./pages/LeaderboardPage"));
 function RouteFallback() {
   return (
     <div className="min-h-screen bg-pink-50 flex items-center justify-center">
-      <p className="text-sm text-slate/40">Đang tải...</p>
+      <p className="text-sm text-slate-600">Đang tải...</p>
     </div>
   );
 }

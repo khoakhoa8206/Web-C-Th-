@@ -42,12 +42,12 @@ export default function SessionListPage() {
           <p className="font-bold text-slate truncate">{s.title}</p>
           <div className="flex items-center gap-2 flex-wrap mt-0.5">
             {s.className && (
-              <span className="text-xs bg-surface-soft text-slate/50 px-2 py-0.5 rounded-full">
+              <span className="text-xs bg-surface-soft text-slate-600 px-2 py-0.5 rounded-full">
                 {s.className}
               </span>
             )}
             {s.publishedAt && (
-              <span className="text-xs text-slate/40">
+              <span className="text-xs text-slate-600">
                 · Giao {new Date(s.publishedAt).toLocaleDateString("vi-VN")}
               </span>
             )}
@@ -63,7 +63,7 @@ export default function SessionListPage() {
           {/* Link xếp hạng — hiện cho tất cả (lớp mình lẫn lớp khác) */}
           <Link
             to={`/leaderboard?class_id=${s.classId}&session_id=${s.sessionId}`}
-            className="text-xs text-slate/40 hover:text-pink-600"
+            className="text-xs text-slate-600 hover:text-pink-600"
           >
             🏆 Xếp hạng
           </Link>
@@ -72,7 +72,7 @@ export default function SessionListPage() {
           {!locked && (
             <>
               <button
-                className="text-slate/40 hover:text-pink-600 text-lg"
+                className="text-slate-600 hover:text-pink-600 text-lg"
                 title="Lịch sử làm bài"
                 onClick={() => setHistoryModal({ sessionId: s.sessionId, sessionTitle: s.title })}
               >
@@ -114,29 +114,37 @@ export default function SessionListPage() {
         </div>
 
         {sessions === null && (
-          <p className="text-sm text-slate/50">Đang tải danh sách buổi học...</p>
+          <p className="text-sm text-slate-600">Đang tải danh sách buổi học...</p>
         )}
 
         {sessions?.length === 0 && (
-          <p className="text-sm text-slate/50">Chưa có buổi học nào được giao.</p>
+          <p className="text-sm text-slate-600">Chưa có buổi học nào được giao.</p>
         )}
 
         {/* Bài tập của lớp mình */}
         {ownSessions.length > 0 && (
-          <div className="space-y-3 mb-6">
-            <p className="text-xs font-bold text-slate/50 uppercase tracking-wide">Lớp của bạn</p>
-            {ownSessions.map(renderCard)}
+          <div className="space-y-3 mb-6 stagger">
+            <p className="text-sm font-bold text-slate-600 uppercase tracking-wide">Lớp của bạn</p>
+            {ownSessions.map((s, idx) => (
+              <div key={s.sessionId} className="animate-fade-in-up" style={{ animationDelay: `${idx * 75}ms` }}>
+                {renderCard(s)}
+              </div>
+            ))}
           </div>
         )}
 
         {/* Bài tập của lớp khác */}
         {otherSessions.length > 0 && (
-          <div className="space-y-3">
-            <div>
-              <p className="text-xs font-bold text-slate/50 uppercase tracking-wide">Các lớp khác</p>
-              <p className="text-xs text-slate/40">Chỉ xem, không thể làm bài</p>
+          <div className="space-y-3 stagger">
+            <div className="animate-fade-in-up">
+              <p className="text-sm font-bold text-slate-600 uppercase tracking-wide">Các lớp khác</p>
+              <p className="text-sm text-slate-600">Chỉ xem, không thể làm bài</p>
             </div>
-            {otherSessions.map(renderCard)}
+            {otherSessions.map((s, idx) => (
+              <div key={s.sessionId} className="animate-fade-in-up" style={{ animationDelay: `${(idx + 1) * 75}ms` }}>
+                {renderCard(s)}
+              </div>
+            ))}
           </div>
         )}
       </div>

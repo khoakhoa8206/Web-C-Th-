@@ -51,10 +51,10 @@ export default function StudentRow({ student, attemptInfo, onClickName }) {
           {hasAttempted && ` (${attempt.score}%)`}
         </span>
       </td>
-      <td className="px-4 py-3 text-center text-sm text-slate/70 tabular-nums">
+      <td className="px-4 py-3 text-center text-sm text-slate-700 tabular-nums">
         {attemptInfo?.attemptsCount ?? 0}
       </td>
-      <td className="px-4 py-3 text-center text-sm text-slate/70 tabular-nums">
+      <td className="px-4 py-3 text-center text-sm text-slate-700 tabular-nums">
         {formatDuration(attempt?.duration_seconds)}
       </td>
       <td className="px-4 py-3 text-center">

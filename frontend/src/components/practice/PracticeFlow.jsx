@@ -253,20 +253,28 @@ export default function PracticeFlow({ sessionId, exercises }) {
   }, [answers, attemptId, timerSeconds]);
 
   // ---- RETRY MCQ ONLY ----
-  // Chỉ xoá MCQ selections + shuffle lại, giữ answers từ step 1-3
-  // Không tạo attempt mới — dùng attempt hiện tại
-  const handleRetryMcqOnly = useCallback(() => {
-    setResult(null);
-    setPhase("playing");
-    setStep(4);
-    // Reset MCQ selections, nhưng giữ shuffledQuestions
-    updateAnswers("mcq", (prev) => ({
-      ...prev,
-      selections: {},
-    }));
-    // Bắt đầu timer lại
-    setTimerSeconds(0);
-  }, [updateAnswers]);
+  // Tạo attempt mới để tránh lỗi 409 (Conflict)
+  // Lỗi 409 xảy ra vì attempt cũ đã có status = 'PASSED'/'FAILED'
+  // Giải pháp: Gọi startAttempt() để tạo attempt_id mới, rồi mới cho làm lại bài 4
+  const handleRetryMcqOnly = useCallback(async () => {
+    setStepError(null);
+    try {
+      const data = await startAttempt(sessionId);
+      setAttemptId(data.attempt_id); // Set attempt_id mới
+      setResult(null);
+      setPhase("playing");
+      setStep(4);
+      // Reset MCQ selections
+      updateAnswers("mcq", (prev) => ({
+        ...prev,
+        selections: {},
+      }));
+      // Bắt đầu timer lại
+      setTimerSeconds(0);
+    } catch (err) {
+      setStepError(err.message || "Không thể bắt đầu làm lại bài. Vui lòng thử lại.");
+    }
+  }, [sessionId, updateAnswers]);
 
   // ---- RETRY FROM START ----
   // Reset toàn bộ, tạo attempt mới
@@ -314,7 +322,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
       <div className="max-w-2xl mx-auto">
         {/* Header: timer + progress */}
         <div className="flex items-center justify-between mb-4">
-          <Link to="/student" className="text-xs text-slate/40" onClick={handleExitAndClearDraft}>
+          <Link to="/student" className="text-xs text-slate-600" onClick={handleExitAndClearDraft}>
             ← Thoát
           </Link>
           <div className="flex items-center gap-1.5 bg-white rounded-full px-3 py-1 shadow-sm">
@@ -327,7 +335,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
 
         <div className="mb-6">
           <ProgressBar mode="steps" totalSteps={TOTAL_STEPS} currentStep={step} />
-          <p className="text-center text-xs font-semibold text-slate/50 mt-2">
+          <p className="text-center text-xs font-semibold text-slate-600 mt-2">
             Bước {step}/{TOTAL_STEPS} · {STEP_LABELS[step - 1]}
           </p>
         </div>

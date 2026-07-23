@@ -88,7 +88,7 @@ export default function EditSessionExercisesPanel({ sessionId, onClose, onSaved 
             <button
               type="button"
               onClick={onClose}
-              className="text-xs text-slate/40 hover:text-pink-600 mb-1"
+              className="text-xs text-slate-600 hover:text-pink-600 mb-1"
             >
               ← Quay lại danh sách bài tập
             </button>
@@ -104,7 +104,7 @@ export default function EditSessionExercisesPanel({ sessionId, onClose, onSaved 
           </p>
         )}
 
-        {isLoading && <p className="text-sm text-slate/50">Đang tải nội dung bài tập...</p>}
+        {isLoading && <p className="text-sm text-slate-600">Đang tải nội dung bài tập...</p>}
         {loadError && (
           <p className="text-sm text-danger-text bg-danger-bg rounded-xl px-4 py-2 mb-4">
             {loadError}

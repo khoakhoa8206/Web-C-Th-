@@ -21,9 +21,9 @@ export default function MCQComponent({
   const allAnswered = answeredCount === questions.length;
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 animate-fade-in-up">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-slate/50">
+        <p className="text-sm text-slate-600">
           Đã trả lời {answeredCount}/{questions.length} câu
         </p>
         <button
@@ -37,7 +37,11 @@ export default function MCQComponent({
 
       <div className="space-y-5">
         {questions.map((q, qIdx) => (
-          <div key={q.id} className="bg-white rounded-2xl border border-surface-border p-4">
+          <div 
+            key={q.id} 
+            className="bg-white rounded-2xl border border-surface-border p-4 animate-fade-in-scale"
+            style={{ animationDelay: `${qIdx * 75}ms` }}
+          >
             <p className="font-bold text-slate mb-3">
               Câu {qIdx + 1}. {q.question}
             </p>
@@ -51,9 +55,9 @@ export default function MCQComponent({
                     onClick={() => onSelect(q.id, optIdx)}
                     className={[
                       "text-left px-4 py-2.5 rounded-xl border text-sm font-medium",
-                      "transition-all duration-150 flex items-center gap-2",
+                      "transition-all duration-200 flex items-center gap-2",
                       isSelected
-                        ? "bg-pink-400 border-pink-400 text-white shadow-button"
+                        ? "bg-pink-400 border-pink-400 text-white shadow-button scale-105 animate-pop-in"
                         : "bg-surface-soft border-surface-border text-slate hover:border-pink-300",
                     ].join(" ")}
                   >

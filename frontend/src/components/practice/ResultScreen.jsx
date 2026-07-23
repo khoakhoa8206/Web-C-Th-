@@ -36,39 +36,39 @@ export default function ResultScreen({
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-white to-pink-50 p-6">
       <div className="max-w-xl mx-auto space-y-6">
         {/* Main Score Card */}
-        <CardContainer className="text-center" tone={passed ? "tinted" : "white"}>
+        <CardContainer className="text-center animate-fade-in-scale" tone={passed ? "tinted" : "white"}>
           <p className="text-6xl mb-3 animate-bounce">{passed ? "🎉" : "💪"}</p>
           <h1 className="text-3xl font-extrabold bg-gradient-to-r from-pink-600 to-pink-500 bg-clip-text text-transparent mb-2">
             {passed ? "HOÀN THÀNH" : "CHƯA ĐẠT"}
           </h1>
-          <p className="text-slate/60 text-sm mb-6">
+          <p className="text-slate-600 text-sm mb-6">
             {passed
               ? "Tuyệt vời! Bạn đã nắm vững từ vựng buổi học này."
-              : "Cố lên! Hãy lựa chọn cách ôn lại phù hợp nhất."}
+              : "Cố lên! Hãy làm lại để đạt điểm cao hơn."}
           </p>
 
           {/* Score Stats */}
           <div className="grid grid-cols-3 gap-3 mb-6 p-4 bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl">
             <div className="text-center">
               <p className="text-3xl font-extrabold text-pink-600">{score}%</p>
-              <p className="text-xs text-slate/40 mt-1">Điểm số</p>
+              <p className="text-sm text-slate-600 mt-1">Điểm số</p>
             </div>
             <div className="text-center border-l border-r border-pink-200">
               <p className="text-3xl font-extrabold text-slate">
                 {correctCount}/{total}
               </p>
-              <p className="text-xs text-slate/40 mt-1">Câu đúng</p>
+              <p className="text-sm text-slate-600 mt-1">Câu đúng</p>
             </div>
             <div className="text-center">
               <p className="text-3xl font-extrabold text-slate">{formatTime(timerSeconds)}</p>
-              <p className="text-xs text-slate/40 mt-1">Thời gian</p>
+              <p className="text-sm text-slate-600 mt-1">Thời gian</p>
             </div>
           </div>
 
           <BadgeStatus status={passed ? "completed" : "failed"} animate />
 
           {pendingSyncNotice && (
-            <p className="text-xs text-warning-text bg-warning-bg rounded-full px-3 py-1.5 inline-block mt-4">
+            <p className="text-sm text-warning-text bg-warning-bg rounded-full px-3 py-1.5 inline-block mt-4">
               ⏳ Kết quả đang chờ đồng bộ — sẽ tự động gửi khi có mạng
             </p>
           )}
@@ -112,57 +112,34 @@ export default function ResultScreen({
         )}
 
         {!passed && (
-          <CardContainer tone="white">
-            <h2 className="font-bold text-slate mb-3">📚 Chọn cách ôn lại</h2>
-            <p className="text-sm text-slate/60 mb-4">
-              Bạn cần đạt 80% trở lên. Hãy lựa chọn một trong hai cách ôn lại dưới đây:
+          <CardContainer tone="white" className="animate-fade-in-up">
+            <h2 className="font-bold text-slate mb-3">📚 Ôn lại bài làm</h2>
+            <p className="text-sm text-slate-600 mb-4">
+              Bạn cần đạt 80% trở lên. Hãy làm lại các câu hỏi trắc nghiệm để cải thiện điểm:
             </p>
           </CardContainer>
         )}
 
         {/* Buttons */}
         <div className="space-y-3">
-          {!passed ? (
-            <>
-              {/* Option 1: Retry MCQ Only */}
-              <button
-                onClick={onRetryMcqOnly}
-                className={[
-                  "w-full px-6 py-4 rounded-2xl font-semibold text-sm transition-all",
-                  "border-2 bg-white border-pink-300 text-slate",
-                  "hover:border-pink-500 hover:bg-pink-50 hover:shadow-md",
-                  "active:scale-95 duration-150",
-                ].join(" ")}
-              >
-                <span className="text-lg">🔄</span> Làm lại bài 4
-                <p className="text-xs text-slate/50 mt-1">(Chỉ làm lại câu hỏi trắc nghiệm)</p>
-              </button>
-
-              {/* Option 2: Full Restart */}
-              <button
-                onClick={onRetry}
-                className={[
-                  "w-full px-6 py-4 rounded-2xl font-semibold text-sm transition-all",
-                  "bg-gradient-to-r from-pink-600 to-pink-500 text-white",
-                  "hover:shadow-lg hover:from-pink-700 hover:to-pink-600",
-                  "active:scale-95 duration-150",
-                ].join(" ")}
-              >
-                <span className="text-lg">📚</span> Ôn lại từ vựng
-                <p className="text-xs text-pink-100 mt-1">(Từ đầu: Flashcard → Nối từ → ...)</p>
-              </button>
-            </>
-          ) : (
-            /* Passed: Single "Next" button */
-            <>
-              <Button variant="primary" fullWidth>
-                Tiếp tục học
-              </Button>
-            </>
+          {!passed && (
+            /* Not Passed: Only Retry MCQ */
+            <button
+              onClick={onRetryMcqOnly}
+              className={[
+                "w-full px-6 py-4 rounded-2xl font-semibold text-sm transition-all",
+                "bg-gradient-to-r from-pink-600 to-pink-500 text-white",
+                "hover:shadow-lg hover:from-pink-700 hover:to-pink-600",
+                "active:scale-95 duration-150 animate-fade-in-up",
+              ].join(" ")}
+            >
+              <span className="text-lg">🔄</span> Làm lại bài 4
+              <p className="text-xs text-pink-100 mt-1">(Làm lại câu hỏi trắc nghiệm)</p>
+            </button>
           )}
 
           {/* Home Button - Always visible */}
-          <Link to="/student" onClick={onExit} className="block">
+          <Link to="/student" onClick={onExit} className="block animate-fade-in-up">
             <Button variant="ghost" fullWidth>
               ← Về trang chủ
             </Button>

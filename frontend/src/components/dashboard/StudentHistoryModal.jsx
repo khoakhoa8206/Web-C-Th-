@@ -42,10 +42,10 @@ export default function StudentHistoryModal({ student, sessionId, onClose }) {
       title={student ? `Lịch sử làm bài — ${student.full_name}` : ""}
       maxWidth="max-w-2xl"
     >
-      {history === null && <p className="text-sm text-slate/40 text-center py-6">Đang tải lịch sử...</p>}
+      {history === null && <p className="text-sm text-slate-600 text-center py-6">Đang tải lịch sử...</p>}
 
       {history?.length === 0 && (
-        <p className="text-sm text-slate/40 text-center py-6">Học sinh chưa làm bài buổi học này.</p>
+        <p className="text-sm text-slate-600 text-center py-6">Học sinh chưa làm bài buổi học này.</p>
       )}
 
       {history && history.length > 0 && (
@@ -68,7 +68,7 @@ export default function StudentHistoryModal({ student, sessionId, onClose }) {
                 <BadgeStatus status={attempt.passed ? "completed" : "failed"} />
               </div>
 
-              <p className="text-sm text-slate/60 mb-2">
+              <p className="text-sm text-slate-700 mb-2">
                 Điểm số: <span className="font-bold text-slate">{attempt.score}%</span> · Thời gian:{" "}
                 <span className="font-bold text-slate">{formatDuration(attempt.duration_seconds)}</span> ·{" "}
                 {formatDateTime(attempt.created_at)}
