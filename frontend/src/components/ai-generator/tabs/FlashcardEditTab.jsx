@@ -13,7 +13,7 @@ export default function FlashcardEditTab({ items, onChange }) {
   const removeItem = (id) => onChange(items.filter((it) => it.id !== id));
   const addItem = () => {
     const newId = `w${Date.now()}`;
-    onChange([...items, { id: newId, word: "", meaning: "", phonetic: "" }]);
+    onChange([...items, { id: newId, word: "", meaning: "", phonetic: "", word_type: "" }]);
   };
 
   return (
@@ -21,7 +21,7 @@ export default function FlashcardEditTab({ items, onChange }) {
       {items.map((item, idx) => (
         <div key={item.id} className="bg-white rounded-2xl border border-surface-border p-4 flex gap-3 items-start">
           <span className="text-xs font-bold text-slate/60 mt-2 w-5">{idx + 1}</span>
-          <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div className="flex-1 grid grid-cols-2 sm:grid-cols-4 gap-2">
             <input
               value={item.word}
               onChange={(e) => updateItem(item.id, { word: e.target.value })}
@@ -40,6 +40,20 @@ export default function FlashcardEditTab({ items, onChange }) {
               placeholder="Phiên âm"
               className="rounded-xl border border-transparent bg-pink-50/60 px-3 py-2 text-sm text-slate/60 outline-none focus:border-pink-300 focus:bg-white"
             />
+            <select
+              value={item.word_type || ""}
+              onChange={(e) => updateItem(item.id, { word_type: e.target.value })}
+              className="rounded-xl border border-transparent bg-pink-50/60 px-3 py-2 text-sm text-slate/60 outline-none focus:border-pink-300 focus:bg-white"
+            >
+              <option value="">Từ loại</option>
+              <option value="n.">n. (Danh từ)</option>
+              <option value="v.">v. (Động từ)</option>
+              <option value="adj.">adj. (Tính từ)</option>
+              <option value="adv.">adv. (Trạng từ)</option>
+              <option value="prep.">prep. (Giới từ)</option>
+              <option value="conj.">conj. (Liên từ)</option>
+              <option value="pron.">pron. (Đại từ)</option>
+            </select>
           </div>
           <button
             onClick={() => removeItem(item.id)}

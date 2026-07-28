@@ -16,7 +16,9 @@ export function fisherYatesShuffle(array) {
  * trong từng câu, đồng thời cập nhật lại index đáp án đúng theo vị trí mới.
  */
 export function shuffleMcqQuestions(questions) {
-  const shuffledQuestions = fisherYatesShuffle(questions);
+  // Chỉ giữ các câu hỏi được bật (enabled !== false)
+  const enabledQuestions = questions.filter((q) => q.enabled !== false);
+  const shuffledQuestions = fisherYatesShuffle(enabledQuestions);
   return shuffledQuestions.map((q) => {
     const options = q.options.map((opt, idx) => ({ ...opt, __origIndex: idx }));
     const shuffledOptions = fisherYatesShuffle(options);

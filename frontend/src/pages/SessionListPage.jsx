@@ -71,13 +71,23 @@ export default function SessionListPage() {
                 🕘
               </button>
               {past ? (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setHistoryModal({ sessionId: s.sessionId, sessionTitle: s.title })}
-                >
-                  Xem lại
-                </Button>
+                <div className="flex gap-2">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    title="Xem lại từ vựng bài cũ"
+                    onClick={() => navigate(`/student/practice/${s.sessionId}?review=1`)}
+                  >
+                    📚 Ôn từ vựng
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setHistoryModal({ sessionId: s.sessionId, sessionTitle: s.title })}
+                  >
+                    🕘 Kết quả
+                  </Button>
+                </div>
               ) : (
                 <Button
                   variant="primary"

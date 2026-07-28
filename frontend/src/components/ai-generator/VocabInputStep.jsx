@@ -5,6 +5,8 @@ import { Button, CardContainer } from "../ui";
  * Bước 1 — Nhập liệu: giáo viên chọn buổi học đích và dán/gõ danh sách
  * từ vựng (mỗi dòng 1 từ, có thể kèm nghĩa: "word - nghĩa tiếng Việt").
  */
+const CEFR_LEVELS = ["A1", "A2", "B1", "B2", "C1", "C2"];
+
 export default function VocabInputStep({
   classes,
   classId,
@@ -12,6 +14,8 @@ export default function VocabInputStep({
   onAddClass,
   vocabText,
   onVocabTextChange,
+  level,
+  onLevelChange,
   onGenerate,
 }) {
   const canGenerate = !!classId && vocabText.trim().length > 0;
@@ -52,6 +56,28 @@ export default function VocabInputStep({
             )}
           </div>
         </div>
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-xs font-semibold text-slate/70 mb-1">Trình độ bài 4 (Trắc nghiệm)</label>
+        <div className="flex gap-2 flex-wrap">
+          {CEFR_LEVELS.map((lvl) => (
+            <button
+              key={lvl}
+              type="button"
+              onClick={() => onLevelChange(lvl)}
+              className={[
+                "px-4 py-2 rounded-xl text-sm font-bold border transition-all",
+                level === lvl
+                  ? "bg-pink-500 text-white border-pink-500 shadow-button"
+                  : "bg-white text-slate border-surface-border hover:border-pink-300",
+              ].join(" ")}
+            >
+              {lvl}
+            </button>
+          ))}
+        </div>
+        <p className="text-xs text-slate/60 mt-1">AI sẽ tạo câu hỏi trắc nghiệm phù hợp trình độ này</p>
       </div>
 
       <label className="block text-sm font-semibold text-slate mb-1.5">Danh sách từ vựng</label>

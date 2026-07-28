@@ -6,7 +6,7 @@ import { Button } from "../ui";
  * Props: { vocabList, onReady, stepError }
  * vocabList: [{ id, word, meaning, phonetic (= "Ví dụ: ...") }]
  */
-export default function VocabReviewStep({ vocabList, onReady, stepError }) {
+export default function VocabReviewStep({ vocabList, onReady, stepError, reviewOnly = false }) {
   return (
     <div className="min-h-screen bg-pink-50 pb-24">
       <div className="max-w-2xl mx-auto px-4 pt-6">
@@ -25,8 +25,9 @@ export default function VocabReviewStep({ vocabList, onReady, stepError }) {
         )}
 
         <div className="bg-white rounded-2xl border border-surface-border overflow-hidden">
-          <div className="grid grid-cols-3 gap-0 border-b border-surface-border bg-pink-50 px-4 py-2">
+          <div className="grid grid-cols-4 gap-0 border-b border-surface-border bg-pink-50 px-4 py-2">
             <p className="text-xs font-bold text-slate/70 uppercase tracking-wide">Từ vựng</p>
+            <p className="text-xs font-bold text-slate/70 uppercase tracking-wide">Từ loại</p>
             <p className="text-xs font-bold text-slate/70 uppercase tracking-wide">Phiên âm</p>
             <p className="text-xs font-bold text-slate/70 uppercase tracking-wide">Nghĩa</p>
           </div>
@@ -34,9 +35,12 @@ export default function VocabReviewStep({ vocabList, onReady, stepError }) {
             {vocabList.map((item, idx) => (
               <div
                 key={item.id}
-                className={`grid grid-cols-3 gap-0 px-4 py-3 ${idx % 2 === 1 ? "bg-pink-50/30" : ""}`}
+                className={`grid grid-cols-4 gap-0 px-4 py-3 ${idx % 2 === 1 ? "bg-pink-50/30" : ""}`}
               >
                 <p className="text-base font-bold text-slate pr-2">{item.word}</p>
+                <p className="text-xs text-pink-500 font-semibold pr-2 self-center">
+                  {item.word_type || ""}
+                </p>
                 <p className="text-sm text-pink-600 font-medium pr-2">
                   {item.phonetic && !item.phonetic.startsWith("Ví dụ") ? item.phonetic : "…"}
                 </p>
@@ -47,12 +51,14 @@ export default function VocabReviewStep({ vocabList, onReady, stepError }) {
         </div>
       </div>
 
-      {/* Nút cố định góc dưới-phải */}
-      <div className="fixed bottom-6 right-6">
-        <Button variant="primary" onClick={onReady} className="shadow-lg">
-          SẴN SÀNG LÀM BÀI →
-        </Button>
-      </div>
+      {/* Nút cố định góc dưới-phải — ẩn khi chỉ xem lại */}
+      {!reviewOnly && onReady && (
+        <div className="fixed bottom-6 right-6">
+          <Button variant="primary" onClick={onReady} className="shadow-lg">
+            SẴN SÀNG LÀM BÀI →
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -16,6 +16,7 @@ export default function AIGeneratorDashboard() {
   const [classId, setClassId] = useState("");
   const [sessionId, setSessionId] = useState(null);
   const [vocabText, setVocabText] = useState("");
+  const [level, setLevel] = useState("B1");
   const [lessonData, setLessonData] = useState(null);
   const [error, setError] = useState("");
   const [isSaving, setIsSaving] = useState(null); // null | "DRAFT" | "PUBLISHED"
@@ -42,7 +43,7 @@ export default function AIGeneratorDashboard() {
     setError("");
     setStep("loading");
     try {
-      const data = await generateLessonFromVocab(vocabText, classId);
+      const data = await generateLessonFromVocab(vocabText, classId, level);
       setLessonData(data);
       setSessionId(data.session_id);
       setSavedStatus(null);
@@ -145,6 +146,8 @@ export default function AIGeneratorDashboard() {
             onAddClass={() => setIsAddClassOpen(true)}
             vocabText={vocabText}
             onVocabTextChange={setVocabText}
+            level={level}
+            onLevelChange={setLevel}
             onGenerate={handleGenerate}
           />
         </>

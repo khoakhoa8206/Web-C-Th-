@@ -18,10 +18,23 @@ export function useAttemptsRealtime(sessionId) {
     attempts.forEach((a) => {
       const existing = map[a.student_id];
       const count = (existing?.attemptsCount ?? 0) + 1;
-      const isNewer =
-        !existing || new Date(a.created_at) >= new Date(existing.latestAttempt.created_at);
+      // Ưu tiên attempt đã đạt (passed) với điểm cao nhất.
+      // Nếu không có attempt nào đạt, lấy attempt điểm cao nhất.
+      const prev = existing?.bestAttempt;
+      let best;
+      if (!prev) {
+        best = a;
+      } else if (a.passed && !prev.passed) {
+        best = a; // a đạt, prev chưa → a thắng
+      } else if (!a.passed && prev.passed) {
+        best = prev; // prev đạt, a chưa → prev thắng
+      } else {
+        // cùng trạng thái → lấy điểm cao hơn
+        best = (a.score ?? 0) >= (prev.score ?? 0) ? a : prev;
+      }
       map[a.student_id] = {
-        latestAttempt: isNewer ? a : existing.latestAttempt,
+        bestAttempt: best,
+        latestAttempt: best, // alias để StudentRow không đổi
         attemptsCount: count,
         justUpdated: false,
       };
@@ -52,15 +65,27 @@ export function useAttemptsRealtime(sessionId) {
     const unsubscribe = subscribeToAttempts(sessionId, ({ new: attempt }) => {
       setAttemptsByStudent((prev) => {
         const existing = prev[attempt.student_id];
+        const isNewId = !existing || existing.bestAttempt?.id !== attempt.id;
         const attemptsCount = existing
-          ? existing.latestAttempt.id === attempt.id
-            ? existing.attemptsCount
-            : existing.attemptsCount + 1
+          ? isNewId ? existing.attemptsCount + 1 : existing.attemptsCount
           : 1;
+        // Tính best giữa existing.bestAttempt và attempt mới
+        const prevBest = existing?.bestAttempt;
+        let best;
+        if (!prevBest) {
+          best = attempt;
+        } else if (attempt.passed && !prevBest.passed) {
+          best = attempt;
+        } else if (!attempt.passed && prevBest.passed) {
+          best = prevBest;
+        } else {
+          best = (attempt.score ?? 0) >= (prevBest.score ?? 0) ? attempt : prevBest;
+        }
         return {
           ...prev,
           [attempt.student_id]: {
-            latestAttempt: attempt,
+            bestAttempt: best,
+            latestAttempt: best,
             attemptsCount,
             justUpdated: true,
           },

@@ -26,12 +26,12 @@ function formatTime(totalSeconds) {
 }
 
 function loadDraft(sessionId) {
+  // Luôn trả về null → học sinh luôn bắt đầu lại từ đầu khi mở lại app
+  // (Draft chỉ dùng trong phiên, sẽ bị xoá bởi beforeunload)
   try {
-    const raw = localStorage.getItem(draftKey(sessionId));
-    return raw ? JSON.parse(raw) : null;
-  } catch {
-    return null;
-  }
+    localStorage.removeItem(draftKey(sessionId));
+  } catch {}
+  return null;
 }
 
 function makeInitialAnswers() {
@@ -69,6 +69,15 @@ export default function PracticeFlow({ sessionId, exercises }) {
 
   const intervalRef = useRef(null);
 
+  // Xoá draft khi học sinh đóng tab / thoát app → mặc định làm lại từ đầu
+  useEffect(() => {
+    const handleUnload = () => {
+      localStorage.removeItem(draftKey(sessionId));
+    };
+    window.addEventListener("beforeunload", handleUnload);
+    return () => window.removeEventListener("beforeunload", handleUnload);
+  }, [sessionId]);
+
   // ---- Adapt exercises data cho từng component ----
   const flashcardVocab = useMemo(
     () =>
@@ -78,6 +87,7 @@ export default function PracticeFlow({ sessionId, exercises }) {
         meaning: f.meaning,
         phonetic: f.phonetic || "",
         example: f.example || "",
+        word_type: f.word_type || "",
       })),
     [exercises.flashcards]
   );
@@ -216,12 +226,24 @@ export default function PracticeFlow({ sessionId, exercises }) {
     try {
       const serverResult = await submitAttempt(attemptId, serverAnswers, timerSeconds);
 
+      // Chỉ tính điểm bài 4 (MCQ) — lọc results theo type "mcq"
+      const allResults = serverResult.results || [];
+      const mcqResults = allResults.filter((r) => r.type === "mcq" || r.type === "MCQ");
+      // Nếu backend trả về type khác, fallback về tổng số câu MCQ đã gửi
+      const mcqCount = mcqAnswers.length;
+      const gradedMcq = mcqResults.length > 0 ? mcqResults : allResults.slice(
+        allResults.length - mcqCount
+      );
+      const mcqCorrect = gradedMcq.filter((r) => r.is_correct).length;
+      const mcqTotal = gradedMcq.length || mcqCount || 1;
+      const mcqScore = Math.round((mcqCorrect / mcqTotal) * 100);
+
       setResult({
-        score: serverResult.accuracy,
-        passed: serverResult.status === "PASSED",
-        correctCount: serverResult.correct_count,
-        total: serverResult.total_questions,
-        gradedAnswers: (serverResult.results || []).map((r, idx) => ({
+        score: mcqScore,
+        passed: mcqScore >= 80,
+        correctCount: mcqCorrect,
+        total: mcqTotal,
+        gradedAnswers: gradedMcq.map((r, idx) => ({
           questionId: r.id || `r${idx}`,
           isCorrect: r.is_correct,
           selectedAnswer: r.student_answer,

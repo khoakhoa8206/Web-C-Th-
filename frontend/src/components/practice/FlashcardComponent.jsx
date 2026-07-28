@@ -49,14 +49,16 @@ export default function FlashcardComponent({ vocabList, flippedIds, onFlip, onNe
             <p className="text-sm text-slate font-medium">Chạm để xem nghĩa</p>
           </div>
 
-          {/* Mặt sau — nghĩa tiếng Việt + phát âm */}
+          {/* Mặt sau — nghĩa tiếng Việt + phát âm + từ loại */}
           <div className="flip-card-face flip-card-face-back absolute inset-0 rounded-3xl bg-pink-400 text-white shadow-card flex flex-col items-center justify-center gap-2 p-6">
+            {current.word_type && (
+              <span className="bg-white/20 text-white/90 text-xs font-bold px-2 py-0.5 rounded-full">
+                {current.word_type}
+              </span>
+            )}
             <p className="text-4xl font-bold">{current.meaning}</p>
             {current.phonetic && (
               <p className="text-base text-white/90 font-medium">{current.phonetic}</p>
-            )}
-            {current.example && (
-              <p className="text-sm text-white/75 italic text-center">Ví dụ: {current.example}</p>
             )}
           </div>
         </div>

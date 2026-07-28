@@ -12,10 +12,10 @@ import { teacherFetch } from './apiClient';
  * @param {string} classId - UUID lớp học
  * @returns {{ session_id, session_title, status, exercises }}
  */
-export async function generateLessonFromVocab(vocabularyList, classId) {
+export async function generateLessonFromVocab(vocabularyList, classId, level = 'B1') {
   const json = await teacherFetch('/api/teacher/generate-exercises', {
     method: 'POST',
-    body: JSON.stringify({ class_id: classId, vocabulary_list: vocabularyList }),
+    body: JSON.stringify({ class_id: classId, vocabulary_list: vocabularyList, level }),
   });
   const data = json.data;
   return {
@@ -33,6 +33,8 @@ export async function generateLessonFromVocab(vocabularyList, classId) {
  * PUT /api/teacher/update-exercises/:session_id
  */
 export async function updateExercises(sessionId, exercisesData, sessionTitle) {
+  // Lọc MCQ: chỉ gửi các câu hỏi được bật (enabled !== false)
+  const enabledMcqs = (exercisesData.mcq || []).filter((q) => q.enabled !== false);
   const json = await teacherFetch(`/api/teacher/update-exercises/${sessionId}`, {
     method: 'PUT',
     body: JSON.stringify({
@@ -40,7 +42,7 @@ export async function updateExercises(sessionId, exercisesData, sessionTitle) {
       flashcards: exercisesData.flashcards || [],
       match_up: exercisesData.matchup || [],
       fill_in_blanks: exercisesData.fillblanks || [],
-      mcqs: exercisesData.mcq || [],
+      mcqs: enabledMcqs,
     }),
   });
   return json.data;

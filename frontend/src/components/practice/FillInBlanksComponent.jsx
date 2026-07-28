@@ -2,24 +2,10 @@ import React, { useState, useMemo } from "react";
 import { Button, InputField } from "../ui";
 
 /**
- * Bài 3 — FillInBlanksComponent v3
- * - Chỉ hiện màu xanh/đỏ sau khi học sinh rời ô input (onBlur)
- * - Không lộ đáp án đúng khi đang gõ
- * - Không hiển thị gợi ý hay hint trong khi gõ
+ * Bài 3 — FillInBlanksComponent v4
+ * - Chỉ hướng vi_to_en (tiếng Việt → tiếng Anh)
+ * - Sau khi blur, nếu sai thì hiện đáp án đúng bên dưới
  */
-
-function getPromptText(item) {
-  if (item.direction === "vi_to_en") {
-    return `Từ tiếng Anh nào có nghĩa là "${item.word}"?`;
-  }
-  return `"${item.word}" có nghĩa là gì?`;
-}
-
-function getPlaceholder(item) {
-  return item.direction === "vi_to_en"
-    ? "Gõ từ tiếng Anh..."
-    : "Gõ nghĩa tiếng Việt...";
-}
 
 function checkAnswer(studentAnswer, correctAnswers) {
   if (!studentAnswer || !studentAnswer.trim()) return null;
@@ -29,7 +15,6 @@ function checkAnswer(studentAnswer, correctAnswers) {
 }
 
 export default function FillInBlanksComponent({ items, values, onChange, onNext }) {
-  // submitted: set của các item.id đã blur (rời ô) — lúc đó mới reveal màu
   const [submitted, setSubmitted] = useState(new Set());
 
   const isFilled = (item) => {
@@ -48,7 +33,6 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
   }, [items, values]);
 
   const handleChange = (id, val) => {
-    // Khi đang gõ lại sau blur, reset trạng thái submitted để ẩn màu
     setSubmitted((prev) => {
       const next = new Set(prev);
       next.delete(id);
@@ -58,7 +42,6 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
   };
 
   const handleBlur = (id) => {
-    // Chỉ đánh dấu submitted nếu có nội dung
     if (values[id]?.trim()) {
       setSubmitted((prev) => new Set(prev).add(id));
     }
@@ -78,10 +61,19 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
       <div className="space-y-4">
         {items.map((item, idx) => {
           const hasBlurred = submitted.has(item.id);
-          const hasAnswered = isFilled(item);
           const isCorrect = hasBlurred
             ? checkAnswer(values[item.id], item.correct_answer || item.answer || "")
             : null;
+
+          // Lấy đáp án đúng đầu tiên để hiển thị
+          const correctAnswerDisplay = (item.correct_answer || item.answer || "")
+            .split("|")[0]
+            .trim();
+
+          // Từ tiếng Việt để hiển thị (ưu tiên word nếu là tiếng Việt, ngược lại dùng meaning)
+          const vietnameseWord = item.direction === "vi_to_en"
+            ? (item.word || item.vietnamese || item.meaning || "")
+            : (item.meaning || item.word || "");
 
           return (
             <div
@@ -97,7 +89,7 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
             >
               <div className="flex items-center justify-between mb-2">
                 <p className="text-sm text-slate font-semibold">Câu {idx + 1}</p>
-                {hasBlurred && hasAnswered && (
+                {hasBlurred && isFilled(item) && (
                   <span
                     className={[
                       "text-sm font-bold px-2 py-1 rounded-full",
@@ -111,11 +103,13 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
                 )}
               </div>
 
-              <p className="font-bold text-lg text-slate mb-3">{getPromptText(item)}</p>
+              <p className="font-bold text-lg text-slate mb-3">
+                Từ tiếng Anh nào có nghĩa là &ldquo;{vietnameseWord}&rdquo;?
+              </p>
 
               <InputField
                 label="Đáp án của bạn"
-                placeholder={getPlaceholder(item)}
+                placeholder="Gõ từ tiếng Anh..."
                 value={values[item.id] ?? ""}
                 onChange={(e) => handleChange(item.id, e.target.value)}
                 onBlur={() => handleBlur(item.id)}
@@ -125,6 +119,14 @@ export default function FillInBlanksComponent({ items, values, onChange, onNext 
                   hasBlurred && isCorrect === false ? "border-danger" : "",
                 ].join(" ")}
               />
+
+              {/* Hiện đáp án đúng khi sai */}
+              {hasBlurred && isCorrect === false && correctAnswerDisplay && (
+                <div className="mt-2 px-3 py-2 bg-white rounded-xl border border-danger/20">
+                  <p className="text-xs text-slate/60 font-semibold mb-0.5">Đáp án đúng:</p>
+                  <p className="text-base font-bold text-success-text">{correctAnswerDisplay}</p>
+                </div>
+              )}
             </div>
           );
         })}
